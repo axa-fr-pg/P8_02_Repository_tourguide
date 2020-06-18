@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.helper.InternalTestHelper;
@@ -63,4 +64,14 @@ public class TestRewardsService {
 		assertEquals(gpsUtil.getAttractions().size(), userRewards.size());
 	}
 	
+	@Test
+	public void givenTwoLocations_whenGetDistance_thenReturnsCorrectDistance() {
+		// GIVEN
+		Location parisLocation = new Location(48.8534, 2.3488);
+		Location londonLocation = new Location(51.5084, -0.1255);
+		// WHEN
+		double distance = RewardsService.getDistance(parisLocation, londonLocation);
+		// THEN
+		assertEquals(213, distance, 1);
+	}
 }
