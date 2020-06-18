@@ -21,6 +21,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.helper.InternalTestHelper;
+import tourguide.model.AttractionDistance;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
 import tourguide.user.UserReward;
@@ -29,6 +30,8 @@ import tripPricer.TripPricer;
 
 @Service
 public class TourGuideService {
+	
+	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
@@ -91,13 +94,20 @@ public class TourGuideService {
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
+		// Prepare list of all attractions for sorting
+		Location fromLocation = visitedLocation.location;
+		List<AttractionDistance> fullList = new ArrayList<>();
+		for(Attraction toAttraction : gpsUtil.getAttractions()) {
+			AttractionDistance ad = new AttractionDistance(fromLocation, toAttraction);
+			fullList.add(ad);
 		}
-		
+		// Sort list
+		fullList.sort(null);
+		// Keep the selection
+		List<Attraction> nearbyAttractions = new ArrayList<>();
+		for (int i=0; i<NUMBER_OF_PROPOSED_ATTRACTIONS && i<fullList.size(); i++) {
+			nearbyAttractions.add(fullList.get(i));
+		}
 		return nearbyAttractions;
 	}
 	
