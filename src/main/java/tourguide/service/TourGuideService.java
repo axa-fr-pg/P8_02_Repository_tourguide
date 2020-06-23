@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -33,9 +34,9 @@ public class TourGuideService {
 	
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
+	@Autowired private GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
+	@Autowired private TripPricer tripPricer;
 	public final Tracker tracker;
 	boolean testMode = true;
 	
@@ -79,9 +80,18 @@ public class TourGuideService {
 	}
 	
 	public List<Provider> getTripDeals(User user) {
-		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		List<Provider> providers = new ArrayList<Provider>();
+		List<Attraction> attractions = getNearByAttractions(user.getLastVisitedLocation());
+		for (Attraction a : attractions) {
+			providers.addAll(tripPricer.getPrice(
+					tripPricerApiKey, 
+					a.attractionId, 
+					user.getUserPreferences().getNumberOfAdults(), 
+					user.getUserPreferences().getNumberOfChildren(), 
+					user.getUserPreferences().getTripDuration(), 
+					cumulativeRewardPoints));			
+		}
 		user.setTripDeals(providers);
 		return providers;
 	}
