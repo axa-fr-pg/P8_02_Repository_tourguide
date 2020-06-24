@@ -60,7 +60,7 @@ public class RewardsService {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
-	private int getRewardPoints(Attraction attraction, User user) {
+	public int getRewardPoints(Attraction attraction, User user) {
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	
@@ -69,7 +69,7 @@ public class RewardsService {
 	 * Uses Spherical Law of Cosines
 	 * @param loc1
 	 * @param loc2
-	 * @return
+	 * @return calculated distance
 	 */
 	
 	public static double getDistance(Location loc1, Location loc2) {

@@ -29,6 +29,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.helper.InternalTestHelper;
+import tourguide.model.AttractionNearby;
 import tourguide.service.RewardsService;
 import tourguide.service.TourGuideService;
 import tourguide.user.User;
@@ -122,7 +123,11 @@ public class TestTourGuideService {
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
 		// GIVEN
-		VisitedLocation myVisitedLocation = new VisitedLocation(null, new Location(0, 0), null);
+		User user = new User(new UUID(11,12), "test", "000", "test@tourguide.com");
+		Location location = new Location(21,22);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date());
+		user.addToVisitedLocations(visitedLocation);
+		tourGuideService.addUser(user);
 		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
 		int numberTestCases = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
 		for (int i=0; i<numberTestCases; i++) {
@@ -130,13 +135,13 @@ public class TestTourGuideService {
 		}
 		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
 		// WHEN
-		List<Attraction> resultAttractions = tourGuideService.getNearByAttractions(myVisitedLocation);
+		List<AttractionNearby> resultAttractions = tourGuideService.getNearByAttractions(user.getUserName());
 		// THEN
 		assertNotNull(resultAttractions);
 		assertEquals(TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS, resultAttractions.size());
 		double resultCheckSum = 0;
-		for (Attraction a : resultAttractions) {
-			resultCheckSum += a.longitude;
+		for (AttractionNearby a : resultAttractions) {
+			resultCheckSum += a.attractionLocation.longitude;
 		}
 		int expectedCheckSum = ( TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS + 1)
 				* TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS / 2;
@@ -166,7 +171,7 @@ public class TestTourGuideService {
 		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), eq(2*duration), anyInt()))
 			.thenReturn(givenProvidersDouble);
 		// GIVEN
-		User user = new User(new UUID(11,12), "test", "000", "test@tourguide.com");
+		User user = tourGuideService.getUser("internalUser1");
 		UserPreferences userPreferences = new UserPreferences();
 		userPreferences.setNumberOfAdults(adults);
 		userPreferences.setNumberOfChildren(children);
@@ -212,7 +217,7 @@ public class TestTourGuideService {
 		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), eq(2*children), anyInt(), anyInt()))
 			.thenReturn(givenProvidersDouble);
 		// GIVEN
-		User user = new User(new UUID(11,12), "test", "000", "test@tourguide.com");
+		User user = tourGuideService.getUser("internalUser2");
 		UserPreferences userPreferences = new UserPreferences();
 		userPreferences.setNumberOfAdults(adults);
 		userPreferences.setNumberOfChildren(children);
