@@ -88,7 +88,11 @@ public class User {
 	}
 
 	public VisitedLocation getLastVisitedLocation() {
-		return visitedLocations.get(visitedLocations.size() - 1);
+		int listLength = visitedLocations.size();
+/*		if (listLength == 0) { // May happen through Tracker thread for instance
+			return null;
+		}*/
+		return visitedLocations.get(listLength - 1);
 	}
 	
 	public void setTripDeals(List<Provider> tripDeals) {
