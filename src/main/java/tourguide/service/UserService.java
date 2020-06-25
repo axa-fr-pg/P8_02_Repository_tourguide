@@ -54,11 +54,12 @@ public class UserService {
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
 	
+	/* Method not used
 	public void addUser(User user) {
 		if(!internalUserMap.containsKey(user.getUserName())) {
 			internalUserMap.put(user.getUserName(), user);
 		}
-	}
+	} */
 	
 	public void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {

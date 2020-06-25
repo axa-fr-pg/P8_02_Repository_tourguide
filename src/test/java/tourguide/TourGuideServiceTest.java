@@ -28,8 +28,8 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourguide.helper.InternalTestHelper;
 import tourguide.model.AttractionNearby;
+import tourguide.service.RewardsService;
 import tourguide.service.TourGuideService;
 import tourguide.service.UserService;
 import tourguide.tracker.Tracker;
@@ -40,20 +40,23 @@ import tripPricer.TripPricer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TestTourGuideService {
+public class TourGuideServiceTest {
 
 	@MockBean GpsUtil gpsUtil; // TODO replace with interface
 	@MockBean TripPricer tripPricer; // TODO replace with interface
 	@MockBean Tracker tracker; // TODO replace with interface
-	@Autowired TourGuideService tourGuideService;  // TODO replace with interface
 	@MockBean UserService userService;  // TODO replace with interface
+	@MockBean RewardsService rewardsService;  // TODO replace with interface
+	@Autowired TourGuideService tourGuideService;  // TODO replace with interface
 
 	@Before
-	public void deactivateTrackerAndUserServices() {
-		doNothing().when(userService).initializeInternalUsers();
+	public void deactivateUnexpectedServices() {
 		doNothing().when(tracker).run();
+		doNothing().when(userService).initializeInternalUsers();
+		doNothing().when(rewardsService).calculateRewards(any(User.class));
 	}
 	
+	// Test helper method
 	private User mockGetUserAndGetUserLocation(int index, UserPreferences userPreferences) {
 		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
 		Location location = new Location(0.21*index,-0.22*index);
@@ -65,74 +68,50 @@ public class TestTourGuideService {
 		return user;
 	}
 	
+	// Test helper method
 	private void mockGetAttractions() {
 		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
 		int numberTestCases = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
 		for (int i=0; i<numberTestCases; i++) {
-			givenAttractions.add(newTestAttraction(numberTestCases-i));
+			int index = numberTestCases - i;
+			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, -1 * index, index);
+			givenAttractions.add(attraction);
 		}
 		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
 	}
 	
 	@Test
-	public void getUserLocation() {
-		InternalTestHelper.setInternalUserNumber(0);
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
+		// MOCK getUserLocation
+		User user = mockGetUserAndGetUserLocation(1, null);
+		// WHEN
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
-//		tourGuideService.tracker.stopTracking();
+		// THEN
+		assertEquals(2, user.getVisitedLocations().size());
+		assertNotNull(visitedLocation);
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
+		assertEquals(visitedLocation.location.latitude, user.getLastVisitedLocation().location.latitude, 0.0000000001);
+		assertEquals(visitedLocation.location.longitude, user.getLastVisitedLocation().location.longitude, 0.0000000001);
 	}
 	
+	/* Method addUser not used --> no need to test it
 	@Test
 	public void addUser() {
 		InternalTestHelper.setInternalUserNumber(0);
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
 
-//		tourGuideService.addUser(user);
-//		tourGuideService.addUser(user2);
+		tourGuideService.addUser(user);
+		tourGuideService.addUser(user2);
 		
-//		User retrivedUser = tourGuideService.getUser(user.getUserName());
-//		User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
+		User retrivedUser = tourGuideService.getUser(user.getUserName());
+		User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
 
-//		tourGuideService.tracker.stopTracking();
-		assertTrue(false); // TODO	
+		tourGuideService.tracker.stopTracking();
 		
-//		assertEquals(user, retrivedUser);
-//		assertEquals(user2, retrivedUser2);
-	}
-	
-	@Test
-	public void getAllUsers() {
-		InternalTestHelper.setInternalUserNumber(0);
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
-//		tourGuideService.addUser(user);
-//		tourGuideService.addUser(user2);
-		
-//		List<User> allUsers = tourGuideService.getAllUsers();
-
-//		tourGuideService.tracker.stopTracking();
-	assertTrue(false); // TODO	
-//		assertTrue(allUsers.contains(user));
-//		assertTrue(allUsers.contains(user2));
-	}
-	
-	@Test
-	public void trackUser() {
-		InternalTestHelper.setInternalUserNumber(0);
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
-		
-//		tourGuideService.tracker.stopTracking();
-		
-		assertEquals(user.getUserId(), visitedLocation.userId);
-	}
-	
-	private Attraction newTestAttraction(int index) {
-		return new Attraction("name"+index, "city"+index, "state"+index, -1 * index, index);
-	}	
+		assertEquals(user, retrivedUser);
+		assertEquals(user2, retrivedUser2);
+	} */
 	
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
