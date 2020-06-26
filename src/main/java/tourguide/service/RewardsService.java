@@ -21,7 +21,7 @@ public class RewardsService {
 	// proximity in miles
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
-	private int attractionProximityRange = 200;
+	// private int attractionProximityRange = 200;
 	@Autowired private GpsUtil gpsUtil;
 	@Autowired private RewardCentral rewardCentral;
 	
@@ -48,9 +48,10 @@ public class RewardsService {
 		}
 	}
 	
+	/* Method not used
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
-	}
+	}*/
 	
 	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;

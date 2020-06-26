@@ -3,6 +3,7 @@ package tourguide;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
 import tripPricer.TripPricer;
 
@@ -12,6 +13,11 @@ public class TourGuideModule {
 	@Bean
 	public RewardCentral rewardCentral() {
 		return new RewardCentral();
+	}
+	
+	@Bean
+	public GpsUtil gpsUtil() {
+		return new GpsUtil();
 	}
 	
 	@Bean

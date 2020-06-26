@@ -1,4 +1,4 @@
-package tourguide;
+package tourguide.service;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,7 +11,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +24,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionNearby;
@@ -42,12 +40,13 @@ import tripPricer.TripPricer;
 @SpringBootTest
 public class TourGuideServiceTest {
 
-	@MockBean GpsUtil gpsUtil; // TODO replace with interface
-	@MockBean TripPricer tripPricer; // TODO replace with interface
+	@MockBean GpsUtil gpsUtil;
+	@MockBean TripPricer tripPricer;
 	@MockBean Tracker tracker; // TODO replace with interface
 	@MockBean UserService userService;  // TODO replace with interface
-	@MockBean RewardsService rewardsService;  // TODO replace with interface
+	@MockBean RewardsService rewardsService;
 	@Autowired TourGuideService tourGuideService;  // TODO replace with interface
+	@Autowired TestHelperService testHelperService;
 
 	@Before
 	public void deactivateUnexpectedServices() {
@@ -56,34 +55,12 @@ public class TourGuideServiceTest {
 		doNothing().when(rewardsService).calculateRewards(any(User.class));
 	}
 	
-	// Test helper method
-	private User mockGetUserAndGetUserLocation(int index, UserPreferences userPreferences) {
-		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
-		Location location = new Location(0.21*index,-0.22*index);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(index));
-		user.addToVisitedLocations(visitedLocation);
-		user.setUserPreferences(userPreferences);
-		when(userService.getUser(user.getUserName())).thenReturn(user);
-		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(visitedLocation);
-		return user;
-	}
-	
-	// Test helper method
-	private void mockGetAttractions() {
-		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
-		int numberTestCases = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
-		for (int i=0; i<numberTestCases; i++) {
-			int index = numberTestCases - i;
-			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, -1 * index, index);
-			givenAttractions.add(attraction);
-		}
-		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
-	}
+
 	
 	@Test
 	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
 		// MOCK getUserLocation
-		User user = mockGetUserAndGetUserLocation(1, null);
+		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, null);
 		// WHEN
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		// THEN
@@ -116,9 +93,9 @@ public class TourGuideServiceTest {
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
 		// MOCK getUser
-		User user = mockGetUserAndGetUserLocation(1, null);
+		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, null);
 		// MOCK getAttractions
-		mockGetAttractions();
+		testHelperService.mockGpsUtilGetAttractions();
 		// WHEN
 		List<AttractionNearby> resultAttractions = tourGuideService.getNearByAttractions(user.getUserName());
 		// THEN
@@ -144,9 +121,9 @@ public class TourGuideServiceTest {
 		userPreferences.setNumberOfChildren(children);
 		userPreferences.setTripDuration(duration);
 		// MOCK getUser
-		User user = mockGetUserAndGetUserLocation(1, userPreferences);
+		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, userPreferences);
 		// MOCK getAttractions
-		mockGetAttractions();
+		testHelperService.mockGpsUtilGetAttractions();
 		// MOCK getPrice
 		double priceForDuration4 = 1000;
 		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
@@ -182,9 +159,9 @@ public class TourGuideServiceTest {
 		userPreferences.setNumberOfChildren(children);
 		userPreferences.setTripDuration(duration);
 		// MOCK getUser
-		User user = mockGetUserAndGetUserLocation(1, userPreferences);
+		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, userPreferences);
 		// MOCK getAttractions
-		mockGetAttractions();
+		testHelperService.mockGpsUtilGetAttractions();
 		// MOCK getPrice
 		double priceForOneChild = 100;
 		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
@@ -215,7 +192,7 @@ public class TourGuideServiceTest {
 		List<User> givenUsers = new ArrayList<User>();
 		int numberOfUsers = 5;
 		for (int i=0; i<numberOfUsers; i++) {
-			givenUsers.add(mockGetUserAndGetUserLocation(i+1, null));
+			givenUsers.add(testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(i+1, null));
 		}
 		when(userService.getAllUsers()).thenReturn(givenUsers);
 		// WHEN
