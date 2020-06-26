@@ -21,6 +21,8 @@ import tourguide.user.UserPreferences;
 @Service
 public class TestHelperService {
 
+	public static int numberOfTestAttractions = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
+
 	@Autowired GpsUtil gpsUtil;
 	@Autowired UserService userService;
 
@@ -37,9 +39,8 @@ public class TestHelperService {
 	
 	public List<Attraction> mockGpsUtilGetAttractions() {
 		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
-		int numberTestCases = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
-		for (int i=0; i<numberTestCases; i++) {
-			int index = numberTestCases - i;
+		for (int i=0; i<numberOfTestAttractions; i++) {
+			int index = numberOfTestAttractions - i;
 			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, 0.31*index,-0.32*index);
 			givenAttractions.add(attraction);
 		}
