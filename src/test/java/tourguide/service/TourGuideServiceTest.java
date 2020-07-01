@@ -42,10 +42,10 @@ public class TourGuideServiceTest {
 
 	@MockBean GpsUtil gpsUtil;
 	@MockBean TripPricer tripPricer;
-	@MockBean Tracker tracker; // TODO replace with interface
-	@MockBean UserService userService;  // TODO replace with interface
+	@MockBean Tracker tracker;
+	@MockBean UserService userService;
 	@MockBean RewardsService rewardsService;
-	@Autowired TourGuideService tourGuideService;  // TODO replace with interface
+	@Autowired TourGuideService tourGuideService;
 	@Autowired TestHelperService testHelperService;
 
 	@Before
@@ -70,25 +70,6 @@ public class TourGuideServiceTest {
 		assertEquals(visitedLocation.location.latitude, user.getLastVisitedLocation().location.latitude, 0.0000000001);
 		assertEquals(visitedLocation.location.longitude, user.getLastVisitedLocation().location.longitude, 0.0000000001);
 	}
-	
-	/* Method addUser not used --> no need to test it
-	@Test
-	public void addUser() {
-		InternalTestHelper.setInternalUserNumber(0);
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
-		tourGuideService.addUser(user);
-		tourGuideService.addUser(user2);
-		
-		User retrivedUser = tourGuideService.getUser(user.getUserName());
-		User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
-
-		tourGuideService.tracker.stopTracking();
-		
-		assertEquals(user, retrivedUser);
-		assertEquals(user2, retrivedUser2);
-	} */
 	
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {

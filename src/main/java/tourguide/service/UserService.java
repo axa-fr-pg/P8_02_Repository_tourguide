@@ -30,14 +30,16 @@ import tourguide.user.User;
 @Service
 public class UserService {
 
-	static final private boolean workWithInternalUserMap = true;
 	Logger logger = LoggerFactory.getLogger(UserService.class);
-	private final Map<String, User> internalUserMap;
+	private Map<String, User> internalUserMap;
 	
 	public UserService() {
-		internalUserMap = new HashMap<>();
-		if (workWithInternalUserMap) {
-			logger.info("TestMode enabled");
+		this(true);
+	}
+	
+	public UserService(boolean fillInternalUserMapWithRandomUsers) {
+		internalUserMap = new HashMap<>();		
+		if (fillInternalUserMapWithRandomUsers) {
 			logger.debug("Initializing users");
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
@@ -54,12 +56,11 @@ public class UserService {
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
 	
-	/* Method not used
 	public void addUser(User user) {
 		if(!internalUserMap.containsKey(user.getUserName())) {
 			internalUserMap.put(user.getUserName(), user);
 		}
-	} */
+	}
 	
 	public void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
