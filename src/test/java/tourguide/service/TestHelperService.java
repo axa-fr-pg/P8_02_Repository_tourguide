@@ -48,7 +48,7 @@ public class TestHelperService {
 		return givenAttractions;
 	}
 	
-	public void deactivateInternalUsers() {
+/*	public void deactivateInternalUsers() {
 		doNothing().when(userService).initializeInternalUsers();
-	}
+	}*/
 }

@@ -29,6 +29,8 @@ import tourguide.user.User;
  */
 @Service
 public class UserService {
+	
+	Random random;
 
 	Logger logger = LoggerFactory.getLogger(UserService.class);
 	private Map<String, User> internalUserMap;
@@ -41,6 +43,7 @@ public class UserService {
 		internalUserMap = new HashMap<>();		
 		if (fillInternalUserMapWithRandomUsers) {
 			logger.debug("Initializing users");
+			random = new Random();
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
@@ -65,7 +68,7 @@ public class UserService {
 	public void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
-			String phone = "000";
+			String phone = "000" + i;
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
 			generateUserLocationHistory(user);			
@@ -84,13 +87,13 @@ public class UserService {
 	private double generateRandomLongitude() {
 		double leftLimit = -180;
 	    double rightLimit = 180;
-	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
+	    return leftLimit + random.nextDouble() * (rightLimit - leftLimit);
 	}
 	
 	private double generateRandomLatitude() {
 		double leftLimit = -85.05112878;
 	    double rightLimit = 85.05112878;
-	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
+	    return leftLimit + random.nextDouble() * (rightLimit - leftLimit);
 	}
 	
 	private Date getRandomTime() {

@@ -42,7 +42,7 @@ public class UserServiceTest {
 		// THEN
 		assertNotNull(userList);
 		assertEquals(2, userList.size());
-		assertEquals(givenUser1.getUserId(), userList.get(1).getUserId());
+		assertEquals(givenUser1.getUserId(), userList.get(1).getUserId()); / CONTAINS
 		assertEquals(givenUser2.getUserId(), userList.get(0).getUserId());
 	}	
 }

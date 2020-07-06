@@ -179,9 +179,8 @@ public class TourGuideServiceTest {
 		// WHEN
 		Map<String,Location> allUserLocations = tourGuideService.getAllUserLocations();
 		// THEN
-		assertNotNull(givenUsers);
 		assertNotNull(allUserLocations);
-		assertEquals(givenUsers.size(), allUserLocations.size());
+		assertEquals(givenUsers.size(), allUserLocations.size()); // CHECK LIST SIZE
 		User givenUser = givenUsers.get(0);
 		assertNotNull(givenUser);
 		assertNotNull(givenUser.getUserId());
@@ -191,8 +190,8 @@ public class TourGuideServiceTest {
 		assertNotNull(givenVisitedLocation);
 		Location givenLocation = givenVisitedLocation.location;
 		assertNotNull(givenLocation);
-		assertEquals(givenLocation.latitude, resultLocation.latitude, 0.0000000001);
-		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001);
+		assertEquals(givenLocation.latitude, resultLocation.latitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
+		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
 	}
 	
 }
