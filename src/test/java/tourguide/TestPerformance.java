@@ -1,17 +1,14 @@
 package tourguide;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -43,8 +40,9 @@ public class TestPerformance {
 	@MockBean Tracker tracker;
 	
 	@Before
-	public void deactivateUnexpectedServices() {
+	public void setup() {
 		doNothing().when(tracker).run();
+//		rewardsService.setProximityBuffer((Integer.MAX_VALUE/2 ) -1);
 	}
 
 	/*
@@ -86,28 +84,23 @@ public class TestPerformance {
 	}
 	
 	@Test
-	public void highVolumeGetRewards() {
-
-		// Users should be incremented up to 100,000, and test finishes within 20 minutes
+	public void given100Users_whenCalculateRewards_thenTimeElapsedBelow44Seconds() { // initial duration is false
+		// GIVEN
 		InternalTestHelper.setInternalUserNumber(100);
-		StopWatch stopWatch = new StopWatch();
+		UserService userService = new UserService();
+		List<User> allUsers = userService.getAllUsers();		
+	    StopWatch stopWatch = new StopWatch();
+		Attraction attraction = gpsUtil.getAttractions().get(0);	 
+	    // WHEN
 		stopWatch.start();
-		
-	    Attraction attraction = gpsUtil.getAttractions().get(0);
-		List<User> allUsers = new ArrayList<>();
-		allUsers = userService.getAllUsers();
-		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
-	     
-	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
-	    
 		for(User user : allUsers) {
+			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
+			rewardsService.calculateRewards(user);
 			assertTrue(user.getUserRewards().size() > 0);
 		}
 		stopWatch.stop();
-		tracker.stopTracking();
-
+		// THEN
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
-		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
-	}
-	
+		assertTrue(TimeUnit.SECONDS.toSeconds(44) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+	}	
 }

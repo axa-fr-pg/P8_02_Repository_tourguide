@@ -2,6 +2,8 @@ package tourguide.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +44,7 @@ public class UserServiceTest {
 		// THEN
 		assertNotNull(userList);
 		assertEquals(2, userList.size());
-		assertEquals(givenUser1.getUserId(), userList.get(1).getUserId()); / CONTAINS
-		assertEquals(givenUser2.getUserId(), userList.get(0).getUserId());
+		assertTrue(userList.contains(givenUser1));
+		assertTrue(userList.contains(givenUser2));
 	}	
 }
