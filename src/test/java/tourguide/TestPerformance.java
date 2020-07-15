@@ -34,15 +34,14 @@ public class TestPerformance {
 	
 	Logger logger = LoggerFactory.getLogger(TestPerformance.class);
 
-	@Autowired GpsUtil gpsUtil;
+	@Autowired GpsUtil gpsUtil; 
 	@Autowired TourGuideService tourGuideService;
 	@Autowired RewardsService rewardsService;
 	@MockBean Tracker tracker;
 	
 	@Before
 	public void setup() {
-		doNothing().when(tracker).run();
-//		rewardsService.setProximityBuffer((Integer.MAX_VALUE/2 ) -1);
+		doNothing().when(tracker).run(); // In order to have a reproductible test
 	}
 
 	/*
@@ -84,14 +83,14 @@ public class TestPerformance {
 	}
 	
 	@Test
-	public void given100Users_whenCalculateRewards_thenTimeElapsedBelow44Seconds() { // initial duration is false
+	public void given100Users_whenCalculateRewards_thenTimeElapsedBelow50Seconds() {
 		// GIVEN
 		InternalTestHelper.setInternalUserNumber(100);
 		UserService userService = new UserService();
-		List<User> allUsers = userService.getAllUsers();		
 	    StopWatch stopWatch = new StopWatch();
-		Attraction attraction = gpsUtil.getAttractions().get(0);	 
 	    // WHEN
+		Attraction attraction = gpsUtil.getAttractions().get(0);	 
+		List<User> allUsers = userService.getAllUsers();
 		stopWatch.start();
 		for(User user : allUsers) {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
