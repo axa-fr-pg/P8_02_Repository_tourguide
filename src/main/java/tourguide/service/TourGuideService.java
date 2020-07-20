@@ -62,9 +62,15 @@ public class TourGuideService {
 	
 
 	public List<Provider> getTripDeals(User user) {
+		// Calculer le nombre total de points de fidélité de l'utilisateur
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = new ArrayList<Provider>();
+		// Lister les attractions à proximité de l'utilisateur
 		List<AttractionNearby> attractions = getNearByAttractions(user.getUserName());
+		
+		// Pour chaque attraction à proximité, lister les propositions de voyages 
+		// correspondant aux souhaits de l'utilisateur
+		// en tenant compte de ses points de fidélité pour le prix
 		for (AttractionNearby a : attractions) {
 			providers.addAll(tripPricer.getPrice(
 					tripPricerApiKey, 
@@ -76,6 +82,15 @@ public class TourGuideService {
 		}
 		user.setTripDeals(providers);
 		return providers;
+		
+		/*
+		 * Idée d'implémentation
+		 * 
+		 * public List<Provider> getTripDeals(User user) { int cumulativeRewardPoints = getCumulativeRewardPoints(user); List<Attraction> attractions = getNearAttractions(user); List<Provider> providers = getAttractionsDeals(attractions, cumulativeRewardPoints, user.getUserPreferences()); return providers; }
+		 *
+		 * chaque appel n'utilise qu'une seule bibliothèque
+		 * 			
+		 */
 	}
 	
 	public VisitedLocation trackUserLocation(User user) {
