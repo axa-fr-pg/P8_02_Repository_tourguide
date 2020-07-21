@@ -86,9 +86,10 @@ public class TourGuideServiceTest {
 		for (AttractionNearby a : resultAttractions) {
 			resultCheckSum += a.attractionLocation.longitude;
 		}
-		int expectedCheckSum = ( TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS + 1)
-				* TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS / 2;
-		assertEquals(expectedCheckSum, resultCheckSum, 0.0000000001);
+		double expectedCheckSum = ( TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS + 1)
+				* TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS / 2 
+				* TestHelperService.longitudeAttractionOne ;
+		assertEquals(expectedCheckSum, resultCheckSum, 0.00000000001);
 	}
 	
 	@Test

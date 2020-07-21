@@ -1,6 +1,5 @@
 package tourguide.service;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -22,13 +21,17 @@ import tourguide.user.UserPreferences;
 public class TestHelperService {
 
 	public static int numberOfTestAttractions = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
+	public static double latitudeUserOne = 0.21;
+	public static double longitudeUserOne = -0.22;
+	public static double latitudeAttractionOne = 0.31;
+	public static double longitudeAttractionOne = -0.32;
 
 	@Autowired GpsUtil gpsUtil;
 	@Autowired UserService userService;
 
 	public User mockUserServiceGetUserAndGpsUtilGetUserLocation(int index, UserPreferences userPreferences) {
 		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
-		Location location = new Location(0.21*index,-0.22*index);
+		Location location = new Location(latitudeUserOne*index,longitudeUserOne*index);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(index));
 		user.addToVisitedLocations(visitedLocation);
 		user.setUserPreferences(userPreferences);
@@ -41,7 +44,8 @@ public class TestHelperService {
 		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
 		for (int i=0; i<numberOfTestAttractions; i++) {
 			int index = numberOfTestAttractions - i;
-			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, 0.31*index,-0.32*index);
+			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, 
+					latitudeAttractionOne*index, longitudeAttractionOne*index);
 			givenAttractions.add(attraction);
 		}
 		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
