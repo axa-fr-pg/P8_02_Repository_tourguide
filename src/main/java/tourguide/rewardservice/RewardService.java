@@ -1,6 +1,4 @@
-package tourguide.service;
-
-import java.util.List;
+package tourguide.rewardservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,18 +9,15 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.user.User;
-import tourguide.user.UserReward;
 
 @Service
-public class RewardsService {
+public class RewardService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
     private static final double EARTH_RADIUS_IN_NAUTICAL_MILES = 3440.0647948;
 
-	// proximity in miles
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
-	// private int attractionProximityRange = 200;
-	@Autowired private GpsUtil gpsUtil;
+	@Autowired public GpsUtil gpsUtil;
 	@Autowired private RewardCentral rewardCentral;
 	
 	public void setProximityBuffer(int proximityBuffer) {
@@ -33,29 +28,7 @@ public class RewardsService {
 		proximityBuffer = defaultProximityBuffer;
 	}
 	
-	public void calculateRewards(User user) {
-		// Get all visited locations for given user
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		// Get all existing attractions within the application
-		List<Attraction> attractions = gpsUtil.getAttractions();
-		// Add all new rewards for given combination of user, visited locations and existing attractions
-		for(VisitedLocation visitedLocation : userLocations) {
-			for(Attraction attraction : attractions) {
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if(nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-					}
-				}
-			}
-		}
-	}
-	
-	/* Method not used
-	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
-		return getDistance(attraction, location) > attractionProximityRange ? false : true;
-	}*/
-	
-	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
@@ -69,8 +42,7 @@ public class RewardsService {
 	 * @param loc1
 	 * @param loc2
 	 * @return calculated distance
-	 */
-	
+	 */	
 	public static double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
@@ -85,4 +57,7 @@ public class RewardsService {
         return statuteMilesDistance;
 	}
 
+	addAllNewRewards
+	
+	sumOfAllRewardPoints
 }

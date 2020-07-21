@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
-import tourguide.service.RewardsService;
+import tourguide.rewardservice.RewardService;
 import tourguide.user.User;
 
 /**
@@ -27,7 +27,7 @@ public class AttractionNearby {
 		attractionLocation = new Location(attraction.latitude, attraction.longitude);
 		Location userCurrentLocation = user.getLastVisitedLocation().location;
 		userLocation = new Location(userCurrentLocation.latitude, userCurrentLocation.longitude);
-		distance = RewardsService.getDistance(attractionLocation, userLocation);
+		distance = RewardService.getDistance(attractionLocation, userLocation);
 		this.rewardPoints = rewardPoints;
 	}
 }

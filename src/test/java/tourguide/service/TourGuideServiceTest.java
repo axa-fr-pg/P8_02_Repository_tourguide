@@ -11,6 +11,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,14 +25,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
+import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import rewardCentral.RewardCentral;
 import tourguide.model.AttractionNearby;
-import tourguide.service.RewardsService;
+import tourguide.rewardservice.RewardService;
 import tourguide.service.TourGuideService;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
 import tourguide.user.UserPreferences;
+import tourguide.user.UserReward;
 import tourguide.userservice.UserService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -44,7 +48,8 @@ public class TourGuideServiceTest {
 	@MockBean TripPricer tripPricer;
 	@MockBean Tracker tracker;
 	@MockBean UserService userService;
-	@MockBean RewardsService rewardsService;
+	@MockBean RewardService rewardService;
+	@MockBean RewardCentral rewardCentral;
 	@Autowired TourGuideService tourGuideService;
 	@Autowired TestHelperService testHelperService;
 
@@ -52,7 +57,6 @@ public class TourGuideServiceTest {
 	public void deactivateUnexpectedServices() {
 		doNothing().when(tracker).run();
 		doNothing().when(userService).initializeInternalUsers();
-		doNothing().when(rewardsService).calculateRewards(any(User.class));
 	}
 	
 	@Test
@@ -193,4 +197,77 @@ public class TourGuideServiceTest {
 		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
 	}
 	
+	@Test
+	public void givenPrerequisitesToAdd1RewardOk_whenCalculateRewards_thenAddsCorrectReward() {
+		// MOCK gpsUtil.getAttractions
+		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
+		// MOCK rewardService
+		Attraction attraction = givenAttractions.get(0);
+		when(rewardService.nearAttraction(any(VisitedLocation.class), eq(attraction))).thenReturn(true);
+		int expectedRewardPoints = 123;
+		when(rewardService.getRewardPoints(any(Attraction.class), any(User.class))).thenReturn(expectedRewardPoints);
+		// GIVEN
+		User user = new User(UUID.randomUUID(), "name", "phone", "email");
+		Location location = new Location(attraction.latitude, attraction.longitude);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
+		user.addToVisitedLocations(visitedLocation);
+		// MOCK rewardCentral.getAttractionRewardPoints
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user.getUserId()))).thenReturn(expectedRewardPoints);
+		// WHEN
+		tourGuideService.calculateRewards(user);
+		List<UserReward> userRewards = user.getUserRewards();
+		// THEN
+		assertNotNull(userRewards);
+		assertEquals(1, userRewards.size());
+		assertNotNull(userRewards.get(0));
+		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
+	}
+
+	@Test
+	public void givenTooFarToAddReward_whenCalculateRewards_thenAddsNoReward() {
+		// MOCK gpsUtil.getAttractions
+		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
+		// MOCK rewardService
+		when(rewardService.nearAttraction(any(VisitedLocation.class), any(Attraction.class))).thenReturn(false);
+		// GIVEN
+		User user = new User(UUID.randomUUID(), "name", "phone", "email");
+		Attraction attraction = givenAttractions.get(0);
+		Location location = new Location(attraction.latitude + 99, attraction.longitude);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
+		user.addToVisitedLocations(visitedLocation);
+		// MOCK rewardCentral.getAttractionRewardPoints
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user.getUserId()))).thenReturn(999);
+		// WHEN
+		tourGuideService.calculateRewards(user);
+		List<UserReward> userRewards = user.getUserRewards();
+		// THEN
+		assertNotNull(userRewards);
+		assertEquals(0, userRewards.size());
+	}
+
+	@Test
+	public void givenAlreadyRewardedVisit_whenCalculateRewards_thenAddsNoReward() {
+		// MOCK gpsUtil.getAttractions
+		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
+		// GIVEN
+		int expectedRewardPoints = 123;
+		User user = new User(UUID.randomUUID(), "name", "phone", "email");
+		Attraction attraction = givenAttractions.get(0);
+		Location location = new Location(attraction.latitude, attraction.longitude);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
+		user.addToVisitedLocations(visitedLocation);
+		UserReward userReward = new UserReward(visitedLocation, attraction, expectedRewardPoints);
+		user.addUserReward(userReward);
+		// MOCK rewardCentral.getAttractionRewardPoints
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user.getUserId()))).thenReturn(999);
+		// WHEN
+		tourGuideService.calculateRewards(user);
+		List<UserReward> userRewards = user.getUserRewards();
+		// THEN
+		assertNotNull(userRewards);
+		assertEquals(1, userRewards.size());
+		assertNotNull(userRewards.get(0));
+		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
+	}
+
 }

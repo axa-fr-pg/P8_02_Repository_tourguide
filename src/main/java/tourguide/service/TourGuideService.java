@@ -15,6 +15,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
+import tourguide.rewardservice.RewardService;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
 import tourguide.user.UserReward;
@@ -29,7 +30,7 @@ public class TourGuideService {
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	@Autowired private GpsUtil gpsUtil; // TODO interface
-	@Autowired private RewardsService rewardsService; // TODO interface
+	@Autowired private RewardService rewardService; // TODO interface
 	@Autowired private TripPricer tripPricer; // TODO interface
 	@Autowired private Tracker tracker; // TODO interface
 	@Autowired private UserService userService; // TODO interface
@@ -85,7 +86,7 @@ public class TourGuideService {
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		// Update rewards for given user
-		rewardsService.calculateRewards(user);
+		calculateRewards(user);
 		return visitedLocation;
 	}
 
@@ -106,7 +107,7 @@ public class TourGuideService {
 		List<AttractionNearby> nearbyAttractions = new ArrayList<>();
 		for (int i=0; i<NUMBER_OF_PROPOSED_ATTRACTIONS && i<fullList.size(); i++) {
 			Attraction attraction = fullList.get(i);
-			int rewardPoints = rewardsService.getRewardPoints(attraction, user);
+			int rewardPoints = rewardService.getRewardPoints(attraction, user);
 			AttractionNearby nearbyAttraction = new AttractionNearby(attraction, user, rewardPoints);
 			nearbyAttractions.add(nearbyAttraction);
 		}
@@ -119,6 +120,23 @@ public class TourGuideService {
 		        tracker.stopTracking();
 		      } 
 		    }); 
+	}
+
+	public void calculateRewards(User user) {
+		// Get all visited locations for given user
+		List<VisitedLocation> userLocations = user.getVisitedLocations();
+		// Get all existing attractions within the application
+		List<Attraction> attractions = gpsUtil.getAttractions();
+		// Add all new rewards for given combination of user, visited locations and existing attractions
+		for(VisitedLocation visitedLocation : userLocations) {
+			for(Attraction attraction : attractions) {
+				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					if(rewardService.nearAttraction(visitedLocation, attraction)) {
+						user.addUserReward(new UserReward(visitedLocation, attraction, rewardService.getRewardPoints(attraction, user)));
+					}
+				}
+			}
+		}
 	}
 
 }

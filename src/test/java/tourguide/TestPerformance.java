@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import tourguide.service.RewardsService;
+import tourguide.rewardservice.RewardService;
 import tourguide.service.TourGuideService;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
@@ -36,7 +36,6 @@ public class TestPerformance {
 
 	@Autowired GpsUtil gpsUtil; 
 	@Autowired TourGuideService tourGuideService;
-	@Autowired RewardsService rewardsService;
 	@MockBean Tracker tracker;
 	
 	@Before
@@ -94,7 +93,7 @@ public class TestPerformance {
 		stopWatch.start();
 		for(User user : allUsers) {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
-			rewardsService.calculateRewards(user);
+			tourGuideService.calculateRewards(user);
 			assertTrue(user.getUserRewards().size() > 0);
 		}
 		stopWatch.stop();
