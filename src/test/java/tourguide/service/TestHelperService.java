@@ -16,6 +16,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.user.User;
 import tourguide.user.UserPreferences;
+import tourguide.userservice.UserService;
 
 @Service
 public class TestHelperService {

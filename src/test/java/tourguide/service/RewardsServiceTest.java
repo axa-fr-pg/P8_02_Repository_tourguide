@@ -27,6 +27,7 @@ import tourguide.service.TourGuideService;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
 import tourguide.user.UserReward;
+import tourguide.userservice.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

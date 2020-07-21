@@ -29,10 +29,10 @@ import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionNearby;
 import tourguide.service.RewardsService;
 import tourguide.service.TourGuideService;
-import tourguide.service.UserService;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
 import tourguide.user.UserPreferences;
+import tourguide.userservice.UserService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 

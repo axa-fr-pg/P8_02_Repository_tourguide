@@ -18,6 +18,7 @@ import tourguide.model.AttractionNearby;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
 import tourguide.user.UserReward;
+import tourguide.userservice.UserService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 

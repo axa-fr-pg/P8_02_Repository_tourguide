@@ -21,12 +21,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import tourguide.helper.InternalTestHelper;
 import tourguide.service.RewardsService;
 import tourguide.service.TourGuideService;
-import tourguide.service.UserService;
 import tourguide.tracker.Tracker;
 import tourguide.user.User;
+import tourguide.userservice.UserInternalNumber;
+import tourguide.userservice.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -67,7 +67,7 @@ public class TestPerformance {
 	@Test
 	public void given100Users_whenTrackUserLocation_thenTimeElapsedBelow7Seconds() {
 		// GIVEN
-		InternalTestHelper.setInternalUserNumber(100);
+		UserInternalNumber.set(100);
 		UserService userService = new UserService();
 		List<User> allUsers = userService.getAllUsers();		
 	    StopWatch stopWatch = new StopWatch();
@@ -85,7 +85,7 @@ public class TestPerformance {
 	@Test
 	public void given100Users_whenCalculateRewards_thenTimeElapsedBelow58Seconds() {
 		// GIVEN
-		InternalTestHelper.setInternalUserNumber(100);
+		UserInternalNumber.set(100);
 		UserService userService = new UserService();
 	    StopWatch stopWatch = new StopWatch();
 	    // WHEN

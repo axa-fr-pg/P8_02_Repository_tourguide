@@ -1,4 +1,4 @@
-package tourguide.service;
+package tourguide.userservice;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourguide.helper.InternalTestHelper;
+import tourguide.service.TourGuideService;
 import tourguide.user.User;
 
 /**
@@ -37,13 +37,16 @@ public class UserService {
 	
 	public UserService() {
 		this(true);
+		logger.debug("new instance of UserService with empty constructor");
 	}
 	
 	public UserService(boolean fillInternalUserMapWithRandomUsers) {
+		logger.debug("new instance of UserService with fillInternalUserMapWithRandomUsers = " + 
+				fillInternalUserMapWithRandomUsers);
 		internalUserMap = new HashMap<>();		
+		random = new Random();
 		if (fillInternalUserMapWithRandomUsers) {
 			logger.debug("Initializing users");
-			random = new Random();
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
@@ -52,21 +55,26 @@ public class UserService {
 	@Autowired TourGuideService tourGuideService;
 	
 	public User getUser(String userName) {
+		logger.debug("getUser with userName = " + userName);
 		return internalUserMap.get(userName);
 	}
 	
 	public List<User> getAllUsers() {
+		logger.debug("getAllUsers returns list of size = " + internalUserMap.size());
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
 	
 	public void addUser(User user) {
+		logger.debug("addUser with userName = " + user.getUserName());
 		if(!internalUserMap.containsKey(user.getUserName())) {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
 	
 	public void initializeInternalUsers() {
-		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
+		logger.debug("initializeInternalUsers with InternalUserNumber = " 
+				+ UserInternalNumber.get());
+		IntStream.range(0, UserInternalNumber.get()).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000" + i;
 			String email = userName + "@tourGuide.com";
@@ -74,10 +82,11 @@ public class UserService {
 			generateUserLocationHistory(user);			
 			internalUserMap.put(userName, user);
 		});
-		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal beta users.");
+		logger.debug("Created " + UserInternalNumber.get() + " internal beta users.");
 	}
 
 	private void generateUserLocationHistory(User user) {
+		logger.debug("generateUserLocationHistory with userName = " + user.getUserName());
 		IntStream.range(0, 3).forEach(i-> {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), 
 					new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));

@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tourguide.service.TourGuideService;
-import tourguide.service.UserService;
 import tourguide.user.User;
+import tourguide.userservice.UserService;
 
 @Service
 public class Tracker extends Thread {
