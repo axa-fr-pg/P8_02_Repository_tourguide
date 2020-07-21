@@ -45,11 +45,11 @@ public class TourGuideService {
 	public VisitedLocation getUserLocation(User user) {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
-			trackUserLocation(user);
+			trackUserLocationAndCalculateRewards(user);
 		return visitedLocation;
 	}
 	
-	public Map<String,Location> getAllUserLocations() {
+	public Map<String,Location> getAllUserLastLocations() {
 		// Get all users within the application
 		List<User> allUsers = userService.getAllUsers();
 		// Get visited locations for all of them
@@ -80,7 +80,7 @@ public class TourGuideService {
 		return providers;
 	}
 	
-	public VisitedLocation trackUserLocation(User user) {
+	public VisitedLocation trackUserLocationAndCalculateRewards(User user) {
 		// Get current user location and register it for given user
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);

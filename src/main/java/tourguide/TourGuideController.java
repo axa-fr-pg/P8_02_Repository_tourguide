@@ -42,7 +42,7 @@ public class TourGuideController {
     
     @GetMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
-    	return JsonStream.serialize(tourGuideService.getAllUserLocations());
+    	return JsonStream.serialize(tourGuideService.getAllUserLastLocations());
     }
     
     @GetMapping("/getTripDeals")

@@ -55,14 +55,12 @@ public class TourGuideServiceTest {
 		doNothing().when(rewardsService).calculateRewards(any(User.class));
 	}
 	
-
-	
 	@Test
 	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
-		// MOCK getUserLocation
+		// GIVEN mock GpsUtil
 		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, null);
 		// WHEN
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+		VisitedLocation visitedLocation = tourGuideService.trackUserLocationAndCalculateRewards(user);
 		// THEN
 		assertEquals(2, user.getVisitedLocations().size());
 		assertNotNull(visitedLocation);
@@ -73,7 +71,7 @@ public class TourGuideServiceTest {
 	
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
-		// MOCK getUser
+		// GIVEN mock UserService & GpsUtil
 		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, null);
 		// MOCK getAttractions
 		testHelperService.mockGpsUtilGetAttractions();
@@ -178,7 +176,7 @@ public class TourGuideServiceTest {
 		}
 		when(userService.getAllUsers()).thenReturn(givenUsers);
 		// WHEN
-		Map<String,Location> allUserLocations = tourGuideService.getAllUserLocations();
+		Map<String,Location> allUserLocations = tourGuideService.getAllUserLastLocations();
 		// THEN
 		assertNotNull(allUserLocations);
 		assertEquals(givenUsers.size(), allUserLocations.size()); // CHECK LIST SIZE

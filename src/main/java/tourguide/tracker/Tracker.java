@@ -49,7 +49,7 @@ public class Tracker extends Thread {
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			users.forEach(u -> {System.out.println(u.getUserName() + " visitedLocations before:" + u.getVisitedLocations().size());} );
 			stopWatch.start();
-			users.forEach(u -> tourGuideService.trackUserLocation(u));
+			users.forEach(u -> tourGuideService.trackUserLocationAndCalculateRewards(u));
 			stopWatch.stop();
 			users.forEach(u -> {System.out.println(u.getUserName() + " visitedLocations after:" + u.getVisitedLocations().size());} );
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
