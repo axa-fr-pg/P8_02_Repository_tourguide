@@ -1,4 +1,4 @@
-package tourguide.userservice;
+package tourguide.user;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.model.User;
 import tourguide.service.TourGuideService;
-import tourguide.user.User;
 
 /**
  * Provide services for users based on a persistence layer.

@@ -4,8 +4,7 @@ import java.util.UUID;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
-import tourguide.rewardservice.RewardService;
-import tourguide.user.User;
+import tourguide.reward.RewardService;
 
 /**
  * AttractionNearby is the data format exchanged in JSON with the client for the getNearbyAttractions controller

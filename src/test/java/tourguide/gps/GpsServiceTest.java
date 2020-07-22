@@ -1,4 +1,4 @@
-package tourguide.gpsservice;
+package tourguide.gps;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,9 +20,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.gps.GpsService;
+import tourguide.model.User;
 import tourguide.service.TestHelperService;
-import tourguide.user.User;
-import tourguide.userservice.UserService;
+import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

@@ -1,4 +1,4 @@
-package tourguide.userservice;
+package tourguide.user;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,9 +12,9 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import tourguide.user.User;
-import tourguide.userservice.UserInternalNumber;
-import tourguide.userservice.UserService;
+import tourguide.model.User;
+import tourguide.user.UserInternalNumber;
+import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

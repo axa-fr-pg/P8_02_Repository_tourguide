@@ -1,4 +1,4 @@
-package tourguide.gpsservice;
+package tourguide.gps;
 
 import java.util.Locale;
 

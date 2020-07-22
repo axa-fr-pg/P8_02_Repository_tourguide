@@ -2,7 +2,7 @@ package tourguide.model;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
-import tourguide.rewardservice.RewardService;
+import tourguide.reward.RewardService;
 
 public class AttractionDistance extends Attraction implements Comparable<AttractionDistance> {
 

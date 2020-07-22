@@ -21,12 +21,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import tourguide.rewardservice.RewardService;
+import tourguide.model.User;
+import tourguide.reward.RewardService;
 import tourguide.service.TourGuideService;
-import tourguide.tracker.Tracker;
-import tourguide.user.User;
-import tourguide.userservice.UserInternalNumber;
-import tourguide.userservice.UserService;
+import tourguide.tracker.TrackerService;
+import tourguide.user.UserInternalNumber;
+import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,7 +36,7 @@ public class TestPerformance {
 
 	@Autowired GpsUtil gpsUtil; 
 	@Autowired TourGuideService tourGuideService;
-	@MockBean Tracker tracker;
+	@MockBean TrackerService tracker;
 	
 	@Before
 	public void setup() {

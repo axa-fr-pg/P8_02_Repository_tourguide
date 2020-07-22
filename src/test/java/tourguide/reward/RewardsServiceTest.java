@@ -1,4 +1,4 @@
-package tourguide.rewardservice;
+package tourguide.reward;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,10 +22,10 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
-import tourguide.rewardservice.RewardService;
+import tourguide.model.User;
+import tourguide.model.UserReward;
+import tourguide.reward.RewardService;
 import tourguide.service.TestHelperService;
-import tourguide.user.User;
-import tourguide.user.UserReward;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

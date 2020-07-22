@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import tourguide.model.User;
 import tourguide.service.TourGuideService;
-import tourguide.user.User;
 import tripPricer.Provider;
 
 @RestController

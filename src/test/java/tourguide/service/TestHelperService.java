@@ -14,9 +14,9 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourguide.user.User;
-import tourguide.user.UserPreferences;
-import tourguide.userservice.UserService;
+import tourguide.model.User;
+import tourguide.model.UserPreferences;
+import tourguide.user.UserService;
 
 @Service
 public class TestHelperService {

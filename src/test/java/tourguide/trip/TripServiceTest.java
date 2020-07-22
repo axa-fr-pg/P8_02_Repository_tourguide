@@ -1,4 +1,4 @@
-package tourguide.tripservice;
+package tourguide.trip;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,9 +23,10 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionNearby;
+import tourguide.model.User;
+import tourguide.model.UserPreferences;
 import tourguide.service.TestHelperService;
-import tourguide.user.User;
-import tourguide.user.UserPreferences;
+import tourguide.trip.TripService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 

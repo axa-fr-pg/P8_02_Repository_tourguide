@@ -11,20 +11,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tourguide.model.User;
 import tourguide.service.TourGuideService;
-import tourguide.user.User;
-import tourguide.userservice.UserService;
+import tourguide.user.UserService;
 
 @Service
-public class Tracker extends Thread {
-	private Logger logger = LoggerFactory.getLogger(Tracker.class);
+public class TrackerService extends Thread {
+	private Logger logger = LoggerFactory.getLogger(TrackerService.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 	@Autowired private TourGuideService tourGuideService;
 	@Autowired private UserService userService;
 	private boolean stop = false;
 
-	public Tracker() {
+	public TrackerService() {
 		executorService.submit(this);
 	}
 	
@@ -61,6 +61,10 @@ public class Tracker extends Thread {
 				break;
 			}
 		}
+		
+	}
+	
+	public void trackAllUsers() {
 		
 	}
 }

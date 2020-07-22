@@ -1,4 +1,4 @@
-package tourguide.tripservice;
+package tourguide.trip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tourguide.model.AttractionNearby;
-import tourguide.user.User;
+import tourguide.model.User;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 

@@ -30,13 +30,13 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.model.AttractionNearby;
-import tourguide.rewardservice.RewardService;
+import tourguide.model.User;
+import tourguide.model.UserPreferences;
+import tourguide.model.UserReward;
+import tourguide.reward.RewardService;
 import tourguide.service.TourGuideService;
-import tourguide.tracker.Tracker;
-import tourguide.user.User;
-import tourguide.user.UserPreferences;
-import tourguide.user.UserReward;
-import tourguide.userservice.UserService;
+import tourguide.tracker.TrackerService;
+import tourguide.user.UserService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -46,7 +46,7 @@ public class TourGuideServiceIT {
 
 	@MockBean GpsUtil gpsUtil;
 	@MockBean TripPricer tripPricer;
-	@MockBean Tracker tracker;
+	@MockBean TrackerService tracker;
 	@MockBean UserService userService;
 	@MockBean RewardCentral rewardCentral;
 

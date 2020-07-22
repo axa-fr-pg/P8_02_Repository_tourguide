@@ -15,12 +15,12 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
-import tourguide.rewardservice.RewardService;
-import tourguide.tracker.Tracker;
-import tourguide.tripservice.TripService;
-import tourguide.user.User;
-import tourguide.user.UserReward;
-import tourguide.userservice.UserService;
+import tourguide.model.User;
+import tourguide.model.UserReward;
+import tourguide.reward.RewardService;
+import tourguide.tracker.TrackerService;
+import tourguide.trip.TripService;
+import tourguide.user.UserService;
 import tripPricer.Provider;
 
 @Service
@@ -31,7 +31,7 @@ public class TourGuideService {
 	@Autowired private GpsUtil gpsUtil;
 	@Autowired private RewardService rewardService;
 	@Autowired private TripService tripService;
-	@Autowired private Tracker tracker;
+	@Autowired private TrackerService tracker;
 	@Autowired private UserService userService;
 	
 	public TourGuideService() {

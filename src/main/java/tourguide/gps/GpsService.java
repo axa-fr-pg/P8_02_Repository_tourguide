@@ -1,4 +1,4 @@
-package tourguide.gpsservice;
+package tourguide.gps;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourguide.user.User;
+import tourguide.model.User;
 
 @Service
 public class GpsService {

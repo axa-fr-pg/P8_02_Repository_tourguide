@@ -1,4 +1,4 @@
-package tourguide.userservice;
+package tourguide.user;
 
 public class UserInternalNumber {
 
