@@ -71,5 +71,8 @@ public class RewardService {
 		}
 	}
 	
-//	sumOfAllRewardPoints
+	public int sumOfAllRewardPoints(User user) {
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		return cumulativeRewardPoints;
+	}
 }

@@ -63,7 +63,7 @@ public class TourGuideService {
 	
 	public List<Provider> getTripDeals(User user) {
 		// Calculate the sum of all reward points for given user
-		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		int cumulativeRewardPoints = rewardService.sumOfAllRewardPoints(user);
 		List<Provider> providers = new ArrayList<Provider>();
 		// List attractions in the neighborhood of the user
 		List<AttractionNearby> attractions = getNearByAttractions(user.getUserName());		
