@@ -10,11 +10,6 @@ import tripPricer.TripPricer;
 public class TourGuideModule {
 	
 	@Bean
-	public RewardCentral rewardCentral() {
-		return new RewardCentral();
-	}
-	
-	@Bean
 	public TripPricer tripPricer() {
 		return new TripPricer();
 	}

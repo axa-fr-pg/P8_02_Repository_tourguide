@@ -1,14 +1,16 @@
 package tourguide.rewardservice;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.user.User;
+import tourguide.user.UserReward;
 
 @Service
 public class RewardService {
@@ -17,8 +19,8 @@ public class RewardService {
 
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
-	@Autowired public GpsUtil gpsUtil;
 	@Autowired private RewardCentral rewardCentral;
+	@Autowired private RewardService rewardService;
 	
 	public void setProximityBuffer(int proximityBuffer) {
 		this.proximityBuffer = proximityBuffer;
@@ -57,7 +59,17 @@ public class RewardService {
         return statuteMilesDistance;
 	}
 
-	addAllNewRewards
+	public void addAllNewRewards(User user, List<VisitedLocation> userLocations, List<Attraction> attractions)	{
+		for(VisitedLocation visitedLocation : userLocations) {
+			for(Attraction attraction : attractions) {
+				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					if(rewardService.nearAttraction(visitedLocation, attraction)) {
+						user.addUserReward(new UserReward(visitedLocation, attraction, rewardService.getRewardPoints(attraction, user)));
+					}
+				}
+			}
+		}
+	}
 	
-	sumOfAllRewardPoints
+//	sumOfAllRewardPoints
 }

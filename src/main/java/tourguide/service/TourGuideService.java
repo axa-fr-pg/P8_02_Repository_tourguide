@@ -29,11 +29,11 @@ public class TourGuideService {
 	public static final String tripPricerApiKey = "test-server-api-key";
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	@Autowired private GpsUtil gpsUtil; // TODO interface
-	@Autowired private RewardService rewardService; // TODO interface
-	@Autowired private TripPricer tripPricer; // TODO interface
-	@Autowired private Tracker tracker; // TODO interface
-	@Autowired private UserService userService; // TODO interface
+	@Autowired private GpsUtil gpsUtil;
+	@Autowired private RewardService rewardService;
+	@Autowired private TripPricer tripPricer;
+	@Autowired private Tracker tracker;
+	@Autowired private UserService userService;
 	
 	public TourGuideService() {
 		addShutDownHook(); // WHY ???
@@ -128,15 +128,7 @@ public class TourGuideService {
 		// Get all existing attractions within the application
 		List<Attraction> attractions = gpsUtil.getAttractions();
 		// Add all new rewards for given combination of user, visited locations and existing attractions
-		for(VisitedLocation visitedLocation : userLocations) {
-			for(Attraction attraction : attractions) {
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if(rewardService.nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation, attraction, rewardService.getRewardPoints(attraction, user)));
-					}
-				}
-			}
-		}
+		rewardService.addAllNewRewards(user, userLocations, attractions);
 	}
 
 }
