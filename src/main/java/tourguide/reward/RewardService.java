@@ -59,8 +59,8 @@ public class RewardService {
         return statuteMilesDistance;
 	}
 
-	public void addAllNewRewards(User user, List<VisitedLocation> userLocations, List<Attraction> attractions)	{
-		for(VisitedLocation visitedLocation : userLocations) {
+	public void addAllNewRewards(User user, List<Attraction> attractions)	{
+		for(VisitedLocation visitedLocation : user.getVisitedLocations()) {
 			for(Attraction attraction : attractions) {
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
 					if(rewardService.nearAttraction(visitedLocation, attraction)) {
@@ -69,6 +69,12 @@ public class RewardService {
 				}
 			}
 		}
+	}
+	
+	public void addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions)	{
+		userList.stream().forEach(user -> {
+			addAllNewRewards(user, attractions);
+		});
 	}
 	
 	public int sumOfAllRewardPoints(User user) {

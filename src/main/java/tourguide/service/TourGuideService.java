@@ -111,12 +111,10 @@ public class TourGuideService {
 	}
 
 	public void calculateRewards(User user) {
-		// Get all visited locations for given user
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		// Get all existing attractions within the application
 		List<Attraction> attractions = gpsUtil.getAttractions();
 		// Add all new rewards for given combination of user, visited locations and existing attractions
-		rewardService.addAllNewRewards(user, userLocations, attractions);
+		rewardService.addAllNewRewards(user, attractions);
 	}
 
 }

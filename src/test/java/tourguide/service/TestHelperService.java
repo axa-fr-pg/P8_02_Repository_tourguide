@@ -23,9 +23,9 @@ public class TestHelperService {
 
 	public static int NUMBER_OF_TEST_ATTRACTIONS = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
 	public static double latitudeUserOne = 0.21;
-	public static double longitudeUserOne = -0.22;
+	public static double longitudeUserOne = -0.00022;
 	public static double latitudeAttractionOne = 0.31;
-	public static double longitudeAttractionOne = -0.32;
+	public static double longitudeAttractionOne = -0.00032;
 
 	@Autowired GpsUtil gpsUtil;
 	@Autowired UserService userService;
@@ -51,9 +51,13 @@ public class TestHelperService {
 	}
 	
 	public List<Attraction> mockGpsUtilGetAttractions() {
+		return mockGpsUtilGetAttractions(NUMBER_OF_TEST_ATTRACTIONS);
+	}
+
+	public List<Attraction> mockGpsUtilGetAttractions(int numberOfTestAttractions) {
 		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
-		for (int i=0; i<NUMBER_OF_TEST_ATTRACTIONS; i++) {
-			int index = NUMBER_OF_TEST_ATTRACTIONS - i;
+		for (int i=0; i<numberOfTestAttractions; i++) {
+			int index = numberOfTestAttractions - i;
 			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, 
 					latitudeAttractionOne*index, longitudeAttractionOne*index);
 			givenAttractions.add(attraction);
@@ -61,5 +65,4 @@ public class TestHelperService {
 		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
 		return givenAttractions;
 	}
-	
 }

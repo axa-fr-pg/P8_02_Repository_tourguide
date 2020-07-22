@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -26,6 +27,7 @@ import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
 import tourguide.service.TestHelperService;
+import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -34,6 +36,8 @@ public class RewardsServiceTest {
 	@Autowired RewardService rewardService;
 	@Autowired TestHelperService testHelperService;
 	@MockBean RewardCentral rewardCentral;
+	@MockBean UserService userService;
+	@MockBean GpsUtil gpsUtil;
 	
 	private static final int REWARD_POINTS_PER_ATTRACTION = 123;
 	private static User user;
@@ -70,7 +74,7 @@ public class RewardsServiceTest {
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
 		user.addToVisitedLocations(visitedLocation);
 		// WHEN
-		rewardService.addAllNewRewards(user, user.getVisitedLocations(), attractions);
+		rewardService.addAllNewRewards(user, attractions);
 		List<UserReward> userRewards = user.getUserRewards();
 		// THEN
 		assertNotNull(userRewards);
@@ -93,7 +97,7 @@ public class RewardsServiceTest {
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
 		user.addToVisitedLocations(visitedLocation);
 		// WHEN
-		rewardService.addAllNewRewards(user, user.getVisitedLocations(), attractions);
+		rewardService.addAllNewRewards(user, attractions);
 		List<UserReward> userRewards = user.getUserRewards();
 		// THEN
 		assertNotNull(userRewards);
@@ -118,7 +122,7 @@ public class RewardsServiceTest {
 		UserReward userReward = new UserReward(visitedLocation, expectedAttraction, REWARD_POINTS_PER_ATTRACTION);
 		user.addUserReward(userReward);
 		// WHEN
-		rewardService.addAllNewRewards(user, user.getVisitedLocations(), attractions);
+		rewardService.addAllNewRewards(user, attractions);
 		List<UserReward> userRewards = user.getUserRewards();
 		// THEN
 		assertNotNull(userRewards);
@@ -129,24 +133,23 @@ public class RewardsServiceTest {
 
 	@Test
 	public void givenMaximalProximityBuffer_whenAddAllNewRewards_thenAddsRewardsForAllAttractions() {
+		// GIVEN test Attractions
+		int numberOfTestAttractions = 999;
+		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions(numberOfTestAttractions);
 		// MOCK rewardCentral
-		Attraction attraction1 = new Attraction("attraction_name1", "attraction_city1", "attraction_state1", 0.311, -0.321);
-		Attraction attraction2 = new Attraction("attraction_name2", "attraction_city2", "attraction_state2", 0.312, -0.322);
 		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user.getUserId())))
 			.thenReturn(REWARD_POINTS_PER_ATTRACTION);
-		List<Attraction> attractions = Arrays.asList(attraction1, attraction2);
-		assertEquals(2, attractions.size());
 		// GIVEN user is close enough to all attractions
 		rewardService.setProximityBuffer((Integer.MAX_VALUE/2 ) -1);
 		Location location = new Location(0, 0);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
 		user.addToVisitedLocations(visitedLocation);
 		// WHEN
-		rewardService.addAllNewRewards(user, user.getVisitedLocations(), attractions);
+		rewardService.addAllNewRewards(user, givenAttractions);
 		List<UserReward> userRewards = user.getUserRewards();
 		// THEN
 		assertNotNull(userRewards);
-		assertEquals(2, userRewards.size());
+		assertEquals(numberOfTestAttractions, userRewards.size());
 		assertNotNull(userRewards.get(0));
 		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).getRewardPoints());
 	}
@@ -155,9 +158,36 @@ public class RewardsServiceTest {
 	public void givenUserRewards_whenSumOfAllRewardPoints_thenReturnsCorrectTotal() {
 		// GIVEN
 		givenMaximalProximityBuffer_whenAddAllNewRewards_thenAddsRewardsForAllAttractions();
+		int numberOfRewards = user.getUserRewards().size();
 		// WHEN
 		int totalPoints = rewardService.sumOfAllRewardPoints(user);
 		// THEN
-		assertEquals(2 * REWARD_POINTS_PER_ATTRACTION, totalPoints);
+		assertEquals(numberOfRewards * REWARD_POINTS_PER_ATTRACTION, totalPoints);
+	}
+	
+	@Test
+	public void givenPrerequisitesToAddRewardsOk_whenAddAllNewRewardsAllUsers_thenAddsRewardsForAllUsers() {
+		// GIVEN test Users
+		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(2);
+		// GIVEN test Attractions
+		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions(2);
+		// MOCK rewardCentral
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(0).getUserId())))
+		.thenReturn(REWARD_POINTS_PER_ATTRACTION);
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(1).getUserId())))
+		.thenReturn(2 * REWARD_POINTS_PER_ATTRACTION);
+		// GIVEN user was close enough to the attraction
+		rewardService.setProximityBuffer(8); // statute miles
+		// WHEN
+		rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
+		// THEN
+		int totalRewardPoints = 0;
+		for (User u : givenUsers) {
+			assertNotNull(u);
+			assertNotNull(u.getUserRewards());
+			assertEquals(1, u.getUserRewards().size());
+			totalRewardPoints += u.getUserRewards().get(0).getRewardPoints();
+		}
+		assertEquals(3 * REWARD_POINTS_PER_ATTRACTION, totalRewardPoints);
 	}
 }
