@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
+import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.User;
@@ -45,5 +46,9 @@ public class GpsService {
 			allUserLocations.put(u.getUserId(), getUserLocation(u).location);
 		}
 		return allUserLocations;
+	}
+	
+	public List<Attraction> getAllAttractions() {
+		return gpsUtil.getAttractions();
 	}
 }

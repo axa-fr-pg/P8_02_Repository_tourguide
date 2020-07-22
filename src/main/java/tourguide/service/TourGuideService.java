@@ -13,6 +13,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.gps.GpsService;
 import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
 import tourguide.model.User;
@@ -29,6 +30,7 @@ public class TourGuideService {
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	@Autowired private GpsUtil gpsUtil;
+	@Autowired private GpsService gpsService;
 	@Autowired private RewardService rewardService;
 	@Autowired private TripService tripService;
 	@Autowired private TrackerService tracker;
@@ -71,8 +73,7 @@ public class TourGuideService {
 	
 	public VisitedLocation trackUserLocationAndCalculateRewards(User user) {
 		// Get current user location and register it for given user
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
+		VisitedLocation visitedLocation = gpsService.trackUserLocation(user);
 		// Update rewards for given user
 		calculateRewards(user);
 		return visitedLocation;

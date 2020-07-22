@@ -11,18 +11,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import gpsUtil.location.Attraction;
+import tourguide.gps.GpsService;
 import tourguide.model.User;
-import tourguide.service.TourGuideService;
+import tourguide.reward.RewardService;
 import tourguide.user.UserService;
 
 @Service
 public class TrackerService extends Thread {
+
 	private Logger logger = LoggerFactory.getLogger(TrackerService.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-	@Autowired private TourGuideService tourGuideService;
-	@Autowired private UserService userService;
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor();	
 	private boolean stop = false;
+	
+	@Autowired private UserService userService;
+	@Autowired private GpsService gpsService;
+	@Autowired private RewardService rewardService;
 
 	public TrackerService() {
 		executorService.submit(this);
@@ -49,7 +54,7 @@ public class TrackerService extends Thread {
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			users.forEach(u -> {System.out.println(u.getUserName() + " visitedLocations before:" + u.getVisitedLocations().size());} );
 			stopWatch.start();
-			users.forEach(u -> tourGuideService.trackUserLocationAndCalculateRewards(u));
+			trackAllUsers();
 			stopWatch.stop();
 			users.forEach(u -> {System.out.println(u.getUserName() + " visitedLocations after:" + u.getVisitedLocations().size());} );
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
@@ -64,7 +69,14 @@ public class TrackerService extends Thread {
 		
 	}
 	
-	public void trackAllUsers() {
-		
+	protected void trackAllUsers() {
+		// Get All users
+		List<User> allUsers = userService.getAllUsers();
+		// Get and register current location for all users
+		gpsService.trackAllUserLocations(allUsers);
+		// Get all attractions
+		List<Attraction> allAttractions = gpsService.getAllAttractions();
+		// Update rewards for all users
+		rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
 	}
 }
