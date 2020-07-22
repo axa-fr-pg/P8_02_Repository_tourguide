@@ -33,19 +33,22 @@ public class GpsService {
 	}
 
 	public VisitedLocation getUserLocation(User user) {
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
-			trackUserLocation(user);
-		return visitedLocation;
+		return gpsUtil.getUserLocation(user.getUserId());
 	}
 	
-	public Map<UUID,Location> getAllUserLocations(List<User> userList) {
-		// Get visited locations for all of them
-		Map<UUID,Location> allUserLocations = new HashMap<UUID,Location>();
-		for (User u : userList) {
-			allUserLocations.put(u.getUserId(), getUserLocation(u).location);
+	public VisitedLocation getLastUserLocation(User user) {
+		if (user.getVisitedLocations().size() > 0) {
+			return user.getLastVisitedLocation();
 		}
-		return allUserLocations;
+		return getUserLocation(user);
+	}
+	
+	public Map<UUID,Location> getLastUsersLocations(List<User> userList) {
+		Map<UUID,Location> userLocations = new HashMap<UUID,Location>();
+		for (User u : userList) {
+			userLocations.put(u.getUserId(), getLastUserLocation(u).location);
+		}
+		return userLocations;
 	}
 	
 	public List<Attraction> getAllAttractions() {

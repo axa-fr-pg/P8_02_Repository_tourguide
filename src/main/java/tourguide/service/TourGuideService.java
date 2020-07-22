@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,28 +40,23 @@ public class TourGuideService {
 	@Autowired private UserService userService;
 	
 	public TourGuideService() {
-		addShutDownHook(); // WHY ???
+//		addShutDownHook(); // WHY ???
 	}
 	
 	public List<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
 	
-	public VisitedLocation getLastUserLocation(User user) {
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
-			trackUserLocationAndCalculateRewards(user);
-		return visitedLocation;
-	}
-	
 	public Map<String,Location> getLastLocationAllUsers() {
 		// Get all users within the application
 		List<User> allUsers = userService.getAllUsers();
 		// Get visited locations for all of them
-		Map<String,Location> allUserLocations = new HashMap<String,Location>();
-		for (User u : allUsers) {
-			allUserLocations.put(u.getUserId().toString(), getLastUserLocation(u).location);
-		}
+		Map<UUID,Location> allUserLocationsWithUUID = gpsService.getLastUsersLocations(allUsers);
+		// Change the key of the map to match the String format requirement
+		Map<String,Location> allUserLocations = allUserLocationsWithUUID.entrySet().stream().collect(Collectors.toMap(
+				entry -> entry.getKey().toString(),
+				entry -> entry.getValue()
+		));
 		return allUserLocations;
 	}
 	
@@ -71,18 +69,19 @@ public class TourGuideService {
 		return tripService.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
+	/* NOT USED ANY MORE
 	public VisitedLocation trackUserLocationAndCalculateRewards(User user) {
 		// Get current user location and register it for given user
 		VisitedLocation visitedLocation = gpsService.trackUserLocation(user);
 		// Update rewards for given user
 		calculateRewards(user);
 		return visitedLocation;
-	}
+	} */
 
 	public List<AttractionNearby> getNearByAttractions(String userName) {		
 		// Prepare user location as reference to measure attraction distance
 		User user = userService.getUser(userName);
-    	VisitedLocation visitedLocation = getLastUserLocation(user);
+    	VisitedLocation visitedLocation = gpsService.getLastUserLocation(user);
 		Location fromLocation = visitedLocation.location;
 		// Prepare list of all attractions to be sorted
 		List<AttractionDistance> fullList = new ArrayList<>();
@@ -103,13 +102,14 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 	
+	/* TODO : WHY ?
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 		      public void run() {
 		        tracker.stopTracking();
 		      } 
 		    }); 
-	}
+	}*/
 
 	public void calculateRewards(User user) {
 		// Get all existing attractions within the application

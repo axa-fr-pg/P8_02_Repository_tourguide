@@ -29,6 +29,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourguide.gps.GpsService;
 import tourguide.model.AttractionNearby;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
@@ -53,6 +54,7 @@ public class TourGuideServiceIT {
 	@Autowired RewardService rewardService;
 	@Autowired TourGuideService tourGuideService;
 	@Autowired TestHelperService testHelperService;
+	@Autowired GpsService gpsService;
 
 	@Before
 	public void deactivateUnexpectedServices() {
@@ -60,6 +62,7 @@ public class TourGuideServiceIT {
 		doNothing().when(userService).initializeInternalUsers();
 	}
 	
+	/* NOT USED ANY MORE
 	@Test
 	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
 		// GIVEN mock GpsUtil
@@ -72,7 +75,7 @@ public class TourGuideServiceIT {
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 		assertEquals(visitedLocation.location.latitude, user.getLastVisitedLocation().location.latitude, 0.0000000001);
 		assertEquals(visitedLocation.location.longitude, user.getLastVisitedLocation().location.longitude, 0.0000000001);
-	}
+	}*/
 	
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
@@ -91,7 +94,7 @@ public class TourGuideServiceIT {
 		}
 		double expectedCheckSum = ( TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS + 1)
 				* TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS / 2 
-				* TestHelperService.longitudeAttractionOne ;
+				* TestHelperService.LONGITUDE_ATTRACTION_ONE ;
 		assertEquals(expectedCheckSum, resultCheckSum, 0.00000000001);
 	}
 	
@@ -291,41 +294,6 @@ public class TourGuideServiceIT {
 		assertEquals(TestHelperService.NUMBER_OF_TEST_ATTRACTIONS, userRewards.size());
 		assertNotNull(userRewards.get(0));
 		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
-	}
-	
-	@Test
-	public void givenUserWithLastVisitedLocation_whenGetLastUserLocation_thenReturnsLastVisitedLocation() {
-		// GIVEN
-		User user = new User(new UUID(11,12), "user_name", "user_phone", "user_email");
-		Location location1 = new Location(1, 2);
-		VisitedLocation visitedLocation1 = new VisitedLocation(user.getUserId(), location1, new Date(100));
-		user.addToVisitedLocations(visitedLocation1);
-		Location location2 = new Location(3, 4);
-		VisitedLocation visitedLocation2 = new VisitedLocation(user.getUserId(), location2, new Date(1000));
-		user.addToVisitedLocations(visitedLocation2);
-		// WHEN
-		VisitedLocation resultLocation = tourGuideService.getLastUserLocation(user);
-		// THEN
-		assertNotNull(resultLocation);
-		assertEquals(resultLocation.location.latitude, visitedLocation2.location.latitude, 0.0000000001);
-		assertEquals(resultLocation.location.longitude, visitedLocation2.location.longitude, 0.0000000001);
-		assertEquals(resultLocation.timeVisited, visitedLocation2.timeVisited);
-	}
-	
-	@Test
-	public void givenUserWithNoVisitedLocation_whenGetLastUserLocation_thenReturnsCurrentLocation() {
-		// GIVEN
-		User user = new User(new UUID(11,12), "user_name", "user_phone", "user_email");
-		Location location = new Location(1, 2);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(12345));
-		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(visitedLocation);
-		// WHEN
-		VisitedLocation resultLocation = tourGuideService.getLastUserLocation(user);
-		// THEN
-		assertNotNull(resultLocation);
-		assertEquals(resultLocation.location.latitude, visitedLocation.location.latitude, 0.0000000001);
-		assertEquals(resultLocation.location.longitude, visitedLocation.location.longitude, 0.0000000001);
-		assertEquals(resultLocation.timeVisited, visitedLocation.timeVisited);
 	}
 
 }

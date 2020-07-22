@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import tourguide.gps.GpsService;
 import tourguide.model.User;
 import tourguide.service.TourGuideService;
 import tripPricer.Provider;
@@ -16,8 +17,8 @@ import tripPricer.Provider;
 @RestController
 public class TourGuideController {
 
-	@Autowired
-	TourGuideService tourGuideService;
+	@Autowired TourGuideService tourGuideService;
+	@Autowired GpsService gpsService;
 	
 	@GetMapping("/")
     public String index() {
@@ -26,7 +27,7 @@ public class TourGuideController {
     
     @GetMapping("/getLastLocation") 
     public String getLastLocation(@RequestParam String userName) {
-    	VisitedLocation visitedLocation = tourGuideService.getLastUserLocation(getUser(userName));
+    	VisitedLocation visitedLocation = gpsService.getLastUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
     

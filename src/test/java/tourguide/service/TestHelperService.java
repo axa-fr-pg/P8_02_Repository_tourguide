@@ -21,11 +21,13 @@ import tourguide.user.UserService;
 @Service
 public class TestHelperService {
 
-	public static int NUMBER_OF_TEST_ATTRACTIONS = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
-	public static double latitudeUserOne = 0.21;
-	public static double longitudeUserOne = -0.00022;
-	public static double latitudeAttractionOne = 0.31;
-	public static double longitudeAttractionOne = -0.00032;
+	public final static int NUMBER_OF_TEST_ATTRACTIONS = TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS*2;
+	public final static double LATITUDE_USER_ONE = 0.21;
+	public final static double LONGITUDE_USER_ONE = -0.00022;
+	public final static double LATITUDE_ATTRACTION_ONE = 0.31;
+	public final static double LONGITUDE_ATTRACTION_ONE = -0.00032;
+	public final static double CURRENT_LATITUDE = 0.111;
+	public final static double CURRENT_LONGITUDE = -0.222;
 
 	@Autowired GpsUtil gpsUtil;
 	@Autowired UserService userService;
@@ -39,13 +41,34 @@ public class TestHelperService {
 		return givenUsers;
 	}
 
-	public User mockUserServiceGetUserAndGpsUtilGetUserLocation(int index, UserPreferences userPreferences) {
+	public User mockGpsUtilGetUserLocation(int index) {
 		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
-		Location location = new Location(latitudeUserOne*index,longitudeUserOne*index);
+		Location location = new Location(LATITUDE_USER_ONE*index,LONGITUDE_USER_ONE*index);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(index));
+		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(visitedLocation);
+		return user;
+	}
+	
+	public User mockUserServiceGetUserAndGpsUtilGetUserLocation(int index, UserPreferences userPreferences) {
+		User user = mockUserWithVisitedLocation(index, userPreferences);
+		when(userService.getUser(user.getUserName())).thenReturn(user);
+		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(user.getLastVisitedLocation());
+		return user;
+	}
+	
+	public User mockUserWithVisitedLocation(int index, UserPreferences userPreferences) {
+		User user = mockUserWithoutVisitedLocation(index, userPreferences);
+		Location location = new Location(LATITUDE_USER_ONE*index,LONGITUDE_USER_ONE*index);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(index));
 		user.addToVisitedLocations(visitedLocation);
+		return user;
+	}
+	
+	public User mockUserWithoutVisitedLocation(int index, UserPreferences userPreferences) {
+		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
 		user.setUserPreferences(userPreferences);
-		when(userService.getUser(user.getUserName())).thenReturn(user);
+		Location currentLocation = new Location(CURRENT_LATITUDE, CURRENT_LONGITUDE);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), currentLocation, new Date());
 		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(visitedLocation);
 		return user;
 	}
@@ -59,7 +82,7 @@ public class TestHelperService {
 		for (int i=0; i<numberOfTestAttractions; i++) {
 			int index = numberOfTestAttractions - i;
 			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, 
-					latitudeAttractionOne*index, longitudeAttractionOne*index);
+					LATITUDE_ATTRACTION_ONE*index, LONGITUDE_ATTRACTION_ONE*index);
 			givenAttractions.add(attraction);
 		}
 		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
