@@ -44,20 +44,20 @@ public class TourGuideService {
 		return user.getUserRewards();
 	}
 	
-	public VisitedLocation getUserLocation(User user) {
+	public VisitedLocation getLastUserLocation(User user) {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
 			trackUserLocationAndCalculateRewards(user);
 		return visitedLocation;
 	}
 	
-	public Map<String,Location> getAllUserLastLocations() {
+	public Map<String,Location> getLastLocationAllUsers() {
 		// Get all users within the application
 		List<User> allUsers = userService.getAllUsers();
 		// Get visited locations for all of them
 		Map<String,Location> allUserLocations = new HashMap<String,Location>();
 		for (User u : allUsers) {
-			allUserLocations.put(u.getUserId().toString(), getUserLocation(u).location);
+			allUserLocations.put(u.getUserId().toString(), getLastUserLocation(u).location);
 		}
 		return allUserLocations;
 	}
@@ -82,7 +82,7 @@ public class TourGuideService {
 	public List<AttractionNearby> getNearByAttractions(String userName) {		
 		// Prepare user location as reference to measure attraction distance
 		User user = userService.getUser(userName);
-    	VisitedLocation visitedLocation = getUserLocation(user);
+    	VisitedLocation visitedLocation = getLastUserLocation(user);
 		Location fromLocation = visitedLocation.location;
 		// Prepare list of all attractions to be sorted
 		List<AttractionDistance> fullList = new ArrayList<>();

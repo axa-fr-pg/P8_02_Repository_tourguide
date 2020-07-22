@@ -24,9 +24,9 @@ public class TourGuideController {
         return "Greetings from TourGuide!";
     }
     
-    @GetMapping("/getLocation") 
-    public String getLocation(@RequestParam String userName) {
-    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+    @GetMapping("/getLastLocation") 
+    public String getLastLocation(@RequestParam String userName) {
+    	VisitedLocation visitedLocation = tourGuideService.getLastUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
     
@@ -42,7 +42,7 @@ public class TourGuideController {
     
     @GetMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
-    	return JsonStream.serialize(tourGuideService.getAllUserLastLocations());
+    	return JsonStream.serialize(tourGuideService.getLastLocationAllUsers());
     }
     
     @GetMapping("/getTripDeals")
