@@ -24,6 +24,13 @@ public class GpsService {
 		return visitedLocation;
 	}
 
+	public void trackAllUserLocations(List<User> userList) {
+		userList.stream().forEach(user -> {
+			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+			user.addToVisitedLocations(visitedLocation);
+		});
+	}
+
 	public VisitedLocation getUserLocation(User user) {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :

@@ -33,7 +33,7 @@ public class GpsServiceTest {
 	@MockBean UserService userService;
 	@Autowired TestHelperService testHelperService;
 	@Autowired GpsService gpsService;
-
+	
 	@Test
 	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
 		// GIVEN mock GpsUtil
@@ -78,12 +78,7 @@ public class GpsServiceTest {
 	@Test
 	public void givenUserList_whenGetAllUserLocations_thenReturnsCorrectList() {
 		// GIVEN mock getAllUsers
-		List<User> givenUsers = new ArrayList<User>();
-		int numberOfUsers = 5;
-		for (int i=0; i<numberOfUsers; i++) {
-			givenUsers.add(testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(i+1, null));
-		}
-		when(userService.getAllUsers()).thenReturn(givenUsers);
+		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(5);
 		// WHEN
 		Map<UUID,Location> allUserLocations = gpsService.getAllUserLocations(givenUsers);
 		// THEN
@@ -100,5 +95,24 @@ public class GpsServiceTest {
 		assertNotNull(givenLocation);
 		assertEquals(givenLocation.latitude, resultLocation.latitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
 		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
-	}	
+	}
+	
+	@Test
+	public void givenUserList_whenTrackAllUserLocations_thenAddsVisitedLocationToAllUsers() {
+		// GIVEN mock getAllUsers
+		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(5);
+		for (User user : givenUsers) {
+			assertNotNull(user);
+			assertNotNull(user.getVisitedLocations());
+			assertEquals(1, user.getVisitedLocations().size());
+		}
+		// WHEN
+		gpsService.trackAllUserLocations(givenUsers);
+		// THEN
+		for (User user : givenUsers) {
+			assertNotNull(user);
+			assertNotNull(user.getVisitedLocations());
+			assertEquals(2, user.getVisitedLocations().size());
+		}
+	}
 }

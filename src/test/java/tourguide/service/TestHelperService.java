@@ -30,6 +30,15 @@ public class TestHelperService {
 	@Autowired GpsUtil gpsUtil;
 	@Autowired UserService userService;
 
+	public  List<User> mockGetAllUsersAndLocations(int numberOfUsers) {
+		List<User> givenUsers = new ArrayList<User>();
+		for (int i=0; i<numberOfUsers; i++) {
+			givenUsers.add(mockUserServiceGetUserAndGpsUtilGetUserLocation(i+1, null));
+		}
+		when(userService.getAllUsers()).thenReturn(givenUsers);
+		return givenUsers;
+	}
+
 	public User mockUserServiceGetUserAndGpsUtilGetUserLocation(int index, UserPreferences userPreferences) {
 		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
 		Location location = new Location(latitudeUserOne*index,longitudeUserOne*index);
@@ -53,7 +62,4 @@ public class TestHelperService {
 		return givenAttractions;
 	}
 	
-/*	public void deactivateInternalUsers() {
-		doNothing().when(userService).initializeInternalUsers();
-	}*/
 }
