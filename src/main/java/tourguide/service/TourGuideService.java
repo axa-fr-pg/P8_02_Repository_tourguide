@@ -17,21 +17,20 @@ import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
 import tourguide.rewardservice.RewardService;
 import tourguide.tracker.Tracker;
+import tourguide.tripservice.TripService;
 import tourguide.user.User;
 import tourguide.user.UserReward;
 import tourguide.userservice.UserService;
 import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 @Service
 public class TourGuideService {
 	
-	public static final String tripPricerApiKey = "test-server-api-key";
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	@Autowired private GpsUtil gpsUtil;
 	@Autowired private RewardService rewardService;
-	@Autowired private TripPricer tripPricer;
+	@Autowired private TripService tripService;
 	@Autowired private Tracker tracker;
 	@Autowired private UserService userService;
 	
@@ -64,21 +63,10 @@ public class TourGuideService {
 	public List<Provider> getTripDeals(User user) {
 		// Calculate the sum of all reward points for given user
 		int cumulativeRewardPoints = rewardService.sumOfAllRewardPoints(user);
-		List<Provider> providers = new ArrayList<Provider>();
 		// List attractions in the neighborhood of the user
 		List<AttractionNearby> attractions = getNearByAttractions(user.getUserName());		
 		// Calculate trip proposals matching attractions list, user preferences and reward points 
-		for (AttractionNearby a : attractions) {
-			providers.addAll(tripPricer.getPrice(
-					tripPricerApiKey, 
-					a.id, 
-					user.getUserPreferences().getNumberOfAdults(), 
-					user.getUserPreferences().getNumberOfChildren(), 
-					user.getUserPreferences().getTripDuration(), 
-					cumulativeRewardPoints));			
-		}
-		user.setTripDeals(providers);
-		return providers;
+		return tripService.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
 	public VisitedLocation trackUserLocationAndCalculateRewards(User user) {

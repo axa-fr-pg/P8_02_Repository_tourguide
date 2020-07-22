@@ -1,13 +1,12 @@
-package tourguide;
+package tourguide.tripservice;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import rewardCentral.RewardCentral;
 import tripPricer.TripPricer;
 
 @Configuration
-public class TourGuideModule {
+public class TripPricerBean {
 	
 	@Bean
 	public TripPricer tripPricer() {
