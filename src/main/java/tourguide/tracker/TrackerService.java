@@ -30,11 +30,12 @@ public class TrackerService extends Thread {
 	@Autowired private RewardService rewardService;
 
 	public TrackerService() {
+		logger.debug("new instance with empty constructor");
 		executorService.submit(this);
 	}
 	
 	/**
-	 * Assures to shut down the Tracker thread
+	 * Tells the Tracker thread to stop now and ensures it stops latest after next iteration over all users
 	 */
 	public void stopTracking() {
 		stop = true;
@@ -43,33 +44,28 @@ public class TrackerService extends Thread {
 	
 	@Override
 	public void run() {
-		StopWatch stopWatch = new StopWatch();
+		logger.debug("run begins");
 		while(true) {
 			if(Thread.currentThread().isInterrupted() || stop) {
-				logger.debug("Tracker stopping");
+				logger.debug("run has been told to stop");
 				break;
-			}
-			
-			List<User> users = userService.getAllUsers();
-			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
-			users.forEach(u -> {System.out.println(u.getUserName() + " visitedLocations before:" + u.getVisitedLocations().size());} );
-			stopWatch.start();
+			}			
 			trackAllUsers();
-			stopWatch.stop();
-			users.forEach(u -> {System.out.println(u.getUserName() + " visitedLocations after:" + u.getVisitedLocations().size());} );
-			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
-			stopWatch.reset();
 			try {
-				logger.debug("Tracker sleeping");
+				logger.debug("run starts to sleep");
 				TimeUnit.SECONDS.sleep(trackingPollingInterval);
 			} catch (InterruptedException e) {
+				logger.error("run has catched InterruptedException");
 				break;
 			}
 		}
-		
+		logger.debug("run has reached the end");
 	}
 	
 	protected void trackAllUsers() {
+		logger.debug("trackAllUsers starts iteration over all users");
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		// Get All users
 		List<User> allUsers = userService.getAllUsers();
 		// Get and register current location for all users
@@ -78,5 +74,7 @@ public class TrackerService extends Thread {
 		List<Attraction> allAttractions = gpsService.getAllAttractions();
 		// Update rewards for all users
 		rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
+		stopWatch.stop();
+		logger.debug("trackAllUsers took " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds to go through all users."); 
 	}
 }

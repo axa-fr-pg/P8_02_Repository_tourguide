@@ -37,7 +37,7 @@ public class UserService {
 	
 	public UserService() {
 		this(true);
-		logger.debug("new instance of UserService with empty constructor");
+		logger.debug("new instance with empty constructor");
 	}
 	
 	public UserService(boolean fillInternalUserMapWithRandomUsers) {

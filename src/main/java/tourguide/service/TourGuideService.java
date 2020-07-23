@@ -32,7 +32,6 @@ public class TourGuideService {
 	
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	@Autowired private GpsUtil gpsUtil;
 	@Autowired private GpsService gpsService;
 	@Autowired private RewardService rewardService;
 	@Autowired private TripService tripService;
@@ -85,7 +84,7 @@ public class TourGuideService {
 		Location fromLocation = visitedLocation.location;
 		// Prepare list of all attractions to be sorted
 		List<AttractionDistance> fullList = new ArrayList<>();
-		for(Attraction toAttraction : gpsUtil.getAttractions()) {
+		for(Attraction toAttraction : gpsService.getAllAttractions()) {
 			AttractionDistance ad = new AttractionDistance(fromLocation, toAttraction);
 			fullList.add(ad);
 		}
@@ -111,9 +110,9 @@ public class TourGuideService {
 		    }); 
 	}*/
 
-	public void calculateRewards(User user) {
+	public void addUserRewards(User user) {
 		// Get all existing attractions within the application
-		List<Attraction> attractions = gpsUtil.getAttractions();
+		List<Attraction> attractions = gpsService.getAllAttractions();
 		// Add all new rewards for given combination of user, visited locations and existing attractions
 		rewardService.addAllNewRewards(user, attractions);
 	}

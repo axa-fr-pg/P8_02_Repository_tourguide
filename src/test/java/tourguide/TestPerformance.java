@@ -93,7 +93,7 @@ public class TestPerformance {
 		stopWatch.start();
 		for(User user : allUsers) {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
-			tourGuideService.calculateRewards(user);
+			tourGuideService.addUserRewards(user);
 			assertTrue(user.getUserRewards().size() > 0);
 		}
 		stopWatch.stop();

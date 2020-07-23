@@ -68,7 +68,7 @@ public class RewardsServiceTest {
 		List<Attraction> attractions = Arrays.asList(expectedAttraction, tooFarAttraction);
 		assertEquals(2, attractions.size());
 		// GIVEN user was close enough to the attraction
-		rewardService.setProximityBuffer(10); // statute miles
+		rewardService.setProximityMaximalDistance(10); // statute miles
 		double latitudeDifferenceMakingItCloseEnough = 0.14; // degrees
 		Location location = new Location(expectedAttraction.latitude + latitudeDifferenceMakingItCloseEnough, expectedAttraction.longitude);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
@@ -91,7 +91,7 @@ public class RewardsServiceTest {
 			.thenReturn(REWARD_POINTS_PER_ATTRACTION);
 		List<Attraction> attractions = Arrays.asList(attraction);
 		// GIVEN user was close enough to the attraction
-		rewardService.setProximityBuffer(10); // statute miles
+		rewardService.setProximityMaximalDistance(10); // statute miles
 		double latitudeDifferenceMakingItTooFar = 0.15; // degrees
 		Location location = new Location(attraction.latitude + latitudeDifferenceMakingItTooFar, attraction.longitude);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
@@ -114,7 +114,7 @@ public class RewardsServiceTest {
 		List<Attraction> attractions = Arrays.asList(expectedAttraction, tooFarAttraction);
 		assertEquals(2, attractions.size());
 		// GIVEN user has already been rewarded for this attraction
-		rewardService.setProximityBuffer(10); // statute miles
+		rewardService.setProximityMaximalDistance(10); // statute miles
 		double latitudeDifferenceMakingItCloseEnough = 0.14; // degrees
 		Location location = new Location(expectedAttraction.latitude + latitudeDifferenceMakingItCloseEnough, expectedAttraction.longitude);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
@@ -140,7 +140,7 @@ public class RewardsServiceTest {
 		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user.getUserId())))
 			.thenReturn(REWARD_POINTS_PER_ATTRACTION);
 		// GIVEN user is close enough to all attractions
-		rewardService.setProximityBuffer((Integer.MAX_VALUE/2 ) -1);
+		rewardService.setProximityMaximalDistance((Integer.MAX_VALUE/2 ) -1);
 		Location location = new Location(0, 0);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
 		user.addToVisitedLocations(visitedLocation);
@@ -177,7 +177,7 @@ public class RewardsServiceTest {
 		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(1).getUserId())))
 		.thenReturn(2 * REWARD_POINTS_PER_ATTRACTION);
 		// GIVEN user was close enough to the attraction
-		rewardService.setProximityBuffer(8); // statute miles
+		rewardService.setProximityMaximalDistance(8); // statute miles
 		// WHEN
 		rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
 		// THEN
