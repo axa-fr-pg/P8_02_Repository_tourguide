@@ -74,7 +74,7 @@ public class RewardService {
 			+ " and attractionList of size " + attractions.size());
 		for(VisitedLocation visitedLocation : user.getVisitedLocations()) {
 			for(Attraction attraction : attractions) {
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+				if(user.getUserRewards().stream().filter(reward -> reward.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
 					}
@@ -88,7 +88,7 @@ public class RewardService {
 			+ " and attractionList of size " + attractions.size());
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		userList.stream().forEach(user -> {
+		userList.stream().parallel().forEach(user -> {
 			addAllNewRewards(user, attractions);
 		});
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
