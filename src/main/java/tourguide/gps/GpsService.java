@@ -32,7 +32,7 @@ public class GpsService {
 
 	public void trackAllUserLocations(List<User> userList) {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());
-		userList.stream().forEach(user -> {
+		userList.stream().parallel().forEach(user -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 			user.addToVisitedLocations(visitedLocation);
 		});
@@ -54,9 +54,9 @@ public class GpsService {
 	public Map<UUID,Location> getLastUsersLocations(List<User> userList) {
 		logger.debug("getLastUsersLocations with list of size = " + userList.size());
 		Map<UUID,Location> userLocations = new HashMap<UUID,Location>();
-		for (User u : userList) {
-			userLocations.put(u.getUserId(), getLastUserLocation(u).location);
-		}
+		userList.stream().parallel().forEach(user -> {
+			userLocations.put(user.getUserId(), getLastUserLocation(user).location);
+		});
 		return userLocations;
 	}
 	

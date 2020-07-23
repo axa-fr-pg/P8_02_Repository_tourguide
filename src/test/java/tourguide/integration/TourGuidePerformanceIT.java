@@ -1,30 +1,21 @@
 package tourguide.integration;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.time.StopWatch;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import tourguide.gps.GpsService;
 import tourguide.model.User;
 import tourguide.reward.RewardService;
-import tourguide.service.TourGuideService;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
 
@@ -59,7 +50,7 @@ public class TourGuidePerformanceIT {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 	
-	@Test
+	@Test // Performance before optimization
 	public void given100Users_whenTrackAllUsers_thenTimeElapsedBelow7Seconds() {
 		// GIVEN
 		userService.initializeInternalUsers(100, true);
@@ -69,10 +60,9 @@ public class TourGuidePerformanceIT {
 		assertTrue(duration <= 7);
 	}
 	
-	@Test
+	@Test // Performance before optimization
 	public void given100Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow58Seconds() {
 		// GIVEN
-		StopWatch stopWatch = new StopWatch();
 		userService.initializeInternalUsers(100, false);
 		List<User> allUsers = userService.getAllUsers();
 		List<Attraction> allAttractions = gpsService.getAllAttractions();	 
