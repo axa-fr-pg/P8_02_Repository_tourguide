@@ -27,7 +27,7 @@ public class TrackerServiceIT {
 	@Test
 	public void givenUsers_whenTrackAllUsers_thenAllUsersAreUpdated() {
 		// GIVEN
-		userService.initializeInternalUsers();
+		userService.initializeInternalUsers(3, false);
 		List<User> users = userService.getAllUsers();
 		long totalRewardPoints = 0;
 		// WHEN
@@ -35,7 +35,7 @@ public class TrackerServiceIT {
 		// THEN
 		for (User user : users) {
 			assertNotNull(user.getVisitedLocations());
-			assertEquals(4, user.getVisitedLocations().size());
+			assertEquals(1, user.getVisitedLocations().size());
 			totalRewardPoints += rewardService.sumOfAllRewardPoints(user);
 		}
 		assertThat(totalRewardPoints > 0);

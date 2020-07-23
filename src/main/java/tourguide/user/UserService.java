@@ -30,8 +30,10 @@ import tourguide.service.TourGuideService;
 @Service
 public class UserService {
 	
+	private static final int DEFAULT_INTERNAL_USER_NUMBER = 100;
+	private static final boolean DEFAULT_LOCATION_HISTORY_ACTIVATED = true;
 	Random random;
-
+	
 	Logger logger = LoggerFactory.getLogger(UserService.class);
 	private Map<String, User> internalUserMap;
 	
@@ -47,7 +49,7 @@ public class UserService {
 		random = new Random();
 		if (fillInternalUserMapWithRandomUsers) {
 			logger.debug("Initializing users");
-			initializeInternalUsers();
+			initializeInternalUsers(DEFAULT_INTERNAL_USER_NUMBER, DEFAULT_LOCATION_HISTORY_ACTIVATED);
 			logger.debug("Finished initializing users");
 		}
 	}
@@ -71,18 +73,20 @@ public class UserService {
 		}
 	}
 	
-	public void initializeInternalUsers() {
-		logger.debug("initializeInternalUsers with InternalUserNumber = " 
-				+ UserInternalNumber.get());
-		IntStream.range(0, UserInternalNumber.get()).forEach(i -> {
+	public void initializeInternalUsers(int expectedNumberOfUsers, boolean withLocationHistory) {
+		logger.debug("initializeInternalUsers with InternalUserNumber = " + expectedNumberOfUsers);
+		internalUserMap = new HashMap<>();
+		IntStream.range(0, expectedNumberOfUsers).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000" + i;
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
-			generateUserLocationHistory(user);			
+			if (withLocationHistory) {
+				generateUserLocationHistory(user);			
+			}
 			internalUserMap.put(userName, user);
 		});
-		logger.debug("Created " + UserInternalNumber.get() + " internal beta users.");
+		logger.debug("initializeInternalUsers terminated");
 	}
 
 	private void generateUserLocationHistory(User user) {

@@ -1,4 +1,4 @@
-package tourguide.service;
+package tourguide.integration;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +34,7 @@ import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
+import tourguide.service.TestHelperService;
 import tourguide.service.TourGuideService;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
@@ -58,7 +59,7 @@ public class TourGuideServiceIT {
 	@Before
 	public void deactivateUnexpectedServices() {
 		doNothing().when(tracker).run();
-		doNothing().when(userService).initializeInternalUsers();
+		doNothing().when(userService).initializeInternalUsers(any(Integer.class), any(Boolean.class));
 	}
 	
 	/* NOT USED ANY MORE

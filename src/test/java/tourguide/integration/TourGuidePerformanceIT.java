@@ -1,4 +1,4 @@
-package tourguide;
+package tourguide.integration;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -21,28 +21,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import tourguide.gps.GpsService;
 import tourguide.model.User;
 import tourguide.reward.RewardService;
 import tourguide.service.TourGuideService;
 import tourguide.tracker.TrackerService;
-import tourguide.user.UserInternalNumber;
 import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TestPerformance {
+public class TourGuidePerformanceIT {
 	
-	Logger logger = LoggerFactory.getLogger(TestPerformance.class);
+	Logger logger = LoggerFactory.getLogger(TourGuidePerformanceIT.class);
 
-	@Autowired GpsUtil gpsUtil; 
-	@Autowired TourGuideService tourGuideService;
-	@MockBean TrackerService tracker;
+	@Autowired private TrackerService trackerService;
+	@Autowired private UserService userService;
+	@Autowired private RewardService rewardService;
+	@Autowired private GpsService gpsService;
 	
-	@Before
-	public void setup() {
-		doNothing().when(tracker).run(); // In order to have a reproductible test
-	}
-
 	/*
 	 * A note on performance improvements:
 	 *     
@@ -64,41 +60,32 @@ public class TestPerformance {
 	 */
 	
 	@Test
-	public void given100Users_whenTrackUserLocation_thenTimeElapsedBelow7Seconds() {
+	public void given100Users_whenTrackAllUsers_thenTimeElapsedBelow7Seconds() {
 		// GIVEN
-		UserInternalNumber.set(100);
-		UserService userService = new UserService();
-		List<User> allUsers = userService.getAllUsers();		
-	    StopWatch stopWatch = new StopWatch();
+		userService.initializeInternalUsers(100, true);
 	    // WHEN
-		stopWatch.start();
-		for(User user : allUsers) {
-			tourGuideService.trackUserLocationAndCalculateRewards(user);
-		}
-		stopWatch.stop();
+		long duration = trackerService.trackAllUsers();
 		// THEN
-		logger.info("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
-		assertTrue(TimeUnit.SECONDS.toSeconds(7) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+		assertTrue(duration <= 7);
 	}
 	
 	@Test
-	public void given100Users_whenCalculateRewards_thenTimeElapsedBelow58Seconds() {
+	public void given100Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow58Seconds() {
 		// GIVEN
-		UserInternalNumber.set(100);
-		UserService userService = new UserService();
-	    StopWatch stopWatch = new StopWatch();
-	    // WHEN
-		Attraction attraction = gpsUtil.getAttractions().get(0);	 
+		StopWatch stopWatch = new StopWatch();
+		userService.initializeInternalUsers(100, false);
 		List<User> allUsers = userService.getAllUsers();
-		stopWatch.start();
+		List<Attraction> allAttractions = gpsService.getAllAttractions();	 
+		Attraction anyExistingAttraction = allAttractions.get(0);	 
 		for(User user : allUsers) {
-			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
-			tourGuideService.addUserRewards(user);
+			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), anyExistingAttraction, new Date()));
+		}
+	    // WHEN
+		long duration = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
+		// THEN
+		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
 		}
-		stopWatch.stop();
-		// THEN
-		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
-		assertTrue(TimeUnit.SECONDS.toSeconds(58) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+		assertTrue(duration <= 58);
 	}
 }

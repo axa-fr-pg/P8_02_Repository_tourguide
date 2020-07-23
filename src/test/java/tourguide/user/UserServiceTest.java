@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import tourguide.model.User;
-import tourguide.user.UserInternalNumber;
 import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
@@ -69,16 +68,16 @@ public class UserServiceTest {
 	@Test
 	public void givenEmptyUserList_whenInitializeInternalUsers_thenGeneratesUserList() {
 		// GIVEN
-		UserInternalNumber.set(10);
+		int numberOfUsers = 10;
 		UserService userService = new UserService(false);
 		List<User> initialUserList = userService.getAllUsers();
 		assertNotNull(initialUserList);
 		assertEquals(0, initialUserList.size());
 		// WHEN
-		userService.initializeInternalUsers();
+		userService.initializeInternalUsers(numberOfUsers, false);
 		List<User> finalUserList = userService.getAllUsers();
 		// THEN
 		assertNotNull(finalUserList);
-		assertEquals(UserInternalNumber.get(), finalUserList.size());
+		assertEquals(numberOfUsers, finalUserList.size());
 	}
 }

@@ -1,7 +1,9 @@
 package tourguide.reward;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,12 +83,17 @@ public class RewardService {
 		}
 	}
 	
-	public void addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions)	{
+	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions)	{
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
 			+ " and attractionList of size " + attractions.size());
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		userList.stream().forEach(user -> {
 			addAllNewRewards(user, attractions);
 		});
+		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
+		logger.debug("addAllNewRewardsAllUsers required " + duration + " seconds for " + userList.size() + " users");
+		return duration;
 	}
 	
 	public int sumOfAllRewardPoints(User user) {

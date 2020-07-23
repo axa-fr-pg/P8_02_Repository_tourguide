@@ -62,7 +62,7 @@ public class TrackerService extends Thread {
 		logger.debug("run has reached the end");
 	}
 	
-	protected void trackAllUsers() {
+	public long trackAllUsers() {
 		logger.debug("trackAllUsers starts iteration over all users");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -75,6 +75,8 @@ public class TrackerService extends Thread {
 		// Update rewards for all users
 		rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
 		stopWatch.stop();
-		logger.debug("trackAllUsers took " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds to go through all users."); 
+		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
+		logger.debug("trackAllUsers required " + duration + " seconds for " + allUsers.size() + " users");
+		return duration;
 	}
 }
