@@ -92,7 +92,7 @@ public class RewardService {
 			addAllNewRewards(user, attractions);
 		});
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
-		logger.debug("addAllNewRewardsAllUsers required " + duration + " seconds for " + userList.size() + " users");
+		logger.info("addAllNewRewardsAllUsers required " + duration + " seconds for " + userList.size() + " users");
 		return duration;
 	}
 	

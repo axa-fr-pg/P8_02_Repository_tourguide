@@ -76,7 +76,7 @@ public class TrackerService extends Thread {
 		rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
 		stopWatch.stop();
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
-		logger.debug("trackAllUsers required " + duration + " seconds for " + allUsers.size() + " users");
+		logger.info("trackAllUsers required " + duration + " seconds for " + allUsers.size() + " users");
 		return duration;
 	}
 }

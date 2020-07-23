@@ -78,4 +78,33 @@ public class TourGuidePerformanceIT {
 		}
 		assertTrue(duration <= 58);
 	}
+	
+	@Test // Performance after optimization
+	public void given100000Users_whenTrackAllUsers_thenTimeElapsedBelow15Minutes() {
+		// GIVEN
+		userService.initializeInternalUsers(100000, true);
+	    // WHEN
+		long duration = trackerService.trackAllUsers();
+		// THEN
+		assertTrue(duration <= (15 * 60));
+	}
+	
+	@Test // Performance after optimization
+	public void given100000Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow20Minutes() {
+		// GIVEN
+		userService.initializeInternalUsers(5000, false);
+		List<User> allUsers = userService.getAllUsers();
+		List<Attraction> allAttractions = gpsService.getAllAttractions();	 
+		Attraction anyExistingAttraction = allAttractions.get(0);	 
+		for(User user : allUsers) {
+			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), anyExistingAttraction, new Date()));
+		}
+	    // WHEN
+		long duration = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
+		// THEN
+		for(User user : allUsers) {
+			assertTrue(user.getUserRewards().size() > 0);
+		}
+		assertTrue(duration <= 58);
+	}
 }
