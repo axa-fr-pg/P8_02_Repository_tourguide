@@ -85,7 +85,7 @@ public class TourGuidePerformanceIT {
 	@Test // Performance after optimization
 	public void given100000Users_whenTrackAllUsers_thenTimeElapsedBelow15Minutes() {
 		// GIVEN
-		userService.initializeInternalUsers(50000, true);
+		userService.initializeInternalUsers(100000, true);
 		long maximalExpectedDuration = 15 * 60;
 	    // WHEN
 		long duration = trackerService.trackAllUsers();
