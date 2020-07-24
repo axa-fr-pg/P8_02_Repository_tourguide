@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -174,17 +172,13 @@ public class RewardsServiceTest {
 		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions(2);
 		// MOCK rewardCentral
 		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(0).getUserId())))
-		.thenReturn(REWARD_POINTS_PER_ATTRACTION);
+			.thenReturn(REWARD_POINTS_PER_ATTRACTION);
 		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(1).getUserId())))
-		.thenReturn(2 * REWARD_POINTS_PER_ATTRACTION);
+			.thenReturn(2 * REWARD_POINTS_PER_ATTRACTION);
 		// GIVEN user was close enough to the attraction
 		rewardService.setProximityMaximalDistance(8); // statute miles
 		// WHEN
-		try {
-			rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
-		} catch (InterruptedException | ExecutionException e) {
-			assertTrue(false);
-		}
+		rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
 		// THEN
 		int totalRewardPoints = 0;
 		for (User u : givenUsers) {

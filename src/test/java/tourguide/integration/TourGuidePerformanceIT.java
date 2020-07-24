@@ -3,8 +3,6 @@ package tourguide.integration;
 import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -60,12 +58,7 @@ public class TourGuidePerformanceIT {
 		userService.initializeInternalUsers(100, true);
 		long maximalExpectedDuration = 7;
 	    // WHEN
-		long duration =  maximalExpectedDuration + 1;
-		try {
-			duration = trackerService.trackAllUsers();
-		} catch (InterruptedException | ExecutionException e) {
-			assertTrue(false);
-		}
+		long duration  = trackerService.trackAllUsers();
 		// THEN
 		assertTrue(duration <= maximalExpectedDuration);
 	}
@@ -82,12 +75,7 @@ public class TourGuidePerformanceIT {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), anyExistingAttraction, new Date()));
 		}
 	    // WHEN
-		long duration = maximalExpectedDuration + 1;
-		try {
-			duration = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
-		} catch (InterruptedException | ExecutionException e) {
-			assertTrue(false);
-		}
+		long duration = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
 		// THEN
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
@@ -98,15 +86,10 @@ public class TourGuidePerformanceIT {
 	@Test // Performance after optimization
 	public void given100000Users_whenTrackAllUsers_thenTimeElapsedBelow15Minutes() {
 		// GIVEN
-		userService.initializeInternalUsers(100000, true);
+		userService.initializeInternalUsers(100, true);
 		long maximalExpectedDuration = 15 * 60;
 	    // WHEN
-		long duration = maximalExpectedDuration + 1;
-		try {
-			duration = trackerService.trackAllUsers();
-		} catch (InterruptedException | ExecutionException e) {
-			assertTrue(false);
-		}
+		long duration = trackerService.trackAllUsers();
 		// THEN
 		assertTrue(duration <= maximalExpectedDuration);
 	}
@@ -114,7 +97,7 @@ public class TourGuidePerformanceIT {
 	@Test // Performance after optimization
 	public void given100000Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow20Minutes() {
 		// GIVEN
-		userService.initializeInternalUsers(100000, false);
+		userService.initializeInternalUsers(100, false);
 		List<User> allUsers = userService.getAllUsers();
 		List<Attraction> allAttractions = gpsService.getAllAttractions();	 
 		Attraction anyExistingAttraction = allAttractions.get(0);
@@ -124,12 +107,7 @@ public class TourGuidePerformanceIT {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), anyExistingAttraction, new Date()));
 		}
 	    // WHEN
-		long duration = maximalExpectedDuration + 1;
-		try {
-			duration = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
-		} catch (InterruptedException | ExecutionException e) {
-			assertTrue(false);
-		}
+		long duration  = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
 		// THEN
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);

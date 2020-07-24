@@ -3,11 +3,7 @@ package tourguide.tracker;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +29,7 @@ public class TrackerServiceIT {
 		List<User> users = userService.getAllUsers();
 		long totalRewardPoints = 0;
 		// WHEN
-		try {
-			trackerService.trackAllUsers();
-		} catch (InterruptedException | ExecutionException e) {
-			assertTrue(false);
-		}
+		trackerService.trackAllUsers();
 		// THEN
 		for (User user : users) {
 			assertNotNull(user.getVisitedLocations());

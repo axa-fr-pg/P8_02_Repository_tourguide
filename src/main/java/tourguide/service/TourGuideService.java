@@ -1,7 +1,6 @@
 package tourguide.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
@@ -22,7 +20,6 @@ import tourguide.model.AttractionNearby;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
-import tourguide.tracker.TrackerService;
 import tourguide.trip.TripService;
 import tourguide.user.UserService;
 import tripPricer.Provider;
@@ -35,7 +32,6 @@ public class TourGuideService {
 	@Autowired private GpsService gpsService;
 	@Autowired private RewardService rewardService;
 	@Autowired private TripService tripService;
-	@Autowired private TrackerService tracker;
 	@Autowired private UserService userService;
 	
 	public TourGuideService() {

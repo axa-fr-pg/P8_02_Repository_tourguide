@@ -15,7 +15,6 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.User;
-import tourguide.user.UserService;
 
 @Service
 public class GpsService {

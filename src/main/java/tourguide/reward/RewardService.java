@@ -103,7 +103,7 @@ public class RewardService {
 		return partitionList;
 	}
 	
-	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions) throws InterruptedException, ExecutionException	{
+	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions)	{
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
 			+ " and attractionList of size " + attractions.size());
 		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_POOL_SIZE);
