@@ -1,5 +1,6 @@
 package tourguide.reward;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -23,7 +24,9 @@ public class RewardService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
     private static final double EARTH_RADIUS_IN_NAUTICAL_MILES = 3440.0647948;
 
-    private static final int THREAD_POOL_SIZE = 200;
+    private static final int NUMBER_OF_USEFUL_THREADS = 32;
+    private static final int THREAD_POOL_SIZE = NUMBER_OF_USEFUL_THREADS * 10;
+    
     private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 10;
 	private int proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
 
@@ -47,13 +50,8 @@ public class RewardService {
 	}
 	
 	public int getRewardPoints(Attraction attraction, User user) {
-		logger.info("getRewardPoints userName = " + user.getUserName() + " for attraction " + attraction.attractionName );
-/*		StopWatch stopWatch = new StopWatch();
-		stopWatch.start(); */
+		logger.debug("getRewardPoints userName = " + user.getUserName() + " for attraction " + attraction.attractionName );
 		int points = rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
-/*		stopWatch.stop();
-		long duration = stopWatch.getTime();
-		logger.info("getRewardPoints required " + duration + " milliseconds for user " + user.getUserName()); */
 		return points;
 	}
 	
@@ -92,16 +90,40 @@ public class RewardService {
 		}
 	}
 	
+	private List<List<User>> divideUserList(List<User> userList) {
+		List<List<User>> partitionList = new LinkedList<List<User>>();
+		int expectedSize = userList.size() / NUMBER_OF_USEFUL_THREADS;
+		if (expectedSize == 0) {
+			partitionList.add(userList);
+			return partitionList;
+		}
+		for (int i = 0; i < userList.size(); i += expectedSize) {
+			partitionList.add(userList.subList(i, Math.min(i + expectedSize, userList.size())));
+		}
+		return partitionList;
+	}
+	
 	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions) throws InterruptedException, ExecutionException	{
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
 			+ " and attractionList of size " + attractions.size());
 		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_POOL_SIZE);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		forkJoinPool.submit( () -> userList.stream().parallel().forEach(user -> {
-				addAllNewRewards(user, attractions);
-			})).get();
+		// Divide user list into several parts and submit work separately for these parts
+		divideUserList(userList).stream().parallel().forEach( partition -> {
+			try {
+				logger.debug("addAllNewRewardsAllUsers submits calculation for user partition of size" +  partition.size());
+				forkJoinPool.submit( () -> partition.stream().parallel().forEach(user -> {
+					addAllNewRewards(user, attractions);
+				})).get();
+			} catch (InterruptedException | ExecutionException e) {
+				logger.error("addAllNewRewardsAllUsers got an exception");
+				e.printStackTrace();
+				throw new RuntimeException("addAllNewRewardsAllUsers got an exception");
+			}
+		});
 		stopWatch.stop();
+		forkJoinPool.shutdown();
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
 		logger.info("addAllNewRewardsAllUsers required " + duration + " seconds for " + userList.size() + " users");
 		return duration;

@@ -114,7 +114,7 @@ public class TourGuidePerformanceIT {
 	@Test // Performance after optimization
 	public void given100000Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow20Minutes() {
 		// GIVEN
-		userService.initializeInternalUsers(1000, false);
+		userService.initializeInternalUsers(100000, false);
 		List<User> allUsers = userService.getAllUsers();
 		List<Attraction> allAttractions = gpsService.getAllAttractions();	 
 		Attraction anyExistingAttraction = allAttractions.get(0);
