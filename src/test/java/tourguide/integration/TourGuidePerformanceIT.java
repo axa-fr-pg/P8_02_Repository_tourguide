@@ -22,7 +22,6 @@ import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@EnableAsync
 public class TourGuidePerformanceIT {
 	
 	Logger logger = LoggerFactory.getLogger(TourGuidePerformanceIT.class);
@@ -86,7 +85,7 @@ public class TourGuidePerformanceIT {
 	@Test // Performance after optimization
 	public void given100000Users_whenTrackAllUsers_thenTimeElapsedBelow15Minutes() {
 		// GIVEN
-		userService.initializeInternalUsers(100, true);
+		userService.initializeInternalUsers(50000, true);
 		long maximalExpectedDuration = 15 * 60;
 	    // WHEN
 		long duration = trackerService.trackAllUsers();
@@ -97,7 +96,7 @@ public class TourGuidePerformanceIT {
 	@Test // Performance after optimization
 	public void given100000Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow20Minutes() {
 		// GIVEN
-		userService.initializeInternalUsers(100, false);
+		userService.initializeInternalUsers(100000, false);
 		List<User> allUsers = userService.getAllUsers();
 		List<Attraction> allAttractions = gpsService.getAllAttractions();	 
 		Attraction anyExistingAttraction = allAttractions.get(0);

@@ -24,8 +24,8 @@ public class RewardService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
     private static final double EARTH_RADIUS_IN_NAUTICAL_MILES = 3440.0647948;
 
-    private static final int NUMBER_OF_USEFUL_THREADS = 32;
-    private static final int THREAD_POOL_SIZE = NUMBER_OF_USEFUL_THREADS * 10;
+    private static final int NUMBER_OF_EXPECTED_USER_PARTITIONS = 25;
+    private static final int THREAD_POOL_SIZE = NUMBER_OF_EXPECTED_USER_PARTITIONS * 2;
     
     private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 10;
 	private int proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
@@ -92,7 +92,7 @@ public class RewardService {
 	
 	private List<List<User>> divideUserList(List<User> userList) {
 		List<List<User>> partitionList = new LinkedList<List<User>>();
-		int expectedSize = userList.size() / NUMBER_OF_USEFUL_THREADS;
+		int expectedSize = userList.size() / NUMBER_OF_EXPECTED_USER_PARTITIONS;
 		if (expectedSize == 0) {
 			partitionList.add(userList);
 			return partitionList;
