@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -179,7 +180,11 @@ public class RewardsServiceTest {
 		// GIVEN user was close enough to the attraction
 		rewardService.setProximityMaximalDistance(8); // statute miles
 		// WHEN
-		rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
+		try {
+			rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
+		} catch (InterruptedException | ExecutionException e) {
+			assertTrue(false);
+		}
 		// THEN
 		int totalRewardPoints = 0;
 		for (User u : givenUsers) {

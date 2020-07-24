@@ -1,6 +1,8 @@
 package tourguide.reward;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -21,6 +23,7 @@ public class RewardService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
     private static final double EARTH_RADIUS_IN_NAUTICAL_MILES = 3440.0647948;
 
+    private static final int THREAD_POOL_SIZE = 200;
     private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 10;
 	private int proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
 
@@ -44,8 +47,14 @@ public class RewardService {
 	}
 	
 	public int getRewardPoints(Attraction attraction, User user) {
-		logger.debug("nearAttraction userName = " + user.getUserName());
-		return rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+		logger.info("getRewardPoints userName = " + user.getUserName() + " for attraction " + attraction.attractionName );
+/*		StopWatch stopWatch = new StopWatch();
+		stopWatch.start(); */
+		int points = rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+/*		stopWatch.stop();
+		long duration = stopWatch.getTime();
+		logger.info("getRewardPoints required " + duration + " milliseconds for user " + user.getUserName()); */
+		return points;
 	}
 	
 	/**
@@ -83,14 +92,16 @@ public class RewardService {
 		}
 	}
 	
-	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions)	{
+	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions) throws InterruptedException, ExecutionException	{
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
 			+ " and attractionList of size " + attractions.size());
+		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_POOL_SIZE);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		userList.stream().parallel().forEach(user -> {
-			addAllNewRewards(user, attractions);
-		});
+		forkJoinPool.submit( () -> userList.stream().parallel().forEach(user -> {
+				addAllNewRewards(user, attractions);
+			})).get();
+		stopWatch.stop();
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
 		logger.info("addAllNewRewardsAllUsers required " + duration + " seconds for " + userList.size() + " users");
 		return duration;

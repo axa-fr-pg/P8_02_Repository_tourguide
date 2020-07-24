@@ -1,6 +1,7 @@
 package tourguide.tracker;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +51,12 @@ public class TrackerService extends Thread {
 				logger.debug("run has been told to stop");
 				break;
 			}			
-			trackAllUsers();
+			try {
+				trackAllUsers();
+			} catch (InterruptedException | ExecutionException e) {
+				logger.error("run got an exception because trackAllUsers did not work properly");
+				throw new RuntimeException("trackAllUsers did not work properly");
+			}
 			try {
 				logger.debug("run starts to sleep");
 				TimeUnit.SECONDS.sleep(trackingPollingInterval);
@@ -62,7 +68,7 @@ public class TrackerService extends Thread {
 		logger.debug("run has reached the end");
 	}
 	
-	public long trackAllUsers() {
+	public long trackAllUsers() throws InterruptedException, ExecutionException {
 		logger.debug("trackAllUsers starts iteration over all users");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
