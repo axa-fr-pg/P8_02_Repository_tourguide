@@ -10,7 +10,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
@@ -32,7 +30,6 @@ import tourguide.gps.GpsService;
 import tourguide.model.AttractionNearby;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
-import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
 import tourguide.service.TestHelperService;
 import tourguide.service.TourGuideService;
@@ -196,6 +193,7 @@ public class TourGuideServiceIT {
 		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
 	}
 	
+	/* Method addUserRewards REMOVED and replaced with RewardService method
 	@Test
 	public void givenPrerequisitesToAdd1RewardOk_whenAddUserRewards_thenAddsCorrectReward() {
 		// MOCK gpsUtil.getAttractions
@@ -294,6 +292,6 @@ public class TourGuideServiceIT {
 		assertEquals(TestHelperService.NUMBER_OF_TEST_ATTRACTIONS, userRewards.size());
 		assertNotNull(userRewards.get(0));
 		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
-	}
+	} */
 
 }

@@ -31,6 +31,7 @@ public class GpsServiceTest {
 	@Autowired TestHelperService testHelperService;
 	@Autowired GpsService gpsService;
 	
+	/* Method trackUserLocation not used any more
 	@Test
 	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
 		// GIVEN mock GpsUtil
@@ -43,7 +44,7 @@ public class GpsServiceTest {
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 		assertEquals(visitedLocation.location.latitude, user.getLastVisitedLocation().location.latitude, 0.0000000001);
 		assertEquals(visitedLocation.location.longitude, user.getLastVisitedLocation().location.longitude, 0.0000000001);
-	}
+	} */
 
 	@Test
 	public void givenUserWithVisitedLocation_whenGetUserLocation_thenReturnsCurrentLocation() {

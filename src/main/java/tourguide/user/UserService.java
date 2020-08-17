@@ -13,13 +13,11 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.User;
-import tourguide.service.TourGuideService;
 
 /**
  * Provide services for users based on a persistence layer.
@@ -54,8 +52,6 @@ public class UserService {
 		}
 	}
 
-	@Autowired TourGuideService tourGuideService;
-	
 	public User getUser(String userName) {
 		logger.debug("getUser with userName = " + userName);
 		return internalUserMap.get(userName);

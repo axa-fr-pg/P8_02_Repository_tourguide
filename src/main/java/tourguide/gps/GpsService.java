@@ -22,12 +22,13 @@ public class GpsService {
 	Logger logger = LoggerFactory.getLogger(GpsService.class);
 	@Autowired private GpsUtil gpsUtil;
 
+	/* REMOVED and replaced with trackAllUserLocations
 	public VisitedLocation trackUserLocation(User user) {
 		logger.debug("trackUserLocation with userName = " + user.getUserName());
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		return visitedLocation;
-	}
+	}*/
 
 	public void trackAllUserLocations(List<User> userList) {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());

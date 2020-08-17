@@ -35,7 +35,6 @@ public class TourGuideService {
 	@Autowired private UserService userService;
 	
 	public TourGuideService() {
-//		addShutDownHook(); // WHY ???
 	}
 	
 	public List<UserReward> getUserRewards(User user) {
@@ -64,7 +63,7 @@ public class TourGuideService {
 		return tripService.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
-	/* NOT USED ANY MORE
+	/* REMOVED and replaced with TrackerService method
 	public VisitedLocation trackUserLocationAndCalculateRewards(User user) {
 		// Get current user location and register it for given user
 		VisitedLocation visitedLocation = gpsService.trackUserLocation(user);
@@ -97,7 +96,7 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 	
-	/* TODO : WHY ?
+	/* REMOVED because recurrent tracking is useful to trace all user locations
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 		      public void run() {
@@ -106,11 +105,12 @@ public class TourGuideService {
 		    }); 
 	}*/
 
+	/* REMOVED and replaced with RewardService method
 	public void addUserRewards(User user) {
 		// Get all existing attractions within the application
 		List<Attraction> attractions = gpsService.getAllAttractions();
 		// Add all new rewards for given combination of user, visited locations and existing attractions
 		rewardService.addAllNewRewards(user, attractions);
-	}
+	} */
 
 }

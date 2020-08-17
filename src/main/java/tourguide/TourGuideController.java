@@ -12,6 +12,7 @@ import gpsUtil.location.VisitedLocation;
 import tourguide.gps.GpsService;
 import tourguide.model.User;
 import tourguide.service.TourGuideService;
+import tourguide.user.UserService;
 import tripPricer.Provider;
 
 @RestController
@@ -19,6 +20,7 @@ public class TourGuideController {
 
 	@Autowired TourGuideService tourGuideService;
 	@Autowired GpsService gpsService;
+	@Autowired UserService userService;
 	
 	@GetMapping("/")
     public String index() {
@@ -52,8 +54,8 @@ public class TourGuideController {
     	return JsonStream.serialize(providers);
     }
     
-    // TODO ???
-    private User getUser(String userName) {
-    	return null;//tourGuideService.getUser(userName);
+    @GetMapping("/getUser")
+    private User getUser(@RequestParam 	String userName) {
+    	return userService.getUser(userName);
     }
 }
