@@ -1,4 +1,4 @@
-package tourguide;
+package tourguide.api;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
@@ -21,6 +23,7 @@ public class TourGuideController {
 	@Autowired TourGuideService tourGuideService;
 	@Autowired GpsService gpsService;
 	@Autowired UserService userService;
+	@Autowired private ObjectMapper objectMapper;
 	
 	@GetMapping("/")
     public String index() {
@@ -34,8 +37,9 @@ public class TourGuideController {
     }
     
     @GetMapping("/getNearbyAttractions") 
-    public String getNearbyAttractions(@RequestParam String userName) {
-    	return JsonStream.serialize(tourGuideService.getNearByAttractions(userName));
+    public String getNearbyAttractions(@RequestParam String userName) throws JsonProcessingException {
+ //   	return JsonStream.serialize(tourGuideService.getNearByAttractions(userName));
+    	return objectMapper.writeValueAsString(tourGuideService.getNearByAttractions(userName));
     }
     
     @GetMapping("/getRewards") 

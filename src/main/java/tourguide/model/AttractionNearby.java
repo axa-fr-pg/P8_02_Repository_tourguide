@@ -3,7 +3,7 @@ package tourguide.model;
 import java.util.UUID;
 
 import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
+import gpsUtil.location.VisitedLocation;
 import tourguide.reward.RewardService;
 
 /**
@@ -15,18 +15,21 @@ import tourguide.reward.RewardService;
 public class AttractionNearby {
 	public UUID id; // Basically not requested but required for further reuse of object instances
 	public String name;
-	public Location attractionLocation;
-	public Location userLocation;
+	public LocationWithEmptyConstructor attractionLocation;
+	public LocationWithEmptyConstructor userLocation;
 	public double distance;
 	public int rewardPoints;
 	
 	public AttractionNearby(Attraction attraction, User user, int rewardPoints) {
 		id = attraction.attractionId;
 		name = attraction.attractionName;
-		attractionLocation = new Location(attraction.latitude, attraction.longitude);
-		Location userCurrentLocation = user.getLastVisitedLocation().location;
-		userLocation = new Location(userCurrentLocation.latitude, userCurrentLocation.longitude);
+		attractionLocation = new LocationWithEmptyConstructor(attraction.latitude, attraction.longitude);
+		VisitedLocation visitedLocation = user.getLastVisitedLocation();
+		userLocation = new LocationWithEmptyConstructor(visitedLocation.location.latitude, visitedLocation.location.longitude);
 		distance = RewardService.getDistance(attractionLocation, userLocation);
 		this.rewardPoints = rewardPoints;
+	}
+	
+	public AttractionNearby() {
 	}
 }

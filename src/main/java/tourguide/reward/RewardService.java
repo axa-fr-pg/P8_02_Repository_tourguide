@@ -27,7 +27,7 @@ public class RewardService {
     private static final int NUMBER_OF_EXPECTED_USER_PARTITIONS = 25;
     private static final int THREAD_POOL_SIZE = NUMBER_OF_EXPECTED_USER_PARTITIONS * 2;
     
-    private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 100;
+    private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 10;
 	private int proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
 
 	Logger logger = LoggerFactory.getLogger(RewardService.class);
@@ -37,6 +37,11 @@ public class RewardService {
 	public void setProximityMaximalDistance(int proximityBuffer) {
 		logger.debug("setProximityMaximalDistance to " + proximityBuffer);
 		this.proximityMaximalDistance = proximityBuffer;
+	}
+	
+	public int getProximityMaximalDistance() {
+		logger.debug("getProximityMaximalDistance returns " + proximityMaximalDistance);
+		return this.proximityMaximalDistance;
 	}
 	
 	/* NOT USED
