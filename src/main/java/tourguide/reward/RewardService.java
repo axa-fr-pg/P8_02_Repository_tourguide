@@ -27,7 +27,7 @@ public class RewardService {
     private static final int NUMBER_OF_EXPECTED_USER_PARTITIONS = 25;
     private static final int THREAD_POOL_SIZE = NUMBER_OF_EXPECTED_USER_PARTITIONS * 2;
     
-    private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 10;
+    private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 100;
 	private int proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
 
 	Logger logger = LoggerFactory.getLogger(RewardService.class);
@@ -83,6 +83,7 @@ public class RewardService {
 			for(Attraction attraction : attractions) {
 				if(user.getUserRewards().stream().filter(reward -> reward.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
+						logger.debug("addAllNewRewards new Reward for userName = " + user.getUserName() + " for attraction " + attraction.attractionName );
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
 					}
 				}

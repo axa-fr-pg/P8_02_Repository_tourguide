@@ -24,7 +24,7 @@ public class TourGuideController {
 	
 	@GetMapping("/")
     public String index() {
-        return "Greetings from TourGuide!";
+        return "Welcome at the TourGuide application !";
     }
     
     @GetMapping("/getLastLocation") 

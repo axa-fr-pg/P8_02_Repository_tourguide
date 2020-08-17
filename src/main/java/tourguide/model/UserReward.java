@@ -14,10 +14,11 @@ public class UserReward {
 		this.rewardPoints = rewardPoints;
 	}
 	
+	/* NOT USED 
 	public UserReward(VisitedLocation visitedLocation, Attraction attraction) {
 		this.visitedLocation = visitedLocation;
 		this.attraction = attraction;
-	}
+	} */
 
 	public void setRewardPoints(int rewardPoints) {
 		this.rewardPoints = rewardPoints;
@@ -25,6 +26,5 @@ public class UserReward {
 	
 	public int getRewardPoints() {
 		return rewardPoints;
-	}
-	
+	}	
 }
