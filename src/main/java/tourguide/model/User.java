@@ -28,6 +28,10 @@ public class User {
 		userPreferences = new UserPreferences();
 	}
 	
+	public User() {
+		this(new UUID(0,0), new String(), new String(), new String());
+	}
+	
 	public UUID getUserId() {
 		return userId;
 	}

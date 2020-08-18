@@ -31,10 +31,13 @@ import gpsUtil.location.VisitedLocation;
 import tourguide.gps.GpsService;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationWithEmptyConstructor;
+import tourguide.model.ProviderWithEmptyConstructor;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
+import tourguide.service.TourGuideService;
 import tourguide.user.UserService;
+import tripPricer.Provider;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -79,7 +82,7 @@ public class TourGuideControllerIT {
 		Location userLocation = user.getLastVisitedLocation().location;
 		// WHEN
 		String responseString = mockMvc
-				.perform(get("/getNearbyAttractions?userName=internalUser1"))
+				.perform(get("/getNearbyAttractions?userName=" + userName))
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, AttractionNearby.class);
@@ -147,4 +150,37 @@ public class TourGuideControllerIT {
 		}
 	}
 	
+	@Test
+	public void givenUser1_whenGetTripDeals_thenReturnsCorrectSomeDeals() throws Exception 
+	{
+		// GIVEN 
+		String userName = "internalUser1";
+		// WHEN
+		String responseString = mockMvc
+				.perform(get("/getTripDeals?userName=" + userName))
+				.andDo(print())
+				.andReturn().getResponse().getContentAsString();
+		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, ProviderWithEmptyConstructor.class);
+		List<Provider> responseObject = objectMapper.readValue(responseString, expectedResultType);
+		// THEN
+		assertNotNull(responseObject);
+		assertThat(responseObject.size() >= TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS);
+	}
+	
+	@Test
+	public void givenUser1_whenGetUser_thenReturnsCorrectUser() throws Exception 
+	{
+		// GIVEN
+		String userName = "internalUser1";
+		User user = userService.getUser(userName);
+		// WHEN
+		String responseString = mockMvc
+				.perform(get("/getUser?userName=" + userName))
+				.andDo(print())
+				.andReturn().getResponse().getContentAsString();		
+		// THEN
+		assertNotNull(responseString);
+		assertTrue(responseString.contains(user.getUserName()));
+		assertTrue(responseString.contains(user.getUserId().toString()));
+	}	
 }

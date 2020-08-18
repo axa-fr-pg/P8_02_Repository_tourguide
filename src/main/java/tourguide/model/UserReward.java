@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.UUID;
 
 import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 
 public class UserReward {

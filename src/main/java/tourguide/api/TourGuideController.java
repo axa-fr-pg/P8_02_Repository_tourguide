@@ -55,9 +55,10 @@ public class TourGuideController {
     }
     
     @GetMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public String getTripDeals(@RequestParam String userName) throws JsonProcessingException {
+//    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
-    	return JsonStream.serialize(providers);
+    	return objectMapper.writeValueAsString(providers);
     }
     
     @GetMapping("/getUser")
