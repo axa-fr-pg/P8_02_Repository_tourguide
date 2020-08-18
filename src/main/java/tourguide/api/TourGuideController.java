@@ -12,7 +12,6 @@ import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
 import tourguide.gps.GpsService;
-import tourguide.service.TourGuideService;
 import tourguide.user.UserService;
 import tripPricer.Provider;
 

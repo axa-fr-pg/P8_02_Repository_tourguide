@@ -14,6 +14,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.api.TourGuideService;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.user.UserService;

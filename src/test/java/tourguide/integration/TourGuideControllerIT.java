@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.api.TourGuideService;
 import tourguide.gps.GpsService;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationWithEmptyConstructor;
@@ -34,7 +35,6 @@ import tourguide.model.ProviderWithEmptyConstructor;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
-import tourguide.service.TourGuideService;
 import tourguide.user.UserService;
 import tripPricer.Provider;
 

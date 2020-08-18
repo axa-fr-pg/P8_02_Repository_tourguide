@@ -1,4 +1,4 @@
-package tourguide.service;
+package tourguide.api;
 
 import java.util.ArrayList;
 import java.util.List;
