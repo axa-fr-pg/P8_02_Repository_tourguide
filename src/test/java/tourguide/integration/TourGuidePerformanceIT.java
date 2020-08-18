@@ -3,13 +3,14 @@ package tourguide.integration;
 import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.location.Attraction;
@@ -51,6 +52,7 @@ public class TourGuidePerformanceIT {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 	
+	@Ignore
 	@Test // Performance before optimization
 	public void given100Users_whenTrackAllUsers_thenTimeElapsedBelow7Seconds() {
 		// GIVEN
@@ -62,6 +64,7 @@ public class TourGuidePerformanceIT {
 		assertTrue(duration <= maximalExpectedDuration);
 	}
 	
+	@Ignore
 	@Test // Performance before optimization
 	public void given100Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow58Seconds() {
 		// GIVEN
@@ -82,6 +85,7 @@ public class TourGuidePerformanceIT {
 		assertTrue(duration <= maximalExpectedDuration);
 	}
 	
+	@Ignore
 	@Test // Performance after optimization
 	public void given100000Users_whenTrackAllUsers_thenTimeElapsedBelow15Minutes() {
 		// GIVEN
@@ -93,6 +97,7 @@ public class TourGuidePerformanceIT {
 		assertTrue(duration <= maximalExpectedDuration);
 	}
 	
+	@Ignore
 	@Test // Performance after optimization
 	public void given100000Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow20Minutes() {
 		// GIVEN
