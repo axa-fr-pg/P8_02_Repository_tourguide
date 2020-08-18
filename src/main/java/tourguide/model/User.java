@@ -16,7 +16,6 @@ public class User {
 	private List<VisitedLocation> visitedLocations;
 	private List<UserReward> userRewards;
 	private UserPreferences userPreferences;
-//	private List<Provider> tripDeals = new ArrayList<>(); // NOT USED
 	
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
@@ -100,15 +99,5 @@ public class User {
 			return null;
 		}
 		return visitedLocations.get(listLength - 1);
-	}
-	
-	/* NOT USED
-	public void setTripDeals(List<Provider> tripDeals) {
-		this.tripDeals = tripDeals;
-	}
-	
-	public List<Provider> getTripDeals() {
-		return tripDeals;
-	}*/
-
+	}	
 }

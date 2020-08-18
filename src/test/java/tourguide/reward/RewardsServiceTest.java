@@ -79,7 +79,7 @@ public class RewardsServiceTest {
 		assertNotNull(userRewards);
 		assertEquals(1, userRewards.size());
 		assertNotNull(userRewards.get(0));
-		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).getRewardPoints());
+		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).rewardPoints);
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class RewardsServiceTest {
 		assertNotNull(userRewards);
 		assertEquals(1, userRewards.size());
 		assertNotNull(userRewards.get(0));
-		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).getRewardPoints());
+		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).rewardPoints);
 	}
 
 	@Test
@@ -150,7 +150,7 @@ public class RewardsServiceTest {
 		assertNotNull(userRewards);
 		assertEquals(numberOfTestAttractions, userRewards.size());
 		assertNotNull(userRewards.get(0));
-		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).getRewardPoints());
+		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).rewardPoints);
 	}
 	
 	@Test
@@ -185,7 +185,7 @@ public class RewardsServiceTest {
 			assertNotNull(u);
 			assertNotNull(u.getUserRewards());
 			assertEquals(1, u.getUserRewards().size());
-			totalRewardPoints += u.getUserRewards().get(0).getRewardPoints();
+			totalRewardPoints += u.getUserRewards().get(0).rewardPoints;
 		}
 		assertEquals(3 * REWARD_POINTS_PER_ATTRACTION, totalRewardPoints);
 	}

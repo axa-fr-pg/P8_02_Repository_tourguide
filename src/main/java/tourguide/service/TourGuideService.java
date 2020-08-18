@@ -28,7 +28,7 @@ import tripPricer.Provider;
 public class TourGuideService {
 	
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
-	Logger logger = LoggerFactory.getLogger(TourGuideService.class);
+	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	@Autowired private GpsService gpsService;
 	@Autowired private RewardService rewardService;
 	@Autowired private TripService tripService;
@@ -63,15 +63,6 @@ public class TourGuideService {
 		return tripService.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
-	/* REMOVED and replaced with TrackerService method
-	public VisitedLocation trackUserLocationAndCalculateRewards(User user) {
-		// Get current user location and register it for given user
-		VisitedLocation visitedLocation = gpsService.trackUserLocation(user);
-		// Update rewards for given user
-		calculateRewards(user);
-		return visitedLocation;
-	} */
-
 	public List<AttractionNearby> getNearByAttractions(String userName) {		
 		// Prepare user location as reference to measure attraction distance
 		User user = userService.getUser(userName);
@@ -94,23 +85,5 @@ public class TourGuideService {
 			nearbyAttractions.add(nearbyAttraction);
 		}
 		return nearbyAttractions;
-	}
-	
-	/* REMOVED because recurrent tracking is useful to trace all user locations
-	private void addShutDownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() { 
-		      public void run() {
-		        tracker.stopTracking();
-		      } 
-		    }); 
-	}*/
-
-	/* REMOVED and replaced with RewardService method
-	public void addUserRewards(User user) {
-		// Get all existing attractions within the application
-		List<Attraction> attractions = gpsService.getAllAttractions();
-		// Add all new rewards for given combination of user, visited locations and existing attractions
-		rewardService.addAllNewRewards(user, attractions);
-	} */
-
+	}	
 }

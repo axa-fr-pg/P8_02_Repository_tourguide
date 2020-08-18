@@ -18,7 +18,7 @@ public class TripService {
 	
 	@Autowired private TripPricer tripPricer;	
 	
-	Logger logger = LoggerFactory.getLogger(TripService.class);
+	private Logger logger = LoggerFactory.getLogger(TripService.class);
 	public static final String TRIP_PRICER_KEY = "test-server-api-key";
 
 	public List<Provider> calculateProposals(User user, List<AttractionNearby> attractions, int cumulativeRewardPoints) {
@@ -35,7 +35,6 @@ public class TripService {
 					user.getUserPreferences().getTripDuration(), 
 					cumulativeRewardPoints));			
 		}
-//		user.setTripDeals(providers); // NOT USED
 		return providers;
 	}
 }

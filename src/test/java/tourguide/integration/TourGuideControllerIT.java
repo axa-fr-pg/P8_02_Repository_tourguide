@@ -119,7 +119,7 @@ public class TourGuideControllerIT {
 		assertEquals(1, responseObject.size());
 		boolean rewardFound = false;
 		for (UserReward r : responseObject) {
-			if (r.visitUserId.equals(user.getUserId()) && r.getRewardPoints() == 12345) {
+			if (r.visitUserId.equals(user.getUserId()) && r.rewardPoints == 12345) {
 				rewardFound = true;
 			}
 		}
@@ -165,21 +165,4 @@ public class TourGuideControllerIT {
 		assertNotNull(responseObject);
 		assertThat(responseObject.size() >= TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS);
 	}
-	
-	@Test
-	public void givenUser1_whenGetUser_thenReturnsCorrectUser() throws Exception 
-	{
-		// GIVEN
-		String userName = "internalUser1";
-		User user = userService.getUser(userName);
-		// WHEN
-		String responseString = mockMvc
-				.perform(get("/getUser?userName=" + userName))
-				.andDo(print())
-				.andReturn().getResponse().getContentAsString();		
-		// THEN
-		assertNotNull(responseString);
-		assertTrue(responseString.contains(user.getUserName()));
-		assertTrue(responseString.contains(user.getUserId().toString()));
-	}	
 }

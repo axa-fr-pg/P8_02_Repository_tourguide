@@ -30,9 +30,9 @@ public class UserService {
 	
 	private static final int DEFAULT_INTERNAL_USER_NUMBER = 100;
 	private static final boolean DEFAULT_LOCATION_HISTORY_ACTIVATED = true;
-	Random random;
+	private Random random;
 	
-	Logger logger = LoggerFactory.getLogger(UserService.class);
+	private Logger logger = LoggerFactory.getLogger(UserService.class);
 	private Map<String, User> internalUserMap;
 	
 	public UserService() {

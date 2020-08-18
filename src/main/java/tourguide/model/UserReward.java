@@ -8,13 +8,16 @@ import gpsUtil.location.VisitedLocation;
 
 public class UserReward {
 
-	// Replaced VisitedLocation class with the 3 contained objects for use with the Jackson object mapper
+	/*
+	 *  The older version of this class contained a isitedLocation member.
+	 *  This was not compatible with the Jackson object mapper.
+	 *  This member has been split into its 3 own members : visitLocation, visitUserId & visitTime.
+	 */
 	public LocationWithEmptyConstructor visitLocation;
 	public UUID visitUserId;
 	public Date visitTime;
-	
 	public AttractionWithEmptyConstructor attraction;
-	private int rewardPoints;
+	public int rewardPoints;
 	
 	public UserReward(VisitedLocation visitedLocation, Attraction attraction, int rewardPoints) {
 		visitLocation = new LocationWithEmptyConstructor(
@@ -28,18 +31,4 @@ public class UserReward {
 	
 	public UserReward() {
 	}
-	
-	/* NOT USED 
-	public UserReward(VisitedLocation visitedLocation, Attraction attraction) {
-		this.visitedLocation = visitedLocation;
-		this.attraction = attraction;
-	} */
-
-	public void setRewardPoints(int rewardPoints) {
-		this.rewardPoints = rewardPoints;
-	}
-	
-	public int getRewardPoints() {
-		return rewardPoints;
-	}	
 }

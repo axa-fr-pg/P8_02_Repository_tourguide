@@ -2,7 +2,11 @@ package tourguide.model;
 
 import gpsUtil.location.Location;
 
-// Added this extended class in order to be able to use jackson for JSON (de)serializing
+/**
+ * Extension of the Location class provided in the read only gpsUtil library 
+ * Required for use with the Jackson object mapper
+ * 
+ */
 public class LocationWithEmptyConstructor extends Location {
 
 	public LocationWithEmptyConstructor(double latitude, double longitude) {

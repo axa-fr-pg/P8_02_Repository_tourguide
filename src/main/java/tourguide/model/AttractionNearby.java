@@ -13,8 +13,8 @@ import tourguide.reward.RewardService;
  * 
  */
 public class AttractionNearby {
-	public UUID id; // Basically not requested but required for further reuse of object instances
-	public String name;
+	public final UUID id; // Basically not requested but required for further reuse of object instances
+	public final String name;
 	public LocationWithEmptyConstructor attractionLocation;
 	public LocationWithEmptyConstructor userLocation;
 	public double distance;
@@ -31,5 +31,7 @@ public class AttractionNearby {
 	}
 	
 	public AttractionNearby() {
+		id = new UUID(0,0);
+		name = new String();
 	}
 }

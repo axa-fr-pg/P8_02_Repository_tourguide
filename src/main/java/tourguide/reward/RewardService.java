@@ -30,7 +30,7 @@ public class RewardService {
     private static final int DEFAULT_PROXIMITY_MAXIMAL_DISTANCE = 10;
 	private int proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
 
-	Logger logger = LoggerFactory.getLogger(RewardService.class);
+	private Logger logger = LoggerFactory.getLogger(RewardService.class);
 	
 	@Autowired private RewardCentral rewardCentral;
 	
@@ -43,11 +43,6 @@ public class RewardService {
 		logger.debug("getProximityMaximalDistance returns " + proximityMaximalDistance);
 		return this.proximityMaximalDistance;
 	}
-	
-	/* NOT USED
-	public void resetProximityMaximalDistanceToDefault() {
-		proximityMaximalDistance = DEFAULT_PROXIMITY_MAXIMAL_DISTANCE;
-	}*/
 	
 	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
 		logger.debug("nearAttraction " + attraction.attractionName);
@@ -137,7 +132,7 @@ public class RewardService {
 	
 	public int sumOfAllRewardPoints(User user) {
 		logger.debug("sumOfAllRewardPoints userName = " + user.getUserName()) ;
-		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.rewardPoints).sum();
 		return cumulativeRewardPoints;
 	}
 }

@@ -2,11 +2,15 @@ package tourguide.model;
 
 import gpsUtil.location.Attraction;
 
+/**
+ * Extension of the Attraction class provided in the read only gpsUtil library 
+ * Required for use with the Jackson object mapper
+ * 
+ */
 public class AttractionWithEmptyConstructor extends Attraction {
 
-	public AttractionWithEmptyConstructor(String attractionName, String city, String state, 
-											double latitude, double longitude) {
-		super(attractionName, city, state, latitude, longitude);
+	public AttractionWithEmptyConstructor(String name, String city, String state, double latitude, double longitude) {
+		super(name, city, state, latitude, longitude);
 	}
 
 	public AttractionWithEmptyConstructor() {

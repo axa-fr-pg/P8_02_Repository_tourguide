@@ -34,12 +34,6 @@ public class TrackerService extends Thread {
 		executorService.submit(this);
 	}
 	
-	/* REMOVED because user tracking is useful at any time and can be deactivated in a clean way for unit tests
-	public void stopTracking() {
-		stop = true;
-		executorService.shutdownNow();
-	} */
-	
 	@Override
 	public void run() {
 		logger.debug("run begins");
