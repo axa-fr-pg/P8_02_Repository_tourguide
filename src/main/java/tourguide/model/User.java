@@ -5,15 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import gpsUtil.location.VisitedLocation;
-
 public class User {
 	private final UUID userId;
 	private final String userName;
 	private String phoneNumber;
 	private String emailAddress;
 	private Date latestLocationTimestamp;
-	private List<VisitedLocation> visitedLocations;
+	private List<VisitedLocationData> visitedLocations;
 	private List<UserReward> userRewards;
 	private UserPreferences userPreferences;
 	
@@ -63,11 +61,11 @@ public class User {
 		return latestLocationTimestamp;
 	}
 	
-	public void addToVisitedLocations(VisitedLocation visitedLocation) {
+	public void addToVisitedLocations(VisitedLocationData visitedLocation) {
 		visitedLocations.add(visitedLocation);
 	}
 	
-	public List<VisitedLocation> getVisitedLocations() {
+	public List<VisitedLocationData> getVisitedLocations() {
 		return visitedLocations;
 	}
 	
@@ -93,7 +91,7 @@ public class User {
 		this.userPreferences = userPreferences;
 	}
 
-	public VisitedLocation getLastVisitedLocation() {
+	public VisitedLocationData getLastVisitedLocation() {
 		int listLength = visitedLocations.size();
 		if (listLength == 0) {
 			return null;

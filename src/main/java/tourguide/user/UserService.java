@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourguide.model.LocationData;
 import tourguide.model.User;
+import tourguide.model.VisitedLocationData;
 
 /**
  * Provide services for users based on a persistence layer.
@@ -88,8 +88,8 @@ public class UserService {
 	private void generateUserLocationHistory(User user) {
 		logger.debug("generateUserLocationHistory with userName = " + user.getUserName());
 		IntStream.range(0, 3).forEach(i-> {
-			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), 
-					new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
+			user.addToVisitedLocations(new VisitedLocationData(user.getUserId(), 
+					new LocationData(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
 		});
 	}
 	
