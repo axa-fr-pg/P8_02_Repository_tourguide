@@ -8,4 +8,7 @@ public class LocationData {
 		latitude = lat;
 		longitude = lon;
 	}
+	
+	public LocationData() {
+	}
 }

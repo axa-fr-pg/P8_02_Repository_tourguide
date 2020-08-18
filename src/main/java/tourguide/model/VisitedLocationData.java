@@ -13,4 +13,7 @@ public class VisitedLocationData {
 		location = givenLocation;
 		timeVisited = givenTimeVisited;
 	}
+	
+	public VisitedLocationData() {		
+	}
 }

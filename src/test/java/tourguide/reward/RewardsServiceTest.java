@@ -47,17 +47,6 @@ public class RewardsServiceTest {
 	}
 	
 	@Test
-	public void givenTwoLocations_whenGetDistance_thenReturnsCorrectDistance() {
-		// GIVEN
-		Location parisLocation = new Location(48.8534, 2.3488);
-		Location londonLocation = new Location(51.5084, -0.1255);
-		// WHEN
-		double distance = RewardService.getDistance(parisLocation, londonLocation);
-		// THEN
-		assertEquals(213, distance, 1);
-	}	
-	
-	@Test
 	public void givenPrerequisitesToAdd1RewardOk_whenAddAllNewRewards_thenAddsCorrectReward() {
 		// MOCK rewardCentral
 		Attraction expectedAttraction = new Attraction("attraction_name", "attraction_city", "attraction_state", 0.31, -0.32);

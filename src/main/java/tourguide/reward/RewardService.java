@@ -16,14 +16,12 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.model.AttractionData;
+import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 
 @Service
 public class RewardService {
-    private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
-    private static final double EARTH_RADIUS_IN_NAUTICAL_MILES = 3440.0647948;
-
     private static final int NUMBER_OF_EXPECTED_USER_PARTITIONS = 25;
     private static final int THREAD_POOL_SIZE = NUMBER_OF_EXPECTED_USER_PARTITIONS * 2;
     
@@ -56,27 +54,6 @@ public class RewardService {
 		return points;
 	}
 	
-	/**
-	 * Calculates distance in statute miles between locations
-	 * Uses Spherical Law of Cosines
-	 * @param loc1
-	 * @param loc2
-	 * @return calculated distance
-	 */	
-	public static double getDistance(Location loc1, Location loc2) {
-        double lat1 = Math.toRadians(loc1.latitude);
-        double lon1 = Math.toRadians(loc1.longitude);
-        double lat2 = Math.toRadians(loc2.latitude);
-        double lon2 = Math.toRadians(loc2.longitude);
-
-        double angleDistance = Math.acos(Math.sin(lat1) * Math.sin(lat2)
-                               + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
-
-        double nauticalMilesDistance = EARTH_RADIUS_IN_NAUTICAL_MILES * angleDistance;
-        double statuteMilesDistance = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMilesDistance;
-        return statuteMilesDistance;
-	}
-
 	public void addAllNewRewards(User user, List<AttractionData> attractions)	{
 		logger.debug("addAllNewRewards userName = " + user.getUserName() 
 			+ " and attractionList of size " + attractions.size());
