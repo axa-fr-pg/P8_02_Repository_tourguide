@@ -1,5 +1,6 @@
 package tourguide.gps;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.model.AttractionData;
 import tourguide.model.User;
 
 @Service
@@ -52,8 +53,18 @@ public class GpsService {
 		return userLocations;
 	}
 	
-	public List<Attraction> getAllAttractions() {
+	public List<AttractionData> getAllAttractions() {
 		logger.debug("getAllAttractions");
-		return gpsUtil.getAttractions();
+		List<AttractionData> dataList = new ArrayList<AttractionData>();
+		gpsUtil.getAttractions().stream().forEach(attraction -> {
+			AttractionData data = new AttractionData();
+			data.name = attraction.attractionName;
+			data.city = attraction.city;
+			data.state = attraction.state;
+			data.latitude = attraction.latitude;
+			data.longitude = attraction.longitude;
+			dataList.add(data);
+		});
+		return dataList;
 	}
 }

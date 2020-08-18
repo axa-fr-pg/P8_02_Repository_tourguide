@@ -1,4 +1,4 @@
-package tourguide.model;
+package tourguide.trip;
 
 import java.util.UUID;
 

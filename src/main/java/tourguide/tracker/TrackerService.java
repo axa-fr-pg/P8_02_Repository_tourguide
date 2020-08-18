@@ -11,10 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.location.Attraction;
-import tourguide.gps.GpsService;
+import tourguide.api.GpsRequest;
+import tourguide.api.RewardRequest;
+import tourguide.model.AttractionData;
 import tourguide.model.User;
-import tourguide.reward.RewardService;
 import tourguide.user.UserService;
 
 @Service
@@ -26,8 +26,8 @@ public class TrackerService extends Thread {
 	private boolean stop = false;
 	
 	@Autowired private UserService userService;
-	@Autowired private GpsService gpsService;
-	@Autowired private RewardService rewardService;
+	@Autowired private GpsRequest gpsRequest;
+	@Autowired private RewardRequest rewardRequest;
 
 	public TrackerService() {
 		logger.debug("new instance with empty constructor");
@@ -61,11 +61,11 @@ public class TrackerService extends Thread {
 		// Get All users
 		List<User> allUsers = userService.getAllUsers();
 		// Get and register current location for all users
-		gpsService.trackAllUserLocations(allUsers);
+		gpsRequest.trackAllUserLocations(allUsers);
 		// Get all attractions
-		List<Attraction> allAttractions = gpsService.getAllAttractions();
+		List<AttractionData> allAttractions = gpsRequest.getAllAttractions();
 		// Update rewards for all users
-		rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
+		rewardRequest.addAllNewRewardsAllUsers(allUsers, allAttractions);
 		stopWatch.stop();
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
 		logger.info("trackAllUsers required " + duration + " seconds for " + allUsers.size() + " users");

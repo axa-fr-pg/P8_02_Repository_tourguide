@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourguide.model.AttractionData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 
@@ -44,14 +44,15 @@ public class RewardService {
 		return this.proximityMaximalDistance;
 	}
 	
-	public boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
-		logger.debug("nearAttraction " + attraction.attractionName);
-		return getDistance(attraction, visitedLocation.location) > proximityMaximalDistance ? false : true;
+	public boolean nearAttraction(VisitedLocation visitedLocation, AttractionData attractionData) {
+		logger.debug("nearAttraction " + attractionData.name);
+		Location attractionLocation = new Location(attractionData.latitude, attractionData.longitude);
+		return getDistance(attractionLocation, visitedLocation.location) > proximityMaximalDistance ? false : true;
 	}
 	
-	public int getRewardPoints(Attraction attraction, User user) {
-		logger.debug("getRewardPoints userName = " + user.getUserName() + " for attraction " + attraction.attractionName );
-		int points = rewardCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+	public int getRewardPoints(AttractionData attractionData, User user) {
+		logger.debug("getRewardPoints userName = " + user.getUserName() + " for attraction " + attractionData.name );
+		int points = rewardCentral.getAttractionRewardPoints(attractionData.id, user.getUserId());
 		return points;
 	}
 	
@@ -76,15 +77,18 @@ public class RewardService {
         return statuteMilesDistance;
 	}
 
-	public void addAllNewRewards(User user, List<Attraction> attractions)	{
+	public void addAllNewRewards(User user, List<AttractionData> attractions)	{
 		logger.debug("addAllNewRewards userName = " + user.getUserName() 
 			+ " and attractionList of size " + attractions.size());
 		for(VisitedLocation visitedLocation : user.getVisitedLocations()) {
-			for(Attraction attraction : attractions) {
-				if(user.getUserRewards().stream().filter(reward -> reward.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if(nearAttraction(visitedLocation, attraction)) {
-						logger.debug("addAllNewRewards new Reward for userName = " + user.getUserName() + " for attraction " + attraction.attractionName );
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+			for(AttractionData attractionData : attractions) {
+				long numberOfRewardsOfTheUserForThisAttraction = 
+						user.getUserRewards().stream().filter(reward -> 
+						reward.attraction.attractionName.equals(attractionData.name)).count();
+				if( numberOfRewardsOfTheUserForThisAttraction == 0) {
+					if(nearAttraction(visitedLocation, attractionData)) {
+						logger.debug("addAllNewRewards new Reward for userName = " + user.getUserName() + " for attraction " + attractionData.name );
+						user.addUserReward(new UserReward(visitedLocation, attractionData, getRewardPoints(attractionData, user)));
 					}
 				}
 			}
@@ -104,7 +108,7 @@ public class RewardService {
 		return partitionList;
 	}
 	
-	public long addAllNewRewardsAllUsers(List<User> userList, List<Attraction> attractions)	{
+	public long addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions)	{
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
 			+ " and attractionList of size " + attractions.size());
 		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_POOL_SIZE);

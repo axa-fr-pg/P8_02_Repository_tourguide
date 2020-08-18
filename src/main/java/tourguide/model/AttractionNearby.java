@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import tourguide.gps.LocationWithEmptyConstructor;
 import tourguide.reward.RewardService;
 
 /**

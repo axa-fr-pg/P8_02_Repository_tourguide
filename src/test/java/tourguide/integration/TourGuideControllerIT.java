@@ -29,12 +29,12 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.api.TourGuideService;
 import tourguide.gps.GpsService;
+import tourguide.gps.LocationWithEmptyConstructor;
 import tourguide.model.AttractionNearby;
-import tourguide.model.LocationWithEmptyConstructor;
-import tourguide.model.ProviderWithEmptyConstructor;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.reward.RewardService;
+import tourguide.trip.ProviderWithEmptyConstructor;
 import tourguide.user.UserService;
 import tripPricer.Provider;
 

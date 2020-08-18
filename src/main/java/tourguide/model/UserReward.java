@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import tourguide.gps.AttractionWithEmptyConstructor;
+import tourguide.gps.LocationWithEmptyConstructor;
 
 public class UserReward {
 
@@ -19,12 +21,12 @@ public class UserReward {
 	public AttractionWithEmptyConstructor attraction;
 	public int rewardPoints;
 	
-	public UserReward(VisitedLocation visitedLocation, Attraction attraction, int rewardPoints) {
+	public UserReward(VisitedLocation visitedLocation, AttractionData attraction, int rewardPoints) {
 		visitLocation = new LocationWithEmptyConstructor(
 				visitedLocation.location.latitude, visitedLocation.location.longitude);
 		visitUserId = visitedLocation.userId;
 		visitTime = visitedLocation.timeVisited;
-		this.attraction = new AttractionWithEmptyConstructor(attraction.attractionName,
+		this.attraction = new AttractionWithEmptyConstructor(attraction.name,
 				attraction.city, attraction.state, attraction.latitude, attraction.longitude);
 		this.rewardPoints = rewardPoints;
 	}
