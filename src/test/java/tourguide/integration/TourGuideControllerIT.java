@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -94,46 +95,56 @@ public class TourGuideControllerIT {
 	}
 	
 	@Test
-	public void givenUser1_whenGetRewards_thenReturnsNonEmptyRewardList() throws Exception 
+	public void givenUser1_whenGetRewards_thenReturnsExpectedReward() throws Exception 
 	{
 		// GIVEN
 		String userName = "internalUser1";
 		int rewardPoints = 12345;
-		String rewardPointsAsString = "" + rewardPoints;
 		User user = userService.getUser(userName);
 		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), 
 				user.getLastVisitedLocation().location, new Date());
 		Attraction attraction = gpsService.getAllAttractions().get(0);
 		user.addUserReward(new UserReward(visitedLocation, attraction, rewardPoints));
-		List<String> expectedResponse = Arrays.asList("visitedLocation", "userId", "mostSigBits", "leastSigBits", 
-				"location", "longitude", "latitude", "timeVisited", "date", "day", 
-				"attraction", "attractionName", "city", attraction.attractionName, "state", 
-				"attractionId", "rewardPoints", rewardPointsAsString);
 		// WHEN
 		String responseString = mockMvc
 				.perform(get("/getRewards?userName=" + userName))
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();		
+		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, UserReward.class);
+		List<UserReward> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
-		assertNotNull(responseString);
-		for (String s : expectedResponse) {
-			assertTrue(responseString.contains(s));
+		assertNotNull(responseObject);
+		assertEquals(1, responseObject.size());
+		boolean rewardFound = false;
+		for (UserReward r : responseObject) {
+			if (r.visitUserId.equals(user.getUserId()) && r.getRewardPoints() == 12345) {
+				rewardFound = true;
+			}
 		}
+		assertTrue(rewardFound);
 	}
 
 	@Test
 	public void givenUserList_whenGetAllCurrentLocations_thenReturnsFullList() throws Exception 
 	{
-		// GIVEN user list initialized at program startup
+		// GIVEN
+		List<User> userList = userService.getAllUsers();
+		int numberOfUsers = userList.size();
 		// WHEN
 		String responseString = mockMvc
 				.perform(get("/getAllCurrentLocations"))
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();		
+		JavaType expectedResultType = objectMapper.getTypeFactory().constructMapLikeType(
+				Map.class, String.class, LocationWithEmptyConstructor.class);
+		Map<String, Location> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
-		assertNotNull(responseString);
-		assertTrue(responseString.contains("latitude"));
-		assertTrue(responseString.contains("longitude"));
+		assertNotNull(responseObject);
+		assertEquals(numberOfUsers, responseObject.size());
+		for (int i=0; i< numberOfUsers; i++) {
+			Location location = responseObject.get(userList.get(i).getUserId().toString());
+			assertNotNull(location);
+		}
 	}
 	
 }

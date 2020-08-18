@@ -43,13 +43,15 @@ public class TourGuideController {
     }
     
     @GetMapping("/getRewards") 
-    public String getRewards(@RequestParam String userName) {
-    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    public String getRewards(@RequestParam String userName) throws JsonProcessingException {
+//    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    	return objectMapper.writeValueAsString(tourGuideService.getUserRewards(getUser(userName)));
     }
     
     @GetMapping("/getAllCurrentLocations")
-    public String getAllCurrentLocations() {
-    	return JsonStream.serialize(tourGuideService.getLastLocationAllUsers());
+    public String getAllCurrentLocations() throws JsonProcessingException {
+//    	return JsonStream.serialize(tourGuideService.getLastLocationAllUsers());
+    	return objectMapper.writeValueAsString(tourGuideService.getLastLocationAllUsers());
     }
     
     @GetMapping("/getTripDeals")
