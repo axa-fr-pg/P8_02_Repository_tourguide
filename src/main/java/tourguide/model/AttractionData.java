@@ -19,4 +19,7 @@ public class AttractionData extends LocationData {
 		this.state=state;
 		id = new UUID(0, 0);
 	}
+
+	public AttractionData() {
+	}
 }

@@ -15,7 +15,9 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionData;
+import tourguide.model.LocationData;
 import tourguide.model.User;
+import tourguide.model.VisitedLocationData;
 
 @Service
 public class GpsService {
@@ -27,7 +29,7 @@ public class GpsService {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());
 		userList.stream().parallel().forEach(user -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-			user.addToVisitedLocations(visitedLocation);
+			user.addToVisitedLocations(newVisitedLocationData(visitedLocation));
 		});
 	}
 
@@ -39,7 +41,7 @@ public class GpsService {
 	public VisitedLocation getLastUserLocation(User user) {
 		logger.debug("getLastUserLocation with userName = " + user.getUserName());
 		if (user.getVisitedLocations().size() > 0) {
-			return user.getLastVisitedLocation();
+			return newVisitedLocation(user.getLastVisitedLocation());
 		}
 		return getUserLocation(user);
 	}
@@ -66,5 +68,23 @@ public class GpsService {
 			dataList.add(data);
 		});
 		return dataList;
+	}
+	
+	private LocationData newLocationData(Location location) {
+		return new LocationData(location.latitude, location.longitude);
+	}
+	
+	private Location newLocation(LocationData locationData) {
+		return new Location(locationData.latitude, locationData.longitude);
+	}
+
+	private VisitedLocation newVisitedLocation(VisitedLocationData visitedLocationData) {
+		return new VisitedLocation(visitedLocationData.userId, newLocation(visitedLocationData.location),
+				visitedLocationData.timeVisited);
+	}
+
+	private VisitedLocationData newVisitedLocationData(VisitedLocation visitedLocation) {
+		return new VisitedLocationData(visitedLocation.userId, 
+				newLocationData(visitedLocation.location), visitedLocation.timeVisited);
 	}
 }
