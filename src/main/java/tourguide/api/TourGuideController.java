@@ -10,16 +10,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jsoniter.output.JsonStream;
 
-import gpsUtil.location.VisitedLocation;
-import tourguide.gps.GpsService;
+import tourguide.model.ProviderData;
+import tourguide.model.VisitedLocationData;
 import tourguide.user.UserService;
-import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {
 
 	@Autowired private TourGuideService tourGuideService;
-	@Autowired private GpsService gpsService;
+	@Autowired private GpsRequest gpsRequest;
 	@Autowired private UserService userService;
 	@Autowired private ObjectMapper objectMapper;
 	
@@ -30,7 +29,7 @@ public class TourGuideController {
     
     @GetMapping("/getLastLocation") 
     public String getLastLocation(@RequestParam String userName) throws JsonProcessingException {
-    	VisitedLocationData visitedLocationData = gpsService.getLastUserLocation(userService.getUser(userName));
+    	VisitedLocationData visitedLocation = gpsRequest.getLastUserLocation(userService.getUser(userName));
 		return objectMapper.writeValueAsString(visitedLocation.location);
     }
     
@@ -51,7 +50,7 @@ public class TourGuideController {
     
     @GetMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) throws JsonProcessingException {
-    	List<Provider> providers = tourGuideService.getTripDeals(userService.getUser(userName));
+    	List<ProviderData> providers = tourGuideService.getTripDeals(userService.getUser(userName));
     	return objectMapper.writeValueAsString(providers);
     }
     
@@ -66,7 +65,7 @@ public class TourGuideController {
     
     @GetMapping("/getLastLocationOld") 
     public String getLastLocationOld(@RequestParam String userName) {
-    	VisitedLocation visitedLocation = gpsService.getLastUserLocation(userService.getUser(userName));
+    	VisitedLocationData visitedLocation = gpsRequest.getLastUserLocation(userService.getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
     
@@ -87,7 +86,7 @@ public class TourGuideController {
     
     @GetMapping("/getTripDealsOld")
     public String getTripDealsOld(@RequestParam String userName) throws JsonProcessingException {
-    	List<Provider> providers = tourGuideService.getTripDeals(userService.getUser(userName));
+    	List<ProviderData> providers = tourGuideService.getTripDeals(userService.getUser(userName));
     	return JsonStream.serialize(providers);
     }
 }
