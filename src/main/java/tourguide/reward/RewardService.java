@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.model.AttractionData;
+import tourguide.model.AttractionDistance;
 import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
+import tourguide.model.VisitedLocationData;
 
 @Service
 public class RewardService {
@@ -42,10 +42,13 @@ public class RewardService {
 		return this.proximityMaximalDistance;
 	}
 	
-	public boolean nearAttraction(VisitedLocation visitedLocation, AttractionData attractionData) {
+	public boolean nearAttraction(VisitedLocationData visitedLocation, AttractionData attractionData) {
 		logger.debug("nearAttraction " + attractionData.name);
-		Location attractionLocation = new Location(attractionData.latitude, attractionData.longitude);
-		return getDistance(attractionLocation, visitedLocation.location) > proximityMaximalDistance ? false : true;
+		LocationData attractionLocation = new LocationData(attractionData.latitude, attractionData.longitude);
+		if (AttractionDistance.getDistance(attractionLocation, visitedLocation.location) > proximityMaximalDistance) {
+			return false;
+		}
+		return true;
 	}
 	
 	public int getRewardPoints(AttractionData attractionData, User user) {
@@ -57,11 +60,11 @@ public class RewardService {
 	public void addAllNewRewards(User user, List<AttractionData> attractions)	{
 		logger.debug("addAllNewRewards userName = " + user.getUserName() 
 			+ " and attractionList of size " + attractions.size());
-		for(VisitedLocation visitedLocation : user.getVisitedLocations()) {
+		for(VisitedLocationData visitedLocation : user.getVisitedLocations()) {
 			for(AttractionData attractionData : attractions) {
 				long numberOfRewardsOfTheUserForThisAttraction = 
 						user.getUserRewards().stream().filter(reward -> 
-						reward.attraction.attractionName.equals(attractionData.name)).count();
+						reward.attraction.name.equals(attractionData.name)).count();
 				if( numberOfRewardsOfTheUserForThisAttraction == 0) {
 					if(nearAttraction(visitedLocation, attractionData)) {
 						logger.debug("addAllNewRewards new Reward for userName = " + user.getUserName() + " for attraction " + attractionData.name );
