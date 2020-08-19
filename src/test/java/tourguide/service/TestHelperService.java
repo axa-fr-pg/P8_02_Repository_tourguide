@@ -15,6 +15,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.api.TourGuideService;
+import tourguide.model.AttractionData;
 import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
@@ -81,19 +82,25 @@ public class TestHelperService {
 		return user;
 	}
 	
-	public List<Attraction> mockGpsUtilGetAttractions() {
+	public List<AttractionData> mockGpsUtilGetAttractions() {
 		return mockGpsUtilGetAttractions(NUMBER_OF_TEST_ATTRACTIONS);
 	}
 
-	public List<Attraction> mockGpsUtilGetAttractions(int numberOfTestAttractions) {
+	public List<AttractionData> mockGpsUtilGetAttractions(int numberOfTestAttractions) {
 		List<Attraction> givenAttractions = new ArrayList<Attraction>();	
+		List<AttractionData> responseAttractions = new ArrayList<AttractionData>();	
 		for (int i=0; i<numberOfTestAttractions; i++) {
 			int index = numberOfTestAttractions - i;
 			Attraction attraction = new Attraction("name"+index, "city"+index, "state"+index, 
-					LATITUDE_ATTRACTION_ONE*index, LONGITUDE_ATTRACTION_ONE*index);
+					LATITUDE_ATTRACTION_ONE*index, LONGITUDE_ATTRACTION_ONE*index);	
 			givenAttractions.add(attraction);
+			responseAttractions.add(newAttractionData(attraction));
 		}
 		when(gpsUtil.getAttractions()).thenReturn(givenAttractions);
-		return givenAttractions;
+		return responseAttractions;
+	}
+	
+	private AttractionData newAttractionData(Attraction attraction) {
+		return new AttractionData(attraction.attractionName, attraction.city, attraction.state, attraction.latitude, attraction.longitude);
 	}
 }
