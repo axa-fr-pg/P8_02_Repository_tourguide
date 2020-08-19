@@ -20,7 +20,6 @@ import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.model.VisitedLocationData;
 
-import tourguide.trip.TripService;
 import tourguide.user.UserService;
 
 @Service
@@ -30,7 +29,7 @@ public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	@Autowired private GpsRequest gpsRequest;
 	@Autowired private RewardRequest rewardRequest;
-	@Autowired private TripService tripService;
+	@Autowired private TripRequest tripRequest;
 	@Autowired private UserService userService;
 	
 	public TourGuideService() {
@@ -62,7 +61,7 @@ public class TourGuideService {
 		// List attractions in the neighborhood of the user
 		List<AttractionNearby> attractions = getNearByAttractions(user.getUserName());		
 		// Calculate trip proposals matching attractions list, user preferences and reward points 
-		return tripService.calculateProposals( user, attractions, cumulativeRewardPoints);
+		return tripRequest.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
 	public List<AttractionNearby> getNearByAttractions(String userName) {		
