@@ -15,8 +15,10 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.api.TourGuideService;
+import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
+import tourguide.model.VisitedLocationData;
 import tourguide.user.UserService;
 
 @Service
@@ -52,15 +54,20 @@ public class TestHelperService {
 	
 	public User mockUserServiceGetUserAndGpsUtilGetUserLocation(int index, UserPreferences userPreferences) {
 		User user = mockUserWithVisitedLocation(index, userPreferences);
+		VisitedLocationData userLastVisitedLocationData = user.getLastVisitedLocation();
+		Location expectedLocation = new Location( userLastVisitedLocationData.location.latitude,
+				userLastVisitedLocationData.location.longitude);
+		VisitedLocation expectedVisitedLocation = new VisitedLocation( userLastVisitedLocationData.userId,
+				expectedLocation, userLastVisitedLocationData.timeVisited);
 		when(userService.getUser(user.getUserName())).thenReturn(user);
-		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(user.getLastVisitedLocation());
+		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(expectedVisitedLocation);
 		return user;
 	}
 	
 	public User mockUserWithVisitedLocation(int index, UserPreferences userPreferences) {
 		User user = mockUserWithoutVisitedLocation(index, userPreferences);
-		Location location = new Location(LATITUDE_USER_ONE*index,LONGITUDE_USER_ONE*index);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(index));
+		LocationData location = new LocationData(LATITUDE_USER_ONE*index,LONGITUDE_USER_ONE*index);
+		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), location, new Date(index));
 		user.addToVisitedLocations(visitedLocation);
 		return user;
 	}
