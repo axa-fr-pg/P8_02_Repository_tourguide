@@ -38,17 +38,17 @@ public class GpsService {
 		return gpsUtil.getUserLocation(user.getUserId());
 	}
 	
-	public VisitedLocation getLastUserLocation(User user) {
+	public VisitedLocationData getLastUserLocation(User user) {
 		logger.debug("getLastUserLocation with userName = " + user.getUserName());
 		if (user.getVisitedLocations().size() > 0) {
-			return newVisitedLocation(user.getLastVisitedLocation());
+			return user.getLastVisitedLocation();
 		}
-		return getUserLocation(user);
+		return newVisitedLocationData(getUserLocation(user));
 	}
 	
-	public Map<UUID,Location> getLastUsersLocations(List<User> userList) {
+	public Map<UUID, LocationData> getLastUsersLocations(List<User> userList) {
 		logger.debug("getLastUsersLocations with list of size = " + userList.size());
-		Map<UUID,Location> userLocations = new HashMap<UUID,Location>();
+		Map<UUID,LocationData> userLocations = new HashMap<UUID,LocationData>();
 		userList.stream().parallel().forEach(user -> {
 			userLocations.put(user.getUserId(), getLastUserLocation(user).location);
 		});
