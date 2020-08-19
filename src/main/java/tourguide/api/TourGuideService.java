@@ -15,10 +15,14 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourguide.gps.GpsService;
+import tourguide.model.AttractionData;
 import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
+import tourguide.model.LocationData;
+import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
+import tourguide.model.VisitedLocationData;
 import tourguide.reward.RewardService;
 import tourguide.trip.TripService;
 import tourguide.user.UserService;
@@ -54,7 +58,7 @@ public class TourGuideService {
 		return allUserLocations;
 	}
 	
-	public List<Provider> getTripDeals(User user) {
+	public List<ProviderData> getTripDeals(User user) {
 		// Calculate the sum of all reward points for given user
 		int cumulativeRewardPoints = rewardService.sumOfAllRewardPoints(user);
 		// List attractions in the neighborhood of the user
@@ -66,11 +70,11 @@ public class TourGuideService {
 	public List<AttractionNearby> getNearByAttractions(String userName) {		
 		// Prepare user location as reference to measure attraction distance
 		User user = userService.getUser(userName);
-    	VisitedLocation visitedLocation = gpsService.getLastUserLocation(user);
-		Location fromLocation = visitedLocation.location;
+    	VisitedLocationData visitedLocation = gpsService.getLastUserLocation(user);
+		LocationData fromLocation = visitedLocation.location;
 		// Prepare list of all attractions to be sorted
 		List<AttractionDistance> fullList = new ArrayList<>();
-		for(Attraction toAttraction : gpsService.getAllAttractions()) {
+		for(AttractionData toAttraction : gpsService.getAllAttractions()) {
 			AttractionDistance ad = new AttractionDistance(fromLocation, toAttraction);
 			fullList.add(ad);
 		}

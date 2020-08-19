@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tourguide.model.AttractionNearby;
+import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -21,20 +22,26 @@ public class TripService {
 	private Logger logger = LoggerFactory.getLogger(TripService.class);
 	public static final String TRIP_PRICER_KEY = "test-server-api-key";
 
-	public List<Provider> calculateProposals(User user, List<AttractionNearby> attractions, int cumulativeRewardPoints) {
+	public List<ProviderData> calculateProposals(User user, List<AttractionNearby> attractions, int cumulativeRewardPoints) {
 		logger.debug("calculateProposals userName = " + user.getUserName() 
 			+ " and attractionList of size " + attractions.size()
 			+ " and rewardPoints = cumulativeRewardPoints");
-		List<Provider> providers = new ArrayList<Provider>();
+		List<ProviderData> providers = new ArrayList<ProviderData>();
 		for (AttractionNearby a : attractions) {
-			providers.addAll(tripPricer.getPrice(
-					TRIP_PRICER_KEY, 
-					a.id, 
+			List<Provider> proposals = tripPricer.getPrice(
+					TRIP_PRICER_KEY, a.id, 
 					user.getUserPreferences().getNumberOfAdults(), 
 					user.getUserPreferences().getNumberOfChildren(), 
 					user.getUserPreferences().getTripDuration(), 
-					cumulativeRewardPoints));			
+					cumulativeRewardPoints);
+			for (Provider provider : proposals) {
+				providers.add(newProviderData(provider));
+			}
 		}
 		return providers;
+	}
+	
+	private ProviderData newProviderData(Provider provider) {
+		return new ProviderData(provider.name, provider.price, provider.tripId);
 	}
 }
