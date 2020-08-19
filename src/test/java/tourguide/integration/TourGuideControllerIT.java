@@ -24,17 +24,17 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import tourguide.api.TourGuideService;
 import tourguide.gps.GpsService;
-import tourguide.gps.LocationWithEmptyConstructor;
+import tourguide.model.AttractionData;
+import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
+import tourguide.model.LocationData;
+import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
+import tourguide.model.VisitedLocationData;
 import tourguide.reward.RewardService;
-import tourguide.trip.ProviderWithEmptyConstructor;
 import tourguide.user.UserService;
 import tripPricer.Provider;
 
@@ -65,7 +65,7 @@ public class TourGuideControllerIT {
 				.perform(get("/getLastLocation?userName=" + userName))
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();		
-		Location responseObject = objectMapper.readValue(responseString, LocationWithEmptyConstructor.class);
+		LocationData responseObject = objectMapper.readValue(responseString, LocationData.class);
 		// THEN
 		assertNotNull(responseObject);
 		assertEquals(user.getLastVisitedLocation().location.latitude, responseObject.latitude, 0.000001);
@@ -78,7 +78,7 @@ public class TourGuideControllerIT {
 		// GIVEN 
 		String userName = "internalUser1";
 		User user = userService.getUser(userName);
-		Location userLocation = user.getLastVisitedLocation().location;
+		LocationData userLocation = user.getLastVisitedLocation().location;
 		// WHEN
 		String responseString = mockMvc
 				.perform(get("/getNearbyAttractions?userName=" + userName))
@@ -91,7 +91,7 @@ public class TourGuideControllerIT {
 		assertThat(responseObject.size() > 0);
 		for (AttractionNearby a : responseObject) {
 			assertNotNull(a);
-			double distance = RewardService.getDistance(a.attractionLocation, userLocation);
+			double distance = AttractionDistance.getDistance(a.attractionLocation, userLocation);
 			assertThat(distance < rewardService.getProximityMaximalDistance());
 		}
 	}
@@ -103,9 +103,9 @@ public class TourGuideControllerIT {
 		String userName = "internalUser1";
 		int rewardPoints = 12345;
 		User user = userService.getUser(userName);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), 
+		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), 
 				user.getLastVisitedLocation().location, new Date());
-		Attraction attraction = gpsService.getAllAttractions().get(0);
+		AttractionData attraction = gpsService.getAllAttractions().get(0);
 		user.addUserReward(new UserReward(visitedLocation, attraction, rewardPoints));
 		// WHEN
 		String responseString = mockMvc
@@ -119,7 +119,10 @@ public class TourGuideControllerIT {
 		assertEquals(1, responseObject.size());
 		boolean rewardFound = false;
 		for (UserReward r : responseObject) {
-			if (r.visitUserId.equals(user.getUserId()) && r.rewardPoints == 12345) {
+			assertNotNull(r);
+			assertNotNull(r.visitedLocation);
+			assertNotNull(r.visitedLocation.userId);
+			if (r.visitedLocation.userId.equals(user.getUserId()) && r.rewardPoints == 12345) {
 				rewardFound = true;
 			}
 		}
@@ -138,13 +141,13 @@ public class TourGuideControllerIT {
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();		
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructMapLikeType(
-				Map.class, String.class, LocationWithEmptyConstructor.class);
-		Map<String, Location> responseObject = objectMapper.readValue(responseString, expectedResultType);
+				Map.class, String.class, LocationData.class);
+		Map<String, LocationData> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
 		assertNotNull(responseObject);
 		assertEquals(numberOfUsers, responseObject.size());
 		for (int i=0; i< numberOfUsers; i++) {
-			Location location = responseObject.get(userList.get(i).getUserId().toString());
+			LocationData location = responseObject.get(userList.get(i).getUserId().toString());
 			assertNotNull(location);
 		}
 	}
@@ -159,7 +162,7 @@ public class TourGuideControllerIT {
 				.perform(get("/getTripDeals?userName=" + userName))
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();
-		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, ProviderWithEmptyConstructor.class);
+		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, ProviderData.class);
 		List<Provider> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
 		assertNotNull(responseObject);
