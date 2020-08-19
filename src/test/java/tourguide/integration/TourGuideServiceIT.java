@@ -23,14 +23,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourguide.api.TourGuideService;
 import tourguide.gps.GpsService;
 import tourguide.model.AttractionNearby;
+import tourguide.model.LocationData;
+import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
+import tourguide.model.VisitedLocationData;
 import tourguide.reward.RewardService;
 import tourguide.service.TestHelperService;
 import tourguide.tracker.TrackerService;
@@ -120,9 +121,9 @@ public class TourGuideServiceIT {
 		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), eq(2*duration), anyInt()))
 			.thenReturn(givenProvidersDouble);
 		// WHEN
-		List<Provider> duration4Providers = tourGuideService.getTripDeals(user);
+		List<ProviderData> duration4Providers = tourGuideService.getTripDeals(user);
 		userPreferences.setTripDuration(2*duration);
-		List<Provider> duration8Providers = tourGuideService.getTripDeals(user);
+		List<ProviderData> duration8Providers = tourGuideService.getTripDeals(user);
 		// THEN
 		assertNotNull(duration4Providers);
 		assertNotNull(duration8Providers);
@@ -158,9 +159,9 @@ public class TourGuideServiceIT {
 		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), eq(2*children), anyInt(), anyInt()))
 			.thenReturn(givenProvidersDouble);
 		// WHEN
-		List<Provider> providers1Child = tourGuideService.getTripDeals(user);
+		List<ProviderData> providers1Child = tourGuideService.getTripDeals(user);
 		userPreferences.setNumberOfChildren(2*children);
-		List<Provider> providers2Children = tourGuideService.getTripDeals(user);
+		List<ProviderData> providers2Children = tourGuideService.getTripDeals(user);
 		// THEN
 		assertNotNull(providers1Child);
 		assertNotNull(providers2Children);
@@ -176,18 +177,18 @@ public class TourGuideServiceIT {
 		// MOCK getAllUsers
 		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(5);
 		// WHEN
-		Map<String,Location> allUserLocations = tourGuideService.getLastLocationAllUsers();
+		Map<String,LocationData> allUserLocations = tourGuideService.getLastLocationAllUsers();
 		// THEN
 		assertNotNull(allUserLocations);
 		assertEquals(givenUsers.size(), allUserLocations.size()); // CHECK LIST SIZE
 		User givenUser = givenUsers.get(0);
 		assertNotNull(givenUser);
 		assertNotNull(givenUser.getUserId());
-		Location resultLocation = allUserLocations.get(givenUser.getUserId().toString());
+		LocationData resultLocation = allUserLocations.get(givenUser.getUserId().toString());
 		assertNotNull(resultLocation);
-		VisitedLocation givenVisitedLocation = givenUser.getLastVisitedLocation();
+		VisitedLocationData givenVisitedLocation = givenUser.getLastVisitedLocation();
 		assertNotNull(givenVisitedLocation);
-		Location givenLocation = givenVisitedLocation.location;
+		LocationData givenLocation = givenVisitedLocation.location;
 		assertNotNull(givenLocation);
 		assertEquals(givenLocation.latitude, resultLocation.latitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
 		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
