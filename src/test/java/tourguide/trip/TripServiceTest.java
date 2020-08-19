@@ -19,12 +19,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourguide.model.AttractionData;
 import tourguide.model.AttractionNearby;
+import tourguide.model.LocationData;
+import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
+import tourguide.model.VisitedLocationData;
 import tourguide.service.TestHelperService;
 import tourguide.trip.TripService;
 import tripPricer.Provider;
@@ -52,11 +53,11 @@ public class TripServiceTest {
 		userPreferences.setNumberOfChildren(children);
 		userPreferences.setTripDuration(duration);
 		user.setUserPreferences(userPreferences);
-		Location location = new Location(0, 0);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date());
+		LocationData location = new LocationData(0, 0);
+		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), location, new Date());
 		user.addToVisitedLocations(visitedLocation);
 		List<AttractionNearby> nearbyAttractions = new ArrayList<>();
-		Attraction attraction = new Attraction("", "", "", 0, 0); 
+		AttractionData attraction = new AttractionData("", "", "", 0, 0); 
 		AttractionNearby attractionNearby = new AttractionNearby(attraction, user, 0);
 		nearbyAttractions.add(attractionNearby);
 		// MOCK getAttractions
@@ -84,9 +85,9 @@ public class TripServiceTest {
 				eq(0)))
 				.thenReturn(givenProvidersDouble);
 		// WHEN
-		List<Provider> duration4Providers = tripService.calculateProposals(user, nearbyAttractions, 0);
+		List<ProviderData> duration4Providers = tripService.calculateProposals(user, nearbyAttractions, 0);
 		userPreferences.setTripDuration(2*duration);
-		List<Provider> duration8Providers = tripService.calculateProposals(user, nearbyAttractions, 0);
+		List<ProviderData> duration8Providers = tripService.calculateProposals(user, nearbyAttractions, 0);
 		// THEN
 		assertNotNull(duration4Providers);
 		assertNotNull(duration8Providers);
@@ -109,11 +110,11 @@ public class TripServiceTest {
 		userPreferences.setNumberOfChildren(children);
 		userPreferences.setTripDuration(duration);
 		user.setUserPreferences(userPreferences);
-		Location location = new Location(0, 0);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date());
+		LocationData location = new LocationData(0, 0);
+		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), location, new Date());
 		user.addToVisitedLocations(visitedLocation);
 		List<AttractionNearby> nearbyAttractions = new ArrayList<>();
-		Attraction attraction = new Attraction("", "", "", 0, 0); 
+		AttractionData attraction = new AttractionData("", "", "", 0, 0); 
 		AttractionNearby attractionNearby = new AttractionNearby(attraction, user, 0);
 		nearbyAttractions.add(attractionNearby);
 		// MOCK getAttractions
@@ -141,9 +142,9 @@ public class TripServiceTest {
 				eq(0)))
 				.thenReturn(givenProvidersDouble);
 		// WHEN
-		List<Provider> providers1Child = tripService.calculateProposals(user, nearbyAttractions, 0);
+		List<ProviderData> providers1Child = tripService.calculateProposals(user, nearbyAttractions, 0);
 		userPreferences.setNumberOfChildren(2*children);
-		List<Provider> providers2Children = tripService.calculateProposals(user, nearbyAttractions, 0);
+		List<ProviderData> providers2Children = tripService.calculateProposals(user, nearbyAttractions, 0);
 		// THEN
 		assertNotNull(providers1Child);
 		assertNotNull(providers2Children);
