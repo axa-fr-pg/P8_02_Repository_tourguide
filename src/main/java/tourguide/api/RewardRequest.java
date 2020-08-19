@@ -23,5 +23,14 @@ public class RewardRequest {
 		rewardController.addAllNewRewardsAllUsers(userList, attractions);		
 	}
 
-	
+	public int sumOfAllRewardPoints(User user) {
+		logger.debug("getLastUserLocation for User " + user.getUserName());
+		return rewardController.sumOfAllRewardPoints(user);		
+	}
+
+	public int getRewardPoints(AttractionData attraction, User user) {
+		logger.debug("getLastUserLocation for User " + user.getUserName()
+			+ " and Attraction " + attraction.name);
+		return rewardController.getRewardPoints(attraction, user);
+	}	
 }

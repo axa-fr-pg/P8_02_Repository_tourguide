@@ -19,7 +19,7 @@ import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.model.VisitedLocationData;
-import tourguide.reward.RewardService;
+
 import tourguide.trip.TripService;
 import tourguide.user.UserService;
 
@@ -29,7 +29,7 @@ public class TourGuideService {
 	public static final int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	@Autowired private GpsRequest gpsRequest;
-	@Autowired private RewardService rewardService;
+	@Autowired private RewardRequest rewardRequest;
 	@Autowired private TripService tripService;
 	@Autowired private UserService userService;
 	
@@ -58,7 +58,7 @@ public class TourGuideService {
 	public List<ProviderData> getTripDeals(User user) {
 		logger.debug("getTripDeals userName = " + user.getUserName());
 		// Calculate the sum of all reward points for given user
-		int cumulativeRewardPoints = rewardService.sumOfAllRewardPoints(user);
+		int cumulativeRewardPoints = rewardRequest.sumOfAllRewardPoints(user);
 		// List attractions in the neighborhood of the user
 		List<AttractionNearby> attractions = getNearByAttractions(user.getUserName());		
 		// Calculate trip proposals matching attractions list, user preferences and reward points 
@@ -83,7 +83,7 @@ public class TourGuideService {
 		List<AttractionNearby> nearbyAttractions = new ArrayList<>();
 		for (int i=0; i<NUMBER_OF_PROPOSED_ATTRACTIONS && i<fullList.size(); i++) {
 			AttractionData attraction = fullList.get(i);
-			int rewardPoints = rewardService.getRewardPoints(attraction, user);
+			int rewardPoints = rewardRequest.getRewardPoints(attraction, user);
 			AttractionNearby nearbyAttraction = new AttractionNearby(attraction, user, rewardPoints);
 			nearbyAttractions.add(nearbyAttraction);
 		}

@@ -30,7 +30,7 @@ public class TourGuideController {
     
     @GetMapping("/getLastLocation") 
     public String getLastLocation(@RequestParam String userName) throws JsonProcessingException {
-    	VisitedLocation visitedLocation = gpsService.getLastUserLocation(userService.getUser(userName));
+    	VisitedLocationData visitedLocationData = gpsService.getLastUserLocation(userService.getUser(userName));
 		return objectMapper.writeValueAsString(visitedLocation.location);
     }
     

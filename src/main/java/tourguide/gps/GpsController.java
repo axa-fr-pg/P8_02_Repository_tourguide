@@ -31,12 +31,12 @@ public class GpsController {
 	}
 
 	public VisitedLocationData getLastUserLocation(User user) {
-		logger.debug("getLastUserLocation");
+		logger.debug("getLastUserLocation for User " + user.getUserName());
 		return gpsService.getLastUserLocation(user);
 	}
 
 	public Map<UUID, LocationData> getLastUsersLocations(List<User> allUsers) {
-		logger.debug("getLastUsersLocations");
+		logger.debug("getLastUsersLocations for List of size " + allUsers.size());
 		return gpsService.getLastUsersLocations(allUsers);
 	}
 }

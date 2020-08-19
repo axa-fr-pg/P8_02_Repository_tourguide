@@ -22,4 +22,14 @@ public class RewardController {
 		rewardService.addAllNewRewardsAllUsers(userList, attractions);		
 	}
 
+	public int sumOfAllRewardPoints(User user) {
+		logger.debug("getLastUserLocation for User " + user.getUserName());
+		return rewardService.sumOfAllRewardPoints(user);		
+	}
+
+	public int getRewardPoints(AttractionData attraction, User user) {
+		logger.debug("getLastUserLocation for User " + user.getUserName()
+		+ " and Attraction " + attraction.name);
+	return rewardService.getRewardPoints(attraction, user);
+	}
 }
