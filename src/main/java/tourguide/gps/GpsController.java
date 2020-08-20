@@ -7,22 +7,25 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import tourguide.model.AttractionData;
 import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
 
-@Service
+@RestController
 public class GpsController {
 
 	private Logger logger = LoggerFactory.getLogger(GpsController.class);
 	@Autowired private GpsService gpsService;
 
-	public void trackAllUserLocations(List<User> userList) {
+	@PatchMapping("/trackAllUserLocations")
+	public List<User> trackAllUserLocations(@RequestBody List<User> userList) {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());
-		gpsService.trackAllUserLocations(userList);
+		return gpsService.trackAllUserLocations(userList);
 	}
 	
 	public List<AttractionData> getAllAttractions() {

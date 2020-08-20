@@ -30,28 +30,28 @@ public class TrackerService extends Thread {
 	@Autowired private RewardRequest rewardRequest;
 
 	public TrackerService() {
-		logger.debug("new instance with empty constructor");
+		logger.debug("new instance");
 		executorService.submit(this);
 	}
 	
 	@Override
 	public void run() {
-		logger.debug("run begins");
+		logger.debug("run() starting");
 		while(true) {
 			if(Thread.currentThread().isInterrupted() || stop) {
-				logger.debug("run has been told to stop");
+				logger.debug("run() has been told to stop");
 				break;
 			}			
 			trackAllUsers();
 			try {
-				logger.debug("run starts to sleep");
+				logger.debug("run() waiting for next iteration");
 				TimeUnit.SECONDS.sleep(trackingPollingInterval);
 			} catch (InterruptedException e) {
-				logger.error("run has catched InterruptedException");
+				logger.error("run() catched InterruptedException");
 				break;
 			}
 		}
-		logger.debug("run has reached the end");
+		logger.debug("run() reached the end");
 	}
 	
 	public long trackAllUsers() {
@@ -59,16 +59,16 @@ public class TrackerService extends Thread {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		// Get All users
-		List<User> allUsers = userService.getAllUsers();
+		List<User> allUsersStart = userService.getAllUsers();
 		// Get and register current location for all users
-		gpsRequest.trackAllUserLocations(allUsers);
+		List<User> allUsersUpdated = gpsRequest.trackAllUserLocations(allUsersStart);
 		// Get all attractions
 		List<AttractionData> allAttractions = gpsRequest.getAllAttractions();
 		// Update rewards for all users
-		rewardRequest.addAllNewRewardsAllUsers(allUsers, allAttractions);
+		rewardRequest.addAllNewRewardsAllUsers(allUsersUpdated, allAttractions);
 		stopWatch.stop();
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
-		logger.info("trackAllUsers required " + duration + " seconds for " + allUsers.size() + " users");
+		logger.info("trackAllUsers required " + duration + " seconds for " + allUsersStart.size() + " users");
 		return duration;
 	}
 }

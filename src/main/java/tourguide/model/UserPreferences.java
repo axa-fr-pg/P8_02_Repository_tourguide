@@ -1,16 +1,10 @@
 package tourguide.model;
 
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
-
-import org.javamoney.moneta.Money;
-
 public class UserPreferences {
 	
 	private int attractionProximity = Integer.MAX_VALUE;
-	private CurrencyUnit currency = Monetary.getCurrency("USD");
-	private Money lowerPricePoint = Money.of(0, currency);
-	private Money highPricePoint = Money.of(Integer.MAX_VALUE, currency);
+	private double lowerPricePoint = 0;
+	private double highPricePoint = Double.MAX_VALUE;
 	private int tripDuration = 1;
 	private int ticketQuantity = 1;
 	private int numberOfAdults = 1;
@@ -27,19 +21,19 @@ public class UserPreferences {
 		return attractionProximity;
 	}
 	
-	public Money getLowerPricePoint() {
+	public double getLowerPricePoint() {
 		return lowerPricePoint;
 	}
 
-	public void setLowerPricePoint(Money lowerPricePoint) {
+	public void setLowerPricePoint(double lowerPricePoint) {
 		this.lowerPricePoint = lowerPricePoint;
 	}
 
-	public Money getHighPricePoint() {
+	public double getHighPricePoint() {
 		return highPricePoint;
 	}
 
-	public void setHighPricePoint(Money highPricePoint) {
+	public void setHighPricePoint(double highPricePoint) {
 		this.highPricePoint = highPricePoint;
 	}
 	

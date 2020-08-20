@@ -62,6 +62,12 @@ public class UserService {
 		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
 	
+	public void setAllUsers(List<User> userList) {
+		logger.debug("setAllUsers with list of size = " + userList.size());
+		internalUserMap = new HashMap<>();	
+		userList.stream().forEach(user -> { internalUserMap.put(user.getUserName(), user); });
+	}
+	
 	public void addUser(User user) {
 		logger.debug("addUser with userName = " + user.getUserName());
 		if(!internalUserMap.containsKey(user.getUserName())) {

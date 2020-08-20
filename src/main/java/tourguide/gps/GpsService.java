@@ -25,12 +25,13 @@ public class GpsService {
 	private Logger logger = LoggerFactory.getLogger(GpsService.class);
 	@Autowired private GpsUtil gpsUtil;
 
-	public void trackAllUserLocations(List<User> userList) {
+	public List<User> trackAllUserLocations(List<User> userList) {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());
 		userList.stream().parallel().forEach(user -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 			user.addToVisitedLocations(newVisitedLocationData(visitedLocation));
 		});
+		return userList;
 	}
 
 	public VisitedLocation getUserLocation(User user) {

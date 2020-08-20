@@ -1,7 +1,6 @@
 package tourguide.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +9,6 @@ public class User {
 	private final String userName;
 	private String phoneNumber;
 	private String emailAddress;
-	private Date latestLocationTimestamp;
 	private List<VisitedLocationData> visitedLocations;
 	private List<UserReward> userRewards;
 	private UserPreferences userPreferences;
@@ -51,14 +49,6 @@ public class User {
 	
 	public String getEmailAddress() {
 		return emailAddress;
-	}
-	
-	public void setLatestLocationTimestamp(Date latestLocationTimestamp) {
-		this.latestLocationTimestamp = latestLocationTimestamp;
-	}
-	
-	public Date getLatestLocationTimestamp() {
-		return latestLocationTimestamp;
 	}
 	
 	public void addToVisitedLocations(VisitedLocationData visitedLocation) {
