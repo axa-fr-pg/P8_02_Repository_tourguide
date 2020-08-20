@@ -29,31 +29,15 @@ public class GpsService {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());
 		userList.stream().parallel().forEach(user -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-			user.addToVisitedLocations(newVisitedLocationData(visitedLocation));
+			user.addToVisitedLocations(VisitedLocationData.newVisitedLocationData(visitedLocation));
 		});
 		return userList;
 	}
 
-	public VisitedLocation getUserLocation(User user) {
-		logger.debug("getUserLocation with userName = " + user.getUserName());
-		return gpsUtil.getUserLocation(user.getUserId());
-	}
-	
-	public VisitedLocationData getLastUserLocation(User user) {
-		logger.debug("getLastUserLocation with userName = " + user.getUserName());
-		if (user.getVisitedLocations().size() > 0) {
-			return user.getLastVisitedLocation();
-		}
-		return newVisitedLocationData(getUserLocation(user));
-	}
-	
-	public Map<UUID, LocationData> getLastUsersLocations(List<User> userList) {
-		logger.debug("getLastUsersLocations with list of size = " + userList.size());
-		Map<UUID,LocationData> userLocations = new HashMap<UUID,LocationData>();
-		userList.stream().parallel().forEach(user -> {
-			userLocations.put(user.getUserId(), getLastUserLocation(user).location);
-		});
-		return userLocations;
+	public VisitedLocationData getCurrentUserLocation(String userIdString) {
+		logger.debug("getUserLocation with userId = " + userIdString);
+		UUID userId = UUID.fromString(userIdString);
+		return VisitedLocationData.newVisitedLocationData(gpsUtil.getUserLocation(userId));
 	}
 	
 	public List<AttractionData> getAllAttractions() {
@@ -69,23 +53,5 @@ public class GpsService {
 			dataList.add(data);
 		});
 		return dataList;
-	}
-	
-	private LocationData newLocationData(Location location) {
-		return new LocationData(location.latitude, location.longitude);
-	}
-	
-	private Location newLocation(LocationData locationData) {
-		return new Location(locationData.latitude, locationData.longitude);
-	}
-
-	private VisitedLocation newVisitedLocation(VisitedLocationData visitedLocationData) {
-		return new VisitedLocation(visitedLocationData.userId, newLocation(visitedLocationData.location),
-				visitedLocationData.timeVisited);
-	}
-
-	private VisitedLocationData newVisitedLocationData(VisitedLocation visitedLocation) {
-		return new VisitedLocationData(visitedLocation.userId, 
-				newLocationData(visitedLocation.location), visitedLocation.timeVisited);
 	}
 }

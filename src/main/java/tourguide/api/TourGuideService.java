@@ -1,6 +1,7 @@
 package tourguide.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,18 +41,24 @@ public class TourGuideService {
 		return user.getUserRewards();
 	}
 	
+	public VisitedLocationData getLastUserLocation(User user) {
+		logger.debug("getLastUserLocation with userName = " + user.getUserName());
+		if (user.getVisitedLocations().size() > 0) {
+			return user.getLastVisitedLocation();
+		}
+		return gpsRequest.getCurrentUserLocation(user);
+	}
+	
 	public Map<String,LocationData> getLastLocationAllUsers() {
 		logger.debug("getLastLocationAllUsers");
 		// Get all users within the application
 		List<User> allUsers = userService.getAllUsers();
+		Map<String,LocationData> allUserLocationsMap = new HashMap<String,LocationData>();
 		// Get visited locations for all of them
-		Map<UUID,LocationData> allUserLocationsWithUUID = gpsRequest.getLastUsersLocations(allUsers);
-		// Change the key of the map to match the String format requirement
-		Map<String,LocationData> allUserLocations = allUserLocationsWithUUID.entrySet().stream().collect(Collectors.toMap(
-				entry -> entry.getKey().toString(),
-				entry -> entry.getValue()
-		));
-		return allUserLocations;
+		allUsers.forEach(user -> {
+			allUserLocationsMap.put(user.getUserId().toString(), getLastUserLocation(user).location);
+		});
+		return allUserLocationsMap;
 	}
 	
 	public List<ProviderData> getTripDeals(User user) {
@@ -68,7 +75,7 @@ public class TourGuideService {
 		logger.debug("getNearByAttractions userName = " + userName);
 		// Prepare user location as reference to measure attraction distance
 		User user = userService.getUser(userName);
-    	VisitedLocationData visitedLocation = gpsRequest.getLastUserLocation(user);
+    	VisitedLocationData visitedLocation = getLastUserLocation(user);
 		LocationData fromLocation = visitedLocation.location;
 		// Prepare list of all attractions to be sorted
 		List<AttractionDistance> fullList = new ArrayList<>();

@@ -130,14 +130,14 @@ public class TourGuideControllerIT {
 	}
 
 	@Test
-	public void givenUserList_whenGetAllCurrentLocations_thenReturnsFullList() throws Exception 
+	public void givenUserList_whenGetAllLastLocations_thenReturnsFullList() throws Exception 
 	{
 		// GIVEN
 		List<User> userList = userService.getAllUsers();
 		int numberOfUsers = userList.size();
 		// WHEN
 		String responseString = mockMvc
-				.perform(get("/getAllCurrentLocations"))
+				.perform(get("/getAllLastLocations"))
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();		
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructMapLikeType(

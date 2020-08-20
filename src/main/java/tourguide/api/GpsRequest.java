@@ -1,9 +1,7 @@
 package tourguide.api;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import tourguide.gps.GpsController;
 import tourguide.model.AttractionData;
-import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
 import tourguide.user.UserService;
@@ -21,45 +17,43 @@ import tourguide.user.UserService;
 @Service
 public class GpsRequest {
 	
-	private final GpsCaller gpsCaller;
+	private final GpsClient gpsClient;
 	private Logger logger = LoggerFactory.getLogger(GpsRequest.class);
-	@Autowired private GpsController gpsController;
 	@Autowired private ObjectMapper objectMapper;
 	@Autowired private UserService userService;
 	
-	public GpsRequest(GpsCaller gpsCaller) {
-		this.gpsCaller = gpsCaller;
+	public GpsRequest(GpsClient gpsClient) {
+		this.gpsClient = gpsClient;
 	}
 
 	public List<User> trackAllUserLocations(List<User> userList) {
 		logger.debug("trackAllUserLocations before external call");
-		logListContent(userList);
-		List<User> updatedUserList = gpsCaller.trackAllUserLocations(userList);
+		logListContent("trackAllUserLocations", userList);
+		List<User> updatedUserList = gpsClient.trackAllUserLocations(userList);
 		logger.debug("trackAllUserLocations after external call");
-		logListContent(updatedUserList);
+		logListContent("trackAllUserLocations", updatedUserList);
 		userService.setAllUsers(updatedUserList);
 		return updatedUserList;
 	}
 
 	public List<AttractionData> getAllAttractions() {
 		logger.debug("getAllAttractions");
-		return gpsController.getAllAttractions();
+		List<AttractionData> attractions = gpsClient.getAllAttractions();
+		logListContent("getAllAttractions", attractions);
+		return attractions;
 	}
 
-	public VisitedLocationData getLastUserLocation(User user) {
-		logger.debug("getLastUserLocation for User " + user.getUserName());
-		return gpsController.getLastUserLocation(user);
+	public VisitedLocationData getCurrentUserLocation(User user) {
+		logger.debug("getCurrentUserLocation for User " + user.getUserName());
+		VisitedLocationData visitedLocation = gpsClient.getCurrentUserLocation(user.getUserId().toString());
+		logListContent("getCurrentUserLocation", Collections.singletonList(visitedLocation));
+		return visitedLocation;
 	}
 
-	public Map<UUID, LocationData> getLastUsersLocations(List<User> allUsers) {
-		logger.debug("getLastUsersLocations for List of size " + allUsers.size());
-		return gpsController.getLastUsersLocations(allUsers);
-	}
-	
-	private void logListContent(List<?> list) {
-		logger.debug("logListContent size " + list.size() + " : " + list.toString());
+	private void logListContent(String methodName, List<?> list) {
+		logger.debug(methodName + " number of elements " + list.size() + " : " + list.toString());
 		try {
-			logger.debug("logListContent details : " + objectMapper.writeValueAsString(list));
+			logger.debug(methodName + " content details : " + objectMapper.writeValueAsString(list));
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException("logListContent catched a JsonProcessingException");
 		}

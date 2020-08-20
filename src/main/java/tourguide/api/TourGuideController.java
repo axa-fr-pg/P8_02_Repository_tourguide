@@ -18,7 +18,6 @@ import tourguide.user.UserService;
 public class TourGuideController {
 
 	@Autowired private TourGuideService tourGuideService;
-	@Autowired private GpsRequest gpsRequest;
 	@Autowired private UserService userService;
 	@Autowired private ObjectMapper objectMapper;
 	
@@ -29,7 +28,7 @@ public class TourGuideController {
     
     @GetMapping("/getLastLocation") 
     public String getLastLocation(@RequestParam String userName) throws JsonProcessingException {
-    	VisitedLocationData visitedLocation = gpsRequest.getLastUserLocation(userService.getUser(userName));
+    	VisitedLocationData visitedLocation = tourGuideService.getLastUserLocation(userService.getUser(userName));
 		return objectMapper.writeValueAsString(visitedLocation.location);
     }
     
@@ -43,8 +42,8 @@ public class TourGuideController {
     	return objectMapper.writeValueAsString(tourGuideService.getUserRewards(userService.getUser(userName)));
     }
     
-    @GetMapping("/getAllCurrentLocations")
-    public String getAllCurrentLocations() throws JsonProcessingException {
+    @GetMapping("/getAllLastLocations")
+    public String getAllLastLocations() throws JsonProcessingException {
     	return objectMapper.writeValueAsString(tourGuideService.getLastLocationAllUsers());
     }
     
@@ -65,7 +64,7 @@ public class TourGuideController {
     
     @GetMapping("/getLastLocationOld") 
     public String getLastLocationOld(@RequestParam String userName) {
-    	VisitedLocationData visitedLocation = gpsRequest.getLastUserLocation(userService.getUser(userName));
+    	VisitedLocationData visitedLocation = tourGuideService.getLastUserLocation(userService.getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
     

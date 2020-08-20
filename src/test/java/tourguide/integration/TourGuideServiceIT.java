@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -59,21 +60,6 @@ public class TourGuideServiceIT {
 		doNothing().when(tracker).run();
 		doNothing().when(userService).initializeInternalUsers(any(Integer.class), any(Boolean.class));
 	}
-	
-	/* NOT USED ANY MORE
-	@Test
-	public void givenUser_whenTrackUserLocation_thenLocationAddedToUserHistory() {
-		// GIVEN mock GpsUtil
-		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, null);
-		// WHEN
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocationAndCalculateRewards(user);
-		// THEN
-		assertEquals(2, user.getVisitedLocations().size());
-		assertNotNull(visitedLocation);
-		assertTrue(visitedLocation.userId.equals(user.getUserId()));
-		assertEquals(visitedLocation.location.latitude, user.getLastVisitedLocation().location.latitude, 0.0000000001);
-		assertEquals(visitedLocation.location.longitude, user.getLastVisitedLocation().location.longitude, 0.0000000001);
-	}*/
 	
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
@@ -181,118 +167,41 @@ public class TourGuideServiceIT {
 		// THEN
 		assertNotNull(allUserLocations);
 		assertEquals(givenUsers.size(), allUserLocations.size()); // CHECK LIST SIZE
-		User givenUser = givenUsers.get(0);
-		assertNotNull(givenUser);
-		assertNotNull(givenUser.getUserId());
-		LocationData resultLocation = allUserLocations.get(givenUser.getUserId().toString());
-		assertNotNull(resultLocation);
-		VisitedLocationData givenVisitedLocation = givenUser.getLastVisitedLocation();
-		assertNotNull(givenVisitedLocation);
-		LocationData givenLocation = givenVisitedLocation.location;
-		assertNotNull(givenLocation);
-		assertEquals(givenLocation.latitude, resultLocation.latitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
-		assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001); // CHECK LOCATION FOR FIRST GIVEN USER
+		givenUsers.forEach( user -> {
+			LocationData resultLocation = allUserLocations.get(user.getUserId().toString());
+			assertNotNull(resultLocation);
+			VisitedLocationData givenVisitedLocation = user.getLastVisitedLocation();
+			assertNotNull(givenVisitedLocation);
+			LocationData givenLocation = givenVisitedLocation.location;
+			assertNotNull(givenLocation);
+			assertEquals(givenLocation.latitude, resultLocation.latitude, 0.0000000001);
+			assertEquals(givenLocation.longitude, resultLocation.longitude, 0.0000000001);
+		});
 	}
 	
-	/* Method addUserRewards REMOVED and replaced with RewardService method
 	@Test
-	public void givenPrerequisitesToAdd1RewardOk_whenAddUserRewards_thenAddsCorrectReward() {
-		// MOCK gpsUtil.getAttractions
-		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
-		// MOCK rewardCentral
-		int expectedRewardPoints = 123;
-		User user = new User(new UUID(11,12), "user_name", "user_phone", "user_email");
-		Attraction expectedAttraction = givenAttractions.get(0);
-		when(rewardCentral.getAttractionRewardPoints(eq(expectedAttraction.attractionId), eq(user.getUserId())))
-			.thenReturn(expectedRewardPoints);
-		// GIVEN user was close enough to the attraction
-		rewardService.setProximityMaximalDistance(10); // statute miles
-		double latitudeDifferenceMakingItCloseEnough = 0.14; // degrees
-		Location location = new Location(expectedAttraction.latitude - latitudeDifferenceMakingItCloseEnough, expectedAttraction.longitude);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
-		user.addToVisitedLocations(visitedLocation);
+	public void givenUserWithVisitedLocation_whenGetLastUserLocation_thenReturnsLastVisitedLocation() {
+		// GIVEN mock GpsUtil
+		User user = testHelperService.mockUserWithVisitedLocation(1, null);
 		// WHEN
-		tourGuideService.addUserRewards(user);
-		List<UserReward> userRewards = tourGuideService.getUserRewards(user);
+		VisitedLocationData resultLocation = tourGuideService.getLastUserLocation(user);
 		// THEN
-		assertNotNull(userRewards);
-		assertEquals(1, userRewards.size());
-		assertNotNull(userRewards.get(0));
-		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
+		assertNotNull(resultLocation);
+		assertTrue(resultLocation.userId.equals(user.getUserId()));
+		assertEquals(TestHelperService.LATITUDE_USER_ONE, resultLocation.location.latitude, 0.0000000001);
+		assertEquals(TestHelperService.LONGITUDE_USER_ONE, resultLocation.location.longitude, 0.0000000001);
 	}
 
 	@Test
-	public void givenTooFarToAddReward_whenAddUserRewards_thenAddsNoReward() {
-		// MOCK gpsUtil.getAttractions
-		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
-		// MOCK rewardCentral
-		User user = new User(new UUID(11,12), "user_name", "user_phone", "user_email");
-		Attraction closestAttraction = givenAttractions.get(0);
-		// GIVEN user was close enough to the attraction
-		rewardService.setProximityMaximalDistance(10); // statute miles
-		double latitudeDifferenceMakingItTooFar = 0.15; // degrees
-		Location location = new Location(closestAttraction.latitude - latitudeDifferenceMakingItTooFar, closestAttraction.longitude);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
-		user.addToVisitedLocations(visitedLocation);
+	public void givenUserWithoutVisitedLocation_whenGetLastUserLocation_thenReturnsCurrentLocation() {
+		// GIVEN mock GpsUtil
+		User user = testHelperService.mockUserWithoutVisitedLocation(1, null);
 		// WHEN
-		tourGuideService.addUserRewards(user);
-		List<UserReward> userRewards = tourGuideService.getUserRewards(user);
+		VisitedLocationData resultLocation = tourGuideService.getLastUserLocation(user);
 		// THEN
-		assertNotNull(userRewards);
-		assertEquals(0, userRewards.size());
+		assertNotNull(resultLocation);
+		assertTrue(resultLocation.userId.equals(user.getUserId()));
+		assertEquals(TestHelperService.CURRENT_LATITUDE, resultLocation.location.latitude, 0.0000000001);
+		assertEquals(TestHelperService.CURRENT_LONGITUDE, resultLocation.location.longitude, 0.0000000001);
 	}
-
-	@Test
-	public void givenAlreadyRewardedVisit_whenAddUserRewards_thenAddsNoReward() {
-		// MOCK gpsUtil.getAttractions
-		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
-		// MOCK rewardCentral
-		int expectedRewardPoints = 123;
-		User user = new User(new UUID(11,12), "user_name", "user_phone", "user_email");
-		Attraction expectedAttraction = givenAttractions.get(0);
-		when(rewardCentral.getAttractionRewardPoints(eq(expectedAttraction.attractionId), eq(user.getUserId())))
-			.thenReturn(expectedRewardPoints);
-		// GIVEN user has already been rewarded for this attraction
-		rewardService.setProximityMaximalDistance(10); // statute miles
-		double latitudeDifferenceMakingItCloseEnough = 0.14; // degrees
-		Location location = new Location(expectedAttraction.latitude - latitudeDifferenceMakingItCloseEnough, expectedAttraction.longitude);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
-		user.addToVisitedLocations(visitedLocation);
-		UserReward userReward = new UserReward(visitedLocation, expectedAttraction, expectedRewardPoints);
-		user.addUserReward(userReward);
-		// WHEN
-		tourGuideService.addUserRewards(user);
-		List<UserReward> userRewards = tourGuideService.getUserRewards(user);
-		// THEN
-		assertNotNull(userRewards);
-		assertEquals(1, userRewards.size());
-		assertNotNull(userRewards.get(0));
-		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
-	}
-
-	@Test
-	public void givenMaximalProximityBuffer_whenAddUserRewards_thenAddsRewardsForAllAttractions() {
-		// MOCK gpsUtil.getAttractions
-		List<Attraction> givenAttractions = testHelperService.mockGpsUtilGetAttractions();
-		// MOCK rewardCentral
-		int expectedRewardPoints = 123;
-		User user = new User(new UUID(11,12), "user_name", "user_phone", "user_email");
-		Attraction expectedAttraction = givenAttractions.get(0);
-		when(rewardCentral.getAttractionRewardPoints(eq(expectedAttraction.attractionId), eq(user.getUserId())))
-			.thenReturn(expectedRewardPoints);
-		// GIVEN user is close enough to all attractions
-		rewardService.setProximityMaximalDistance((Integer.MAX_VALUE/2 ) -1);
-		Location location = new Location(0, 0);
-		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(0));
-		user.addToVisitedLocations(visitedLocation);
-		// WHEN
-		tourGuideService.addUserRewards(user);
-		List<UserReward> userRewards = tourGuideService.getUserRewards(user);
-		// THEN
-		assertNotNull(userRewards);
-		assertEquals(TestHelperService.NUMBER_OF_TEST_ATTRACTIONS, userRewards.size());
-		assertNotNull(userRewards.get(0));
-		assertEquals(expectedRewardPoints, userRewards.get(0).getRewardPoints());
-	} */
-
 }

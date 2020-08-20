@@ -1,4 +1,4 @@
-package tourguide.gps.model;
+package tourguide.model;
 
 import static org.junit.Assert.assertEquals;
 
