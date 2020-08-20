@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gpsUtil.GpsUtil;
 import tourguide.model.AttractionData;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationData;
@@ -26,7 +25,6 @@ import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.model.VisitedLocationData;
-import tourguide.service.TestHelperService;
 import tourguide.trip.TripService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -36,9 +34,6 @@ import tripPricer.TripPricer;
 public class TripServiceTest {
 	
 	@MockBean private TripPricer tripPricer;
-	@MockBean private GpsUtil gpsUtil;
-	
-	@Autowired TestHelperService testHelperService;
 	@Autowired TripService tripService;
 
 	@Test
@@ -60,8 +55,6 @@ public class TripServiceTest {
 		AttractionData attraction = new AttractionData("", "", "", 0, 0); 
 		AttractionNearby attractionNearby = new AttractionNearby(attraction, user, 0);
 		nearbyAttractions.add(attractionNearby);
-		// MOCK getAttractions
-		testHelperService.mockGpsUtilGetAttractions();
 		// MOCK getPrice
 		double priceForDuration4 = 1000;
 		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
@@ -117,8 +110,6 @@ public class TripServiceTest {
 		AttractionData attraction = new AttractionData("", "", "", 0, 0); 
 		AttractionNearby attractionNearby = new AttractionNearby(attraction, user, 0);
 		nearbyAttractions.add(attractionNearby);
-		// MOCK getAttractions
-		testHelperService.mockGpsUtilGetAttractions();
 		// MOCK getPrice
 		double priceForOneChild = 100;
 		List<Provider> givenProvidersSimple = new ArrayList<Provider>();

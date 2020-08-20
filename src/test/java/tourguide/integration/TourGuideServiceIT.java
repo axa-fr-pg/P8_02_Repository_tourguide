@@ -23,10 +23,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
+import tourguide.api.GpsClient;
+import tourguide.api.TestHelperService;
 import tourguide.api.TourGuideService;
-import tourguide.gps.GpsService;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationData;
 import tourguide.model.ProviderData;
@@ -34,7 +34,6 @@ import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.model.VisitedLocationData;
 import tourguide.reward.RewardService;
-import tourguide.service.TestHelperService;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
 import tripPricer.Provider;
@@ -44,7 +43,7 @@ import tripPricer.TripPricer;
 @SpringBootTest
 public class TourGuideServiceIT {
 
-	@MockBean GpsUtil gpsUtil;
+	@MockBean GpsClient gpsClient;
 	@MockBean TripPricer tripPricer;
 	@MockBean TrackerService tracker;
 	@MockBean UserService userService;
@@ -53,7 +52,6 @@ public class TourGuideServiceIT {
 	@Autowired RewardService rewardService;
 	@Autowired TourGuideService tourGuideService;
 	@Autowired TestHelperService testHelperService;
-	@Autowired GpsService gpsService;
 
 	@Before
 	public void deactivateUnexpectedServices() {
@@ -64,9 +62,9 @@ public class TourGuideServiceIT {
 	@Test
 	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
 		// GIVEN mock UserService & GpsUtil
-		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, null);
+		User user = testHelperService.mockGetUserAndGetCurrentUserLocation(1, null);
 		// MOCK getAttractions
-		testHelperService.mockGpsUtilGetAttractions();
+		testHelperService.mockGetAllAttractions();
 		// WHEN
 		List<AttractionNearby> resultAttractions = tourGuideService.getNearByAttractions(user.getUserName());
 		// THEN
@@ -93,9 +91,9 @@ public class TourGuideServiceIT {
 		userPreferences.setNumberOfChildren(children);
 		userPreferences.setTripDuration(duration);
 		// MOCK getUser
-		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, userPreferences);
+		User user = testHelperService.mockGetUserAndGetCurrentUserLocation(1, userPreferences);
 		// MOCK getAttractions
-		testHelperService.mockGpsUtilGetAttractions();
+		testHelperService.mockGetAllAttractions();
 		// MOCK getPrice
 		double priceForDuration4 = 1000;
 		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
@@ -131,9 +129,9 @@ public class TourGuideServiceIT {
 		userPreferences.setNumberOfChildren(children);
 		userPreferences.setTripDuration(duration);
 		// MOCK getUser
-		User user = testHelperService.mockUserServiceGetUserAndGpsUtilGetUserLocation(1, userPreferences);
+		User user = testHelperService.mockGetUserAndGetCurrentUserLocation(1, userPreferences);
 		// MOCK getAttractions
-		testHelperService.mockGpsUtilGetAttractions();
+		testHelperService.mockGetAllAttractions();
 		// MOCK getPrice
 		double priceForOneChild = 100;
 		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
@@ -161,7 +159,7 @@ public class TourGuideServiceIT {
 	@Test
 	public void givenUserList_whenGetLastLocationAllUsers_thenReturnsCorrectList() {
 		// MOCK getAllUsers
-		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(5);
+		List<User> givenUsers = testHelperService.mockGetUsersAndGetCurrentLocations(5);
 		// WHEN
 		Map<String,LocationData> allUserLocations = tourGuideService.getLastLocationAllUsers();
 		// THEN
@@ -182,7 +180,7 @@ public class TourGuideServiceIT {
 	@Test
 	public void givenUserWithVisitedLocation_whenGetLastUserLocation_thenReturnsLastVisitedLocation() {
 		// GIVEN mock GpsUtil
-		User user = testHelperService.mockUserWithVisitedLocation(1, null);
+		User user = testHelperService.mockGetUserCurrentAndVisitedLocation(1, null);
 		// WHEN
 		VisitedLocationData resultLocation = tourGuideService.getLastUserLocation(user);
 		// THEN
@@ -195,7 +193,7 @@ public class TourGuideServiceIT {
 	@Test
 	public void givenUserWithoutVisitedLocation_whenGetLastUserLocation_thenReturnsCurrentLocation() {
 		// GIVEN mock GpsUtil
-		User user = testHelperService.mockUserWithoutVisitedLocation(1, null);
+		User user = testHelperService.mockGetUserCurrentLocation(1);
 		// WHEN
 		VisitedLocationData resultLocation = tourGuideService.getLastUserLocation(user);
 		// THEN
@@ -203,5 +201,5 @@ public class TourGuideServiceIT {
 		assertTrue(resultLocation.userId.equals(user.getUserId()));
 		assertEquals(TestHelperService.CURRENT_LATITUDE, resultLocation.location.latitude, 0.0000000001);
 		assertEquals(TestHelperService.CURRENT_LONGITUDE, resultLocation.location.longitude, 0.0000000001);
-	}
+	}	
 }

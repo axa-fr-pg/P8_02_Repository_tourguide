@@ -24,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import tourguide.api.GpsClient;
 import tourguide.api.TourGuideService;
 import tourguide.gps.GpsService;
 import tourguide.model.AttractionData;
@@ -43,7 +44,7 @@ import tripPricer.Provider;
 public class TourGuideControllerIT {
 
 	@Autowired private UserService userService;
-	@Autowired private GpsService gpsService;
+	@Autowired private GpsClient gpsClient;
 	@Autowired private RewardService rewardService;
 	@Autowired private WebApplicationContext wac; 
 	@Autowired private ObjectMapper objectMapper;
@@ -105,7 +106,7 @@ public class TourGuideControllerIT {
 		User user = userService.getUser(userName);
 		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), 
 				user.getLastVisitedLocation().location, new Date());
-		AttractionData attraction = gpsService.getAllAttractions().get(0);
+		AttractionData attraction = gpsClient.getAllAttractions().get(0);
 		user.addUserReward(new UserReward(visitedLocation, attraction, rewardPoints));
 		// WHEN
 		String responseString = mockMvc

@@ -2,6 +2,8 @@ package tourguide.model;
 
 import java.util.UUID;
 
+import gpsUtil.location.Attraction;
+
 public class AttractionData extends LocationData {
 	public String name;
 	public String city;

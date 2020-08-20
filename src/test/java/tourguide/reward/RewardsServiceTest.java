@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -19,13 +20,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
+import tourguide.api.TestHelperService;
 import tourguide.model.AttractionData;
 import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.model.VisitedLocationData;
 import tourguide.reward.RewardService;
-import tourguide.service.TestHelperService;
 import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
@@ -33,12 +34,13 @@ import tourguide.user.UserService;
 public class RewardsServiceTest {
 	
 	@Autowired RewardService rewardService;
-	@Autowired TestHelperService testHelperService;
 	@MockBean RewardCentral rewardCentral;
-	@MockBean UserService userService;
-	@MockBean GpsUtil gpsUtil;
 	
 	private static final int REWARD_POINTS_PER_ATTRACTION = 123;
+	public final static double LATITUDE_REWARD_ONE = 0.21;
+	public final static double LONGITUDE_REWARD_ONE = -0.00022;
+	public final static double LATITUDE_ATTRACTION_ONE = 0.31;
+	public final static double LONGITUDE_ATTRACTION_ONE = -0.00032;
 	private static User user;
 
 	@Before
@@ -123,9 +125,9 @@ public class RewardsServiceTest {
 
 	@Test
 	public void givenMaximalProximityBuffer_whenAddAllNewRewards_thenAddsRewardsForAllAttractions() {
-		// GIVEN test Attractions
+		// GIVEN
 		int numberOfTestAttractions = 999;
-		List<AttractionData> givenAttractions = testHelperService.mockGpsUtilGetAttractions(numberOfTestAttractions);
+		List<AttractionData> attractions = generateAllAttractions(numberOfTestAttractions);
 		// MOCK rewardCentral
 		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user.getUserId())))
 			.thenReturn(REWARD_POINTS_PER_ATTRACTION);
@@ -135,13 +137,15 @@ public class RewardsServiceTest {
 		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), location, new Date(0));
 		user.addToVisitedLocations(visitedLocation);
 		// WHEN
-		rewardService.addAllNewRewards(user, givenAttractions);
+		rewardService.addAllNewRewards(user, attractions);
 		List<UserReward> userRewards = user.getUserRewards();
 		// THEN
 		assertNotNull(userRewards);
 		assertEquals(numberOfTestAttractions, userRewards.size());
-		assertNotNull(userRewards.get(0));
-		assertEquals(REWARD_POINTS_PER_ATTRACTION, userRewards.get(0).rewardPoints);
+		userRewards.forEach( reward -> {
+			assertNotNull(reward);
+			assertEquals(REWARD_POINTS_PER_ATTRACTION, reward.rewardPoints);
+		});
 	}
 	
 	@Test
@@ -158,26 +162,51 @@ public class RewardsServiceTest {
 	@Test
 	public void givenPrerequisitesToAddRewardsOk_whenAddAllNewRewardsAllUsers_thenAddsRewardsForAllUsers() {
 		// GIVEN test Users
-		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(2);
+		User user1 = generateUser(1);
+		User user2 = generateUser(2);
+		List<User> users = Arrays.asList(user1, user2);
 		// GIVEN test Attractions
-		List<AttractionData> givenAttractions = testHelperService.mockGpsUtilGetAttractions(2);
+		List<AttractionData> attractions = generateAllAttractions(2);
 		// MOCK rewardCentral
-		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(0).getUserId())))
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user1.getUserId())))
 			.thenReturn(REWARD_POINTS_PER_ATTRACTION);
-		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(givenUsers.get(1).getUserId())))
+		when(rewardCentral.getAttractionRewardPoints(any(UUID.class), eq(user2.getUserId())))
 			.thenReturn(2 * REWARD_POINTS_PER_ATTRACTION);
-		// GIVEN user was close enough to the attraction
-		rewardService.setProximityMaximalDistance(8); // statute miles
+		// GIVEN each user is close to one attraction
+		rewardService.setProximityMaximalDistance(8); // so that only one attraction matches per user
 		// WHEN
-		rewardService.addAllNewRewardsAllUsers(givenUsers, givenAttractions);
+		rewardService.addAllNewRewardsAllUsers(users, attractions);
 		// THEN
 		int totalRewardPoints = 0;
-		for (User u : givenUsers) {
+		for (User u : users) {
 			assertNotNull(u);
 			assertNotNull(u.getUserRewards());
 			assertEquals(1, u.getUserRewards().size());
 			totalRewardPoints += u.getUserRewards().get(0).rewardPoints;
 		}
 		assertEquals(3 * REWARD_POINTS_PER_ATTRACTION, totalRewardPoints);
+	}
+	
+	private List<AttractionData> generateAllAttractions(int numberOfTestAttractions) {
+		List<AttractionData> attractions = new ArrayList<AttractionData>();	
+		for (int i=0; i<numberOfTestAttractions; i++) {
+			int index = numberOfTestAttractions - i;
+			AttractionData attraction = new AttractionData("name"+index, "city"+index, "state"+index, 
+					LATITUDE_ATTRACTION_ONE*index, LONGITUDE_ATTRACTION_ONE*index);	
+			attractions.add(attraction);
+		}
+		return attractions;
+	}
+
+	private User generateUser(int index) {
+		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
+		user.addToVisitedLocations(generateVisitedLocation(user.getUserId(), index));
+		return user;
+	}
+	
+	private VisitedLocationData generateVisitedLocation(UUID userId, int index) {
+		LocationData location = new LocationData(LATITUDE_REWARD_ONE*index,LONGITUDE_REWARD_ONE*index);
+		VisitedLocationData visitedLocation = new VisitedLocationData(userId, location, new Date(index));
+		return visitedLocation;
 	}
 }

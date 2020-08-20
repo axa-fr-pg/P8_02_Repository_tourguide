@@ -1,4 +1,4 @@
-package tourguide.model;
+package tourguide.api;
 
 import static org.junit.Assert.assertEquals;
 

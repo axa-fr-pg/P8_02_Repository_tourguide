@@ -3,8 +3,11 @@ package tourguide.gps;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -15,44 +18,42 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gpsUtil.GpsUtil;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourguide.api.TestHelperService;
 import tourguide.gps.GpsService;
-import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
-import tourguide.service.TestHelperService;
-import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GpsServiceTest {
 
 	@MockBean GpsUtil gpsUtil;
-	@MockBean UserService userService;
-	@Autowired TestHelperService testHelperService;
 	@Autowired GpsService gpsService;
+	
+	private final static double LATITUDE_GPS_ONE = 0.21;
+	private final static double LONGITUDE_GPS_ONE = -0.00022;
 	
 	@Test
 	public void givenUser_whenGetCurrentUserLocation_thenReturnsCurrentLocation() {
 		// GIVEN mock GpsUtil
-		User user = testHelperService.mockUserWithoutVisitedLocation(1, null);
+		User user = mockGetUserLocation(1);
 		// WHEN
 		VisitedLocationData resultLocation = gpsService.getCurrentUserLocation(user.getUserId().toString());
 		// THEN
 		assertNotNull(resultLocation);
 		assertTrue(resultLocation.userId.equals(user.getUserId()));
-		assertEquals(TestHelperService.CURRENT_LATITUDE, resultLocation.location.latitude, 0.0000000001);
-		assertEquals(TestHelperService.CURRENT_LONGITUDE, resultLocation.location.longitude, 0.0000000001);
+		assertEquals(LATITUDE_GPS_ONE, resultLocation.location.latitude, 0.0000000001);
+		assertEquals(LONGITUDE_GPS_ONE, resultLocation.location.longitude, 0.0000000001);
 	}
 
 	@Test
 	public void givenUserList_whenTrackAllUserLocations_thenAddsVisitedLocationToAllUsers() {
 		// GIVEN mock getAllUsers
-		List<User> givenUsers = testHelperService.mockGetAllUsersAndLocations(5);
-		for (User user : givenUsers) {
-			assertNotNull(user);
-			assertNotNull(user.getVisitedLocations());
-			assertEquals(1, user.getVisitedLocations().size());
+		List<User> givenUsers = new ArrayList<User>();
+		for (int i=0; i<5; i++) {
+			givenUsers.add(mockGetUserLocation(i));
 		}
 		// WHEN
 		gpsService.trackAllUserLocations(givenUsers);
@@ -60,7 +61,15 @@ public class GpsServiceTest {
 		for (User user : givenUsers) {
 			assertNotNull(user);
 			assertNotNull(user.getVisitedLocations());
-			assertEquals(2, user.getVisitedLocations().size());
+			assertEquals(1, user.getVisitedLocations().size());
 		}
+	}
+	
+	private User mockGetUserLocation(int index) {
+		User user = new User(new UUID(11*index,12*index), "name"+index, "phone"+index, "email"+index);
+		Location location = new Location(LATITUDE_GPS_ONE*index,LONGITUDE_GPS_ONE*index);
+		VisitedLocation visitedLocation = new VisitedLocation(user.getUserId(), location, new Date(index));
+		when(gpsUtil.getUserLocation(user.getUserId())).thenReturn(visitedLocation);
+		return user;
 	}
 }

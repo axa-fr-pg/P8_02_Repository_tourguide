@@ -1,4 +1,4 @@
-package tourguide.user;
+package tourguide.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
