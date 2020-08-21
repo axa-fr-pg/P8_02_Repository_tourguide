@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import tourguide.model.AttractionUserLists;
+import tourguide.model.UserAttractionLists;
 import tourguide.model.User;
 import tourguide.model.UserAttraction;
 
@@ -15,7 +15,7 @@ import tourguide.model.UserAttraction;
 public interface RewardClient {
 
 	@PatchMapping("/addAllNewRewardsAllUsers")
-	List<User> addAllNewRewardsAllUsers(@RequestBody AttractionUserLists attractionUserLists);
+	List<User> addAllNewRewardsAllUsers(@RequestBody UserAttractionLists attractionUserLists);
 
 	@GetMapping("/sumOfAllRewardPoints")
 	int sumOfAllRewardPoints(@RequestBody User user);

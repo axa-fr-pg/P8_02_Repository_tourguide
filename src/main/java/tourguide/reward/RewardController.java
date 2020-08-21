@@ -5,23 +5,23 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import tourguide.model.AttractionUserLists;
+import tourguide.model.UserAttractionLists;
 import tourguide.model.User;
 import tourguide.model.UserAttraction;
 
-@Service
+@RestController
 public class RewardController {
 
 	private Logger logger = LoggerFactory.getLogger(RewardController.class);
 	@Autowired private RewardService rewardService;
 	
 	@PatchMapping("/addAllNewRewardsAllUsers")
-	public List<User> addAllNewRewardsAllUsers(@RequestBody AttractionUserLists attractionUserLists) {
+	public List<User> addAllNewRewardsAllUsers(@RequestBody UserAttractionLists attractionUserLists) {
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + attractionUserLists.userList.size() 
 			+ " and attractionList of size " + attractionUserLists.attractionList.size());
 		return rewardService.addAllNewRewardsAllUsers(attractionUserLists.userList, attractionUserLists.attractionList);

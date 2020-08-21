@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tourguide.model.AttractionData;
-import tourguide.model.AttractionUserLists;
+import tourguide.model.UserAttractionLists;
 import tourguide.model.User;
 import tourguide.model.UserAttraction;
 import tourguide.user.UserService;
@@ -32,8 +32,8 @@ public class RewardRequest {
 	public List<User> addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions) {
 		logListContent("addAllNewRewardsAllUsers before external call", userList);
 		logListContent("addAllNewRewardsAllUsers before external call", attractions);
-		AttractionUserLists attractionUserLists = new AttractionUserLists(attractions, userList);
-		List<User> updatedUserList = rewardClient.addAllNewRewardsAllUsers(attractionUserLists);
+		UserAttractionLists userAttractionLists = new UserAttractionLists(attractions, userList);
+		List<User> updatedUserList = rewardClient.addAllNewRewardsAllUsers(userAttractionLists);
 		userService.setAllUsers(updatedUserList);
 		logListContent("addAllNewRewardsAllUsers before external call", userList);
 		return updatedUserList;
@@ -47,11 +47,11 @@ public class RewardRequest {
 	}
 
 	public int getRewardPoints(AttractionData attraction, User user) {
-		logListContent("sumOfAllRewardPoints before external call", Collections.singletonList(attraction));
-		logListContent("sumOfAllRewardPoints before external call", Collections.singletonList(user));
+		logListContent("getRewardPoints before external call", Collections.singletonList(attraction));
+		logListContent("getRewardPoints before external call", Collections.singletonList(user));
 		UserAttraction userAttraction = new UserAttraction(user, attraction);
 		int result =  rewardClient.getRewardPoints(userAttraction);
-		logListContent("sumOfAllRewardPoints after external call", Collections.singletonList(result));
+		logListContent("getRewardPoints after external call", Collections.singletonList(result));
 		return result;
 	}
 	

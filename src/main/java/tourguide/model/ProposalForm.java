@@ -12,4 +12,7 @@ public class ProposalForm {
 		this.attractions = attractions;
 		this.cumulativeRewardPoints = cumulativeRewardPoints;
 	}
+	
+	public ProposalForm() {
+	}
 }

@@ -9,4 +9,7 @@ public class UserAttraction {
 		this.user = user;
 		this.attraction = attraction;
 	}
+	
+	public UserAttraction() {
+	}
 }
