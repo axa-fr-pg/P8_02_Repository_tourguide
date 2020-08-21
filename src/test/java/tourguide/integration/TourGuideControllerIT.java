@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tourguide.api.GpsClient;
 import tourguide.api.TourGuideService;
-import tourguide.gps.GpsService;
 import tourguide.model.AttractionData;
 import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
@@ -53,7 +52,8 @@ public class TourGuideControllerIT {
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-    }
+		userService.initializeInternalUsers(100, true);
+   }
 
 	@Test
 	public void givenUser1_whenGetLastLocation_thenReturnsCorrectLocation() throws Exception 
