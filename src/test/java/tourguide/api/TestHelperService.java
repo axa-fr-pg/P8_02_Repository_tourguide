@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tourguide.api.GpsClient;
 import tourguide.api.TourGuideService;
 import tourguide.model.AttractionData;
 import tourguide.model.LocationData;
@@ -30,7 +29,7 @@ public class TestHelperService {
 	public final static double CURRENT_LATITUDE = 0.111;
 	public final static double CURRENT_LONGITUDE = -0.222;
 
-	@Autowired GpsClient gpsClient;
+	@Autowired GpsRequest gpsRequest;
 	@Autowired UserService userService;
 
 	public User generateUser(int index) {
@@ -55,14 +54,14 @@ public class TestHelperService {
 	public User mockGetUserAndGetCurrentUserLocation(int index, UserPreferences userPreferences) {
 		User user = mockGetUserCurrentAndVisitedLocation(index, userPreferences);
 		when(userService.getUser(user.getUserName())).thenReturn(user);
-		when(gpsClient.getCurrentUserLocation(user.getUserId().toString())).thenReturn(user.getLastVisitedLocation());
+		when(gpsRequest.getCurrentUserLocation(user)).thenReturn(user.getLastVisitedLocation());
 		return user;
 	}
 
 	public User mockGetCurrentUserLocation(int index) {
 		User user = generateUser(index);
 		VisitedLocationData visitedLocation = generateVisitedLocation(user.getUserId(), index);
-		when(gpsClient.getCurrentUserLocation(user.getUserId().toString())).thenReturn(visitedLocation);
+		when(gpsRequest.getCurrentUserLocation(user)).thenReturn(visitedLocation);
 		return user;
 	}
 	
@@ -78,7 +77,7 @@ public class TestHelperService {
 		User user = generateUser(index);
 		LocationData currentLocation = new LocationData(CURRENT_LATITUDE, CURRENT_LONGITUDE);
 		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), currentLocation, new Date());
-		when(gpsClient.getCurrentUserLocation(user.getUserId().toString())).thenReturn(visitedLocation);
+		when(gpsRequest.getCurrentUserLocation(user)).thenReturn(visitedLocation);
 		return user;
 	}
 	
@@ -94,7 +93,7 @@ public class TestHelperService {
 					LATITUDE_ATTRACTION_ONE*index, LONGITUDE_ATTRACTION_ONE*index);	
 			attractions.add(attraction);
 		}
-		when(gpsClient.getAllAttractions()).thenReturn(attractions);
+		when(gpsRequest.getAllAttractions()).thenReturn(attractions);
 		return attractions;
 	}	
 }

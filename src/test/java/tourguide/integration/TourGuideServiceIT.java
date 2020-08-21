@@ -2,7 +2,6 @@ package tourguide.integration;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,33 +22,30 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import rewardCentral.RewardCentral;
-import tourguide.api.GpsClient;
+import tourguide.api.GpsRequest;
+import tourguide.api.RewardRequest;
 import tourguide.api.TestHelperService;
 import tourguide.api.TourGuideService;
+import tourguide.api.TripRequest;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationData;
 import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.model.VisitedLocationData;
-import tourguide.reward.RewardService;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TourGuideServiceIT {
 
-	@MockBean GpsClient gpsClient;
-	@MockBean TripPricer tripPricer;
+	@MockBean GpsRequest gpsRequest;
+	@MockBean RewardRequest rewardRequest;
+	@MockBean TripRequest tripRequest;
 	@MockBean TrackerService tracker;
 	@MockBean UserService userService;
-	@MockBean RewardCentral rewardCentral;
 
-	@Autowired RewardService rewardService;
 	@Autowired TourGuideService tourGuideService;
 	@Autowired TestHelperService testHelperService;
 
@@ -86,28 +82,22 @@ public class TourGuideServiceIT {
 		int adults = 2;
 		int children = 3;
 		int duration = 4;
-		UserPreferences userPreferences = new UserPreferences();
-		userPreferences.setNumberOfAdults(adults);
-		userPreferences.setNumberOfChildren(children);
-		userPreferences.setTripDuration(duration);
 		// MOCK getUser
-		User user = testHelperService.mockGetUserAndGetCurrentUserLocation(1, userPreferences);
+		User userSimple = generateUserWithPreferences(31, adults, children, duration);
+		User userDouble = generateUserWithPreferences(32, adults, children, 2 * duration);
 		// MOCK getAttractions
 		testHelperService.mockGetAllAttractions();
-		// MOCK getPrice
+		// MOCK calculateProposals
 		double priceForDuration4 = 1000;
-		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
-		givenProvidersSimple.add(new Provider(null, "providerSimple", priceForDuration4));
-		List<Provider> givenProvidersDouble = new ArrayList<Provider>();
-		givenProvidersDouble.add(new Provider(null, "providerDouble", 2*priceForDuration4));
-		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), eq(duration), anyInt()))
-			.thenReturn(givenProvidersSimple);
-		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), anyInt(), eq(2*duration), anyInt()))
-			.thenReturn(givenProvidersDouble);
+		List<ProviderData> givenProvidersSimple = new ArrayList<ProviderData>();
+		givenProvidersSimple.add(new ProviderData("providerSimple", priceForDuration4, new UUID(101,102)));
+		List<ProviderData> givenProvidersDouble = new ArrayList<ProviderData>();
+		givenProvidersDouble.add(new ProviderData("providerDouble", 2*priceForDuration4, new UUID(201,202)));
+		when(tripRequest.calculateProposals(eq(userSimple), any(), anyInt())).thenReturn(givenProvidersSimple);
+		when(tripRequest.calculateProposals(eq(userDouble), any(), anyInt())).thenReturn(givenProvidersDouble);
 		// WHEN
-		List<ProviderData> duration4Providers = tourGuideService.getTripDeals(user);
-		userPreferences.setTripDuration(2*duration);
-		List<ProviderData> duration8Providers = tourGuideService.getTripDeals(user);
+		List<ProviderData> duration4Providers = tourGuideService.getTripDeals(userSimple);
+		List<ProviderData> duration8Providers = tourGuideService.getTripDeals(userDouble);
 		// THEN
 		assertNotNull(duration4Providers);
 		assertNotNull(duration8Providers);
@@ -124,28 +114,22 @@ public class TourGuideServiceIT {
 		int adults = 0;
 		int children = 1;
 		int duration = 3;
-		UserPreferences userPreferences = new UserPreferences();
-		userPreferences.setNumberOfAdults(adults);
-		userPreferences.setNumberOfChildren(children);
-		userPreferences.setTripDuration(duration);
 		// MOCK getUser
-		User user = testHelperService.mockGetUserAndGetCurrentUserLocation(1, userPreferences);
+		User userSimple = generateUserWithPreferences(31, adults, children, duration);
+		User userDouble = generateUserWithPreferences(32, adults, 2 * children, duration);
 		// MOCK getAttractions
 		testHelperService.mockGetAllAttractions();
 		// MOCK getPrice
 		double priceForOneChild = 100;
-		List<Provider> givenProvidersSimple = new ArrayList<Provider>();
-		givenProvidersSimple.add(new Provider(null, "providerSimple", priceForOneChild));
-		List<Provider> givenProvidersDouble = new ArrayList<Provider>();
-		givenProvidersDouble.add(new Provider(null, "providerDouble", 2*priceForOneChild));
-		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), eq(children), anyInt(), anyInt()))
-			.thenReturn(givenProvidersSimple);
-		when(tripPricer.getPrice(anyString(), any(UUID.class), anyInt(), eq(2*children), anyInt(), anyInt()))
-			.thenReturn(givenProvidersDouble);
+		List<ProviderData> givenProvidersSimple = new ArrayList<ProviderData>();
+		givenProvidersSimple.add(new ProviderData("providerSimple", priceForOneChild, new UUID(101,102)));
+		List<ProviderData> givenProvidersDouble = new ArrayList<ProviderData>();
+		givenProvidersDouble.add(new ProviderData("providerDouble", 2*priceForOneChild, new UUID(201,202)));
+		when(tripRequest.calculateProposals(eq(userSimple), any(), anyInt())).thenReturn(givenProvidersSimple);
+		when(tripRequest.calculateProposals(eq(userDouble), any(), anyInt())).thenReturn(givenProvidersDouble);
 		// WHEN
-		List<ProviderData> providers1Child = tourGuideService.getTripDeals(user);
-		userPreferences.setNumberOfChildren(2*children);
-		List<ProviderData> providers2Children = tourGuideService.getTripDeals(user);
+		List<ProviderData> providers1Child = tourGuideService.getTripDeals(userSimple);
+		List<ProviderData> providers2Children = tourGuideService.getTripDeals(userDouble);
 		// THEN
 		assertNotNull(providers1Child);
 		assertNotNull(providers2Children);
@@ -201,5 +185,13 @@ public class TourGuideServiceIT {
 		assertTrue(resultLocation.userId.equals(user.getUserId()));
 		assertEquals(TestHelperService.CURRENT_LATITUDE, resultLocation.location.latitude, 0.0000000001);
 		assertEquals(TestHelperService.CURRENT_LONGITUDE, resultLocation.location.longitude, 0.0000000001);
-	}	
+	}
+	
+	private User generateUserWithPreferences(int index, int adults, int children, int duration) {
+		UserPreferences userPreferences = new UserPreferences();
+		userPreferences.setNumberOfAdults(adults);
+		userPreferences.setNumberOfChildren(children);
+		userPreferences.setTripDuration(duration);
+		return testHelperService.mockGetUserAndGetCurrentUserLocation(index, userPreferences);
+	}
 }

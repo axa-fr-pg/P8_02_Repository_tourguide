@@ -61,7 +61,8 @@ public class TourGuidePerformanceIT {
 	
 	private void givenUsers_whenTrackAllUsers_thenTimeElapsedBelowLimit(
 			int numberOfUsers, long maximalExpectedDuration) {
-		logger.info(this.getClass().getEnclosingMethod().getName());
+		logger.info("givenUsers_whenTrackAllUsers_thenTimeElapsedBelowLimit expected for " 
+				+ numberOfUsers + " users in " + maximalExpectedDuration + " seconds");
 		// GIVEN
 		userService.initializeInternalUsers(numberOfUsers, true);
 	    // WHEN
@@ -77,7 +78,8 @@ public class TourGuidePerformanceIT {
 
 	private void givenUsers_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelowLimit(
 			int numberOfUsers, long maximalExpectedDuration) {
-		logger.info(this.getClass().getEnclosingMethod().getName());
+		logger.info("givenUsers_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelowLimit expected for " 
+				+ numberOfUsers + " users in " + maximalExpectedDuration + " seconds");
 		// GIVEN
 		userService.initializeInternalUsers(numberOfUsers, false);
 		List<User> givenUsers = userService.getAllUsers();
