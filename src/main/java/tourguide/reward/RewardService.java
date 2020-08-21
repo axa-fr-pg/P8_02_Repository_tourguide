@@ -88,12 +88,10 @@ public class RewardService {
 		return partitionList;
 	}
 	
-	public long addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions)	{
+	public List<User> addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions)	{
 		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
 			+ " and attractionList of size " + attractions.size());
 		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_POOL_SIZE);
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
 		// Divide user list into several parts and submit work separately for these parts
 		divideUserList(userList).stream().parallel().forEach( partition -> {
 			try {
@@ -107,11 +105,8 @@ public class RewardService {
 				throw new RuntimeException("addAllNewRewardsAllUsers got an exception");
 			}
 		});
-		stopWatch.stop();
 		forkJoinPool.shutdown();
-		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
-		logger.info("addAllNewRewardsAllUsers required " + duration + " seconds for " + userList.size() + " users");
-		return duration;
+		return userList;
 	}
 	
 	public int sumOfAllRewardPoints(User user) {

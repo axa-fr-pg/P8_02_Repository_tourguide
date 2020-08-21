@@ -6,9 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import tourguide.model.AttractionData;
+import tourguide.model.AttractionUserLists;
 import tourguide.model.User;
+import tourguide.model.UserAttraction;
 
 @Service
 public class RewardController {
@@ -16,20 +20,23 @@ public class RewardController {
 	private Logger logger = LoggerFactory.getLogger(RewardController.class);
 	@Autowired private RewardService rewardService;
 	
-	public void addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions) {
-		logger.debug("addAllNewRewardsAllUsers userListName of size = " + userList.size() 
-			+ " and attractionList of size " + attractions.size());
-		rewardService.addAllNewRewardsAllUsers(userList, attractions);		
+	@PatchMapping("/addAllNewRewardsAllUsers")
+	public List<User> addAllNewRewardsAllUsers(@RequestBody AttractionUserLists attractionUserLists) {
+		logger.debug("addAllNewRewardsAllUsers userListName of size = " + attractionUserLists.userList.size() 
+			+ " and attractionList of size " + attractionUserLists.attractionList.size());
+		return rewardService.addAllNewRewardsAllUsers(attractionUserLists.userList, attractionUserLists.attractionList);
 	}
 
-	public int sumOfAllRewardPoints(User user) {
+	@GetMapping("/sumOfAllRewardPoints")
+	public int sumOfAllRewardPoints(@RequestBody User user) {
 		logger.debug("getLastUserLocation for User " + user.getUserName());
 		return rewardService.sumOfAllRewardPoints(user);		
 	}
 
-	public int getRewardPoints(AttractionData attraction, User user) {
-		logger.debug("getLastUserLocation for User " + user.getUserName()
-		+ " and Attraction " + attraction.name);
-	return rewardService.getRewardPoints(attraction, user);
+	@GetMapping("/getRewardPoints")
+	public int getRewardPoints(@RequestBody UserAttraction userAttraction) {
+		logger.debug("getLastUserLocation for User " + userAttraction.user.getUserName()
+		+ " and Attraction " + userAttraction.attraction.name);
+	return rewardService.getRewardPoints(userAttraction.attraction, userAttraction.user);
 	}
 }

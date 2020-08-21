@@ -1,9 +1,6 @@
 package tourguide.gps;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tourguide.model.AttractionData;
-import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
 

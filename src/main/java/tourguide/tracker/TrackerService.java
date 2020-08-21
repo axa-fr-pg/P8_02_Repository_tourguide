@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +53,8 @@ public class TrackerService extends Thread {
 		logger.debug("run() reached the end");
 	}
 	
-	public long trackAllUsers() {
+	public void trackAllUsers() {
 		logger.debug("trackAllUsers starts iteration over all users");
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
 		// Get All users
 		List<User> allUsersStart = userService.getAllUsers();
 		// Get and register current location for all users
@@ -66,9 +63,5 @@ public class TrackerService extends Thread {
 		List<AttractionData> allAttractions = gpsRequest.getAllAttractions();
 		// Update rewards for all users
 		rewardRequest.addAllNewRewardsAllUsers(allUsersUpdated, allAttractions);
-		stopWatch.stop();
-		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
-		logger.info("trackAllUsers required " + duration + " seconds for " + allUsersStart.size() + " users");
-		return duration;
 	}
 }

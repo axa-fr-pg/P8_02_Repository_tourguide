@@ -18,16 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
-import tourguide.api.TestHelperService;
 import tourguide.model.AttractionData;
 import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.model.VisitedLocationData;
 import tourguide.reward.RewardService;
-import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -164,7 +161,7 @@ public class RewardsServiceTest {
 		// GIVEN test Users
 		User user1 = generateUser(1);
 		User user2 = generateUser(2);
-		List<User> users = Arrays.asList(user1, user2);
+		List<User> initialUsers = Arrays.asList(user1, user2);
 		// GIVEN test Attractions
 		List<AttractionData> attractions = generateAllAttractions(2);
 		// MOCK rewardCentral
@@ -175,10 +172,10 @@ public class RewardsServiceTest {
 		// GIVEN each user is close to one attraction
 		rewardService.setProximityMaximalDistance(8); // so that only one attraction matches per user
 		// WHEN
-		rewardService.addAllNewRewardsAllUsers(users, attractions);
+		List<User> updatedUsers = rewardService.addAllNewRewardsAllUsers(initialUsers, attractions);
 		// THEN
 		int totalRewardPoints = 0;
-		for (User u : users) {
+		for (User u : updatedUsers) {
 			assertNotNull(u);
 			assertNotNull(u.getUserRewards());
 			assertEquals(1, u.getUserRewards().size());

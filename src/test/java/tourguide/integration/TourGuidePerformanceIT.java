@@ -1,9 +1,12 @@
 package tourguide.integration;
 
 import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,31 +61,42 @@ public class TourGuidePerformanceIT {
 	
 	private void givenUsers_whenTrackAllUsers_thenTimeElapsedBelowLimit(
 			int numberOfUsers, long maximalExpectedDuration) {
+		logger.info(this.getClass().getEnclosingMethod().getName());
 		// GIVEN
 		userService.initializeInternalUsers(numberOfUsers, true);
 	    // WHEN
-		long duration  = trackerService.trackAllUsers();
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		trackerService.trackAllUsers();
+		stopWatch.stop();
+		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
+		logger.info("trackAllUsers required " + duration + " seconds for " + numberOfUsers + " users");
 		// THEN
 		assertTrue(duration <= maximalExpectedDuration);
 	}
 
 	private void givenUsers_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelowLimit(
 			int numberOfUsers, long maximalExpectedDuration) {
+		logger.info(this.getClass().getEnclosingMethod().getName());
 		// GIVEN
 		userService.initializeInternalUsers(numberOfUsers, false);
-		List<User> allUsers = userService.getAllUsers();
+		List<User> givenUsers = userService.getAllUsers();
 		List<AttractionData> allAttractions = gpsService.getAllAttractions();	 
 		AttractionData anyExistingAttraction = allAttractions.get(0);
-		for(User user : allUsers) {
+		for(User user : givenUsers) {
 			user.addToVisitedLocations(new VisitedLocationData(user.getUserId(), anyExistingAttraction, new Date()));
 		}
 	    // WHEN
-		long duration = rewardService.addAllNewRewardsAllUsers(allUsers, allAttractions);
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		List<User> resultUsers = rewardService.addAllNewRewardsAllUsers(givenUsers, allAttractions);
+		stopWatch.stop();
+		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
+		logger.info("addAllNewRewardsAllUsers required " + duration + " seconds for " + numberOfUsers + " users");
 		// THEN
-		for(User user : allUsers) {
+		for(User user : resultUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
 		}
 		assertTrue(duration <= maximalExpectedDuration);
 	}
-
 }

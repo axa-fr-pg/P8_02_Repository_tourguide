@@ -27,26 +27,24 @@ public class GpsRequest {
 	}
 
 	public List<User> trackAllUserLocations(List<User> userList) {
-		logger.debug("trackAllUserLocations before external call");
-		logListContent("trackAllUserLocations", userList);
+		logListContent("trackAllUserLocations  before external call", userList);
 		List<User> updatedUserList = gpsClient.trackAllUserLocations(userList);
-		logger.debug("trackAllUserLocations after external call");
-		logListContent("trackAllUserLocations", updatedUserList);
+		logListContent("trackAllUserLocations after external call", updatedUserList);
 		userService.setAllUsers(updatedUserList);
 		return updatedUserList;
 	}
 
 	public List<AttractionData> getAllAttractions() {
-		logger.debug("getAllAttractions");
+		logger.debug("getAllAttractions before external call");
 		List<AttractionData> attractions = gpsClient.getAllAttractions();
-		logListContent("getAllAttractions", attractions);
+		logListContent("getAllAttractions after external call", attractions);
 		return attractions;
 	}
 
 	public VisitedLocationData getCurrentUserLocation(User user) {
-		logger.debug("getCurrentUserLocation for User " + user.getUserName());
+		logger.debug("getCurrentUserLocation before external call for User " + user.getUserName());
 		VisitedLocationData visitedLocation = gpsClient.getCurrentUserLocation(user.getUserId().toString());
-		logListContent("getCurrentUserLocation", Collections.singletonList(visitedLocation));
+		logListContent("getCurrentUserLocation after external call", Collections.singletonList(visitedLocation));
 		return visitedLocation;
 	}
 
