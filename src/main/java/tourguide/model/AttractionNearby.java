@@ -22,7 +22,7 @@ public class AttractionNearby {
 		attractionLocation = new LocationData(attraction.latitude, attraction.longitude);
 		VisitedLocationData visitedLocation = user.getLastVisitedLocation();
 		userLocation = new LocationData(visitedLocation.location.latitude, visitedLocation.location.longitude);
-		distance = AttractionDistance.getDistance(attractionLocation, userLocation);
+		distance = userLocation.getDistance(attractionLocation);
 		this.rewardPoints = rewardPoints;
 	}
 	

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import rewardCentral.RewardCentral;
 import tourguide.model.AttractionData;
-import tourguide.model.AttractionDistance;
 import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
@@ -40,7 +39,7 @@ public class RewardService {
 	public boolean nearAttraction(VisitedLocationData visitedLocation, AttractionData attractionData) {
 		logger.debug("nearAttraction " + attractionData.name);
 		LocationData attractionLocation = new LocationData(attractionData.latitude, attractionData.longitude);
-		if (AttractionDistance.getDistance(attractionLocation, visitedLocation.location) > proximityMaximalDistance) {
+		if (attractionLocation.getDistance(visitedLocation.location) > proximityMaximalDistance) {
 			return false;
 		}
 		return true;

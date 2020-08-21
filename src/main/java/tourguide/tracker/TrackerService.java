@@ -20,7 +20,7 @@ import tourguide.user.UserService;
 public class TrackerService extends Thread {
 
 	private Logger logger = LoggerFactory.getLogger(TrackerService.class);
-	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
+	private static final long TRACKER_POLLING_FREQUENCE = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();	
 	private boolean stop = false;
 	
@@ -44,7 +44,7 @@ public class TrackerService extends Thread {
 			trackAllUsers();
 			try {
 				logger.debug("run() waiting for next iteration");
-				TimeUnit.SECONDS.sleep(trackingPollingInterval);
+				TimeUnit.SECONDS.sleep(TRACKER_POLLING_FREQUENCE);
 			} catch (InterruptedException e) {
 				logger.error("run() catched InterruptedException");
 				break;
