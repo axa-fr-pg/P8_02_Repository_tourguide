@@ -1,6 +1,5 @@
 package tourguide.model;
 
-
 public class AttractionDistance extends AttractionData implements Comparable<AttractionDistance> {
 
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;

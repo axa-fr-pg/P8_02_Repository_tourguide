@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import tourguide.api.RewardRequest;
 import tourguide.model.User;
-import tourguide.reward.RewardService;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
 
@@ -19,7 +19,7 @@ import tourguide.user.UserService;
 @SpringBootTest
 public class TrackerServiceIT {
 
-	@Autowired private RewardService rewardService;
+	@Autowired private RewardRequest rewardRequest;
 	@Autowired private TrackerService trackerService;
 	@Autowired private UserService userService;
 	
@@ -35,7 +35,7 @@ public class TrackerServiceIT {
 		for (User user : users) {
 			assertNotNull(user.getVisitedLocations());
 			assertEquals(1, user.getVisitedLocations().size());
-			totalRewardPoints += rewardService.sumOfAllRewardPoints(user);
+			totalRewardPoints += rewardRequest.sumOfAllRewardPoints(user);
 		}
 		assertThat(totalRewardPoints > 0);
 	}

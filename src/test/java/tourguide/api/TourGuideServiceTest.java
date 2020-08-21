@@ -1,4 +1,4 @@
-package tourguide.integration;
+package tourguide.api;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import tourguide.api.GpsRequest;
 import tourguide.api.RewardRequest;
-import tourguide.api.TestHelperService;
 import tourguide.api.TourGuideService;
 import tourguide.api.TripRequest;
 import tourguide.model.AttractionNearby;
@@ -38,7 +37,7 @@ import tourguide.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TourGuideServiceIT {
+public class TourGuideServiceTest {
 
 	@MockBean GpsRequest gpsRequest;
 	@MockBean RewardRequest rewardRequest;
@@ -56,13 +55,13 @@ public class TourGuideServiceIT {
 	}
 	
 	@Test
-	public void givenAttractions_whenGetNearByAttractions_thenCorrectListReturned() {
+	public void givenAttractions_whenGetNearbyAttractions_thenCorrectListReturned() {
 		// GIVEN mock UserService & GpsUtil
 		User user = testHelperService.mockGetUserAndGetCurrentUserLocation(1, null);
 		// MOCK getAttractions
 		testHelperService.mockGetAllAttractions();
 		// WHEN
-		List<AttractionNearby> resultAttractions = tourGuideService.getNearByAttractions(user.getUserName());
+		List<AttractionNearby> resultAttractions = tourGuideService.getNearbyAttractions(user.getUserName());
 		// THEN
 		assertNotNull(resultAttractions);
 		assertEquals(TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS, resultAttractions.size());

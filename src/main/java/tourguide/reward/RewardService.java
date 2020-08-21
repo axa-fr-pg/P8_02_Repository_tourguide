@@ -30,12 +30,10 @@ public class RewardService {
 	@Autowired private RewardCentral rewardCentral;
 	
 	public void setProximityMaximalDistance(int proximityBuffer) {
-		logger.debug("setProximityMaximalDistance to " + proximityBuffer);
 		this.proximityMaximalDistance = proximityBuffer;
 	}
 	
 	public int getProximityMaximalDistance() {
-		logger.debug("getProximityMaximalDistance returns " + proximityMaximalDistance);
 		return this.proximityMaximalDistance;
 	}
 	

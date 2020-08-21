@@ -63,13 +63,13 @@ public class TourGuideService {
 		// Calculate the sum of all reward points for given user
 		int cumulativeRewardPoints = rewardRequest.sumOfAllRewardPoints(user);
 		// List attractions in the neighborhood of the user
-		List<AttractionNearby> attractions = getNearByAttractions(user.getUserName());		
+		List<AttractionNearby> attractions = getNearbyAttractions(user.getUserName());		
 		// Calculate trip proposals matching attractions list, user preferences and reward points 
 		return tripRequest.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
-	public List<AttractionNearby> getNearByAttractions(String userName) {		
-		logger.debug("getNearByAttractions userName = " + userName);
+	public List<AttractionNearby> getNearbyAttractions(String userName) {		
+		logger.debug("getNearbyAttractions userName = " + userName);
 		// Prepare user location as reference to measure attraction distance
 		User user = userService.getUser(userName);
     	VisitedLocationData visitedLocation = getLastUserLocation(user);

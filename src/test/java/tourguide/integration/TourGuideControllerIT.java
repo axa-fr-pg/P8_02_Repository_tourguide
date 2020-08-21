@@ -24,27 +24,23 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import tourguide.api.GpsClient;
+import tourguide.api.GpsRequest;
 import tourguide.api.TourGuideService;
 import tourguide.model.AttractionData;
-import tourguide.model.AttractionDistance;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationData;
 import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.model.VisitedLocationData;
-import tourguide.reward.RewardService;
 import tourguide.user.UserService;
-import tripPricer.Provider;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TourGuideControllerIT {
 
 	@Autowired private UserService userService;
-	@Autowired private GpsClient gpsClient;
-	@Autowired private RewardService rewardService;
+	@Autowired private GpsRequest gpsRequest;
 	@Autowired private WebApplicationContext wac; 
 	@Autowired private ObjectMapper objectMapper;
 	private MockMvc mockMvc;
@@ -78,8 +74,6 @@ public class TourGuideControllerIT {
 	{
 		// GIVEN 
 		String userName = "internalUser1";
-		User user = userService.getUser(userName);
-		LocationData userLocation = user.getLastVisitedLocation().location;
 		// WHEN
 		String responseString = mockMvc
 				.perform(get("/getNearbyAttractions?userName=" + userName))
@@ -92,8 +86,6 @@ public class TourGuideControllerIT {
 		assertThat(responseObject.size() > 0);
 		for (AttractionNearby a : responseObject) {
 			assertNotNull(a);
-			double distance = AttractionDistance.getDistance(a.attractionLocation, userLocation);
-			assertThat(distance < rewardService.getProximityMaximalDistance());
 		}
 	}
 	
@@ -106,7 +98,7 @@ public class TourGuideControllerIT {
 		User user = userService.getUser(userName);
 		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), 
 				user.getLastVisitedLocation().location, new Date());
-		AttractionData attraction = gpsClient.getAllAttractions().get(0);
+		AttractionData attraction = gpsRequest.getAllAttractions().get(0);
 		user.addUserReward(new UserReward(visitedLocation, attraction, rewardPoints));
 		// WHEN
 		String responseString = mockMvc
@@ -164,7 +156,7 @@ public class TourGuideControllerIT {
 				.andDo(print())
 				.andReturn().getResponse().getContentAsString();
 		JavaType expectedResultType = objectMapper.getTypeFactory().constructCollectionType(List.class, ProviderData.class);
-		List<Provider> responseObject = objectMapper.readValue(responseString, expectedResultType);
+		List<ProviderData> responseObject = objectMapper.readValue(responseString, expectedResultType);
 		// THEN
 		assertNotNull(responseObject);
 		assertThat(responseObject.size() >= TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS);

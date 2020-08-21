@@ -68,5 +68,4 @@ public class UserPreferences {
 	public void setNumberOfChildren(int numberOfChildren) {
 		this.numberOfChildren = numberOfChildren;
 	}
-
 }

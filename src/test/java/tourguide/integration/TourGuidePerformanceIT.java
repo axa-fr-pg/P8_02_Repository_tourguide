@@ -16,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import tourguide.gps.GpsService;
+import tourguide.api.GpsRequest;
+import tourguide.api.RewardRequest;
 import tourguide.model.AttractionData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
-import tourguide.reward.RewardService;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
 
@@ -32,8 +32,8 @@ public class TourGuidePerformanceIT {
 
 	@Autowired private TrackerService trackerService;
 	@Autowired private UserService userService;
-	@Autowired private RewardService rewardService;
-	@Autowired private GpsService gpsService;
+	@Autowired private RewardRequest rewardRequest;
+	@Autowired private GpsRequest gpsRequest;
 	
 //	@Ignore
 	@Test // Performance before optimization
@@ -83,7 +83,7 @@ public class TourGuidePerformanceIT {
 		// GIVEN
 		userService.initializeInternalUsers(numberOfUsers, false);
 		List<User> givenUsers = userService.getAllUsers();
-		List<AttractionData> allAttractions = gpsService.getAllAttractions();	 
+		List<AttractionData> allAttractions = gpsRequest.getAllAttractions();	 
 		AttractionData anyExistingAttraction = allAttractions.get(0);
 		for(User user : givenUsers) {
 			user.addToVisitedLocations(new VisitedLocationData(user.getUserId(), anyExistingAttraction, new Date()));
@@ -91,7 +91,7 @@ public class TourGuidePerformanceIT {
 	    // WHEN
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		List<User> resultUsers = rewardService.addAllNewRewardsAllUsers(givenUsers, allAttractions);
+		List<User> resultUsers = rewardRequest.addAllNewRewardsAllUsers(givenUsers, allAttractions);
 		stopWatch.stop();
 		long duration = TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime());
 		logger.info("addAllNewRewardsAllUsers required " + duration + " seconds for " + numberOfUsers + " users");

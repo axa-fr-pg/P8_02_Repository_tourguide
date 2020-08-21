@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
 import tourguide.model.AttractionData;
+import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
 
@@ -25,7 +26,7 @@ public class GpsService {
 		logger.debug("trackAllUserLocations with list of size = " + userList.size());
 		userList.stream().parallel().forEach(user -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-			user.addToVisitedLocations(VisitedLocationData.newVisitedLocationData(visitedLocation));
+			user.addToVisitedLocations(newVisitedLocationData(visitedLocation));
 		});
 		return userList;
 	}
@@ -33,7 +34,7 @@ public class GpsService {
 	public VisitedLocationData getCurrentUserLocation(String userIdString) {
 		logger.debug("getUserLocation with userId = " + userIdString);
 		UUID userId = UUID.fromString(userIdString);
-		return VisitedLocationData.newVisitedLocationData(gpsUtil.getUserLocation(userId));
+		return newVisitedLocationData(gpsUtil.getUserLocation(userId));
 	}
 	
 	public List<AttractionData> getAllAttractions() {
@@ -49,5 +50,11 @@ public class GpsService {
 			dataList.add(data);
 		});
 		return dataList;
+	}
+	
+	public VisitedLocationData newVisitedLocationData(VisitedLocation visitedLocation) {
+		return new VisitedLocationData(visitedLocation.userId,
+				new LocationData(visitedLocation.location.latitude, visitedLocation.location.longitude),
+				visitedLocation.timeVisited);
 	}
 }

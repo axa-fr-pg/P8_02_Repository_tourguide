@@ -34,7 +34,7 @@ public class TourGuideController {
     
     @GetMapping("/getNearbyAttractions") 
     public String getNearbyAttractions(@RequestParam String userName) throws JsonProcessingException {
-    	return objectMapper.writeValueAsString(tourGuideService.getNearByAttractions(userName));
+    	return objectMapper.writeValueAsString(tourGuideService.getNearbyAttractions(userName));
     }
     
     @GetMapping("/getRewards") 
@@ -70,7 +70,7 @@ public class TourGuideController {
     
     @GetMapping("/getNearbyAttractionsOld") 
     public String getNearbyAttractionsOld(@RequestParam String userName) throws JsonProcessingException {
-    	return JsonStream.serialize(tourGuideService.getNearByAttractions(userName));
+    	return JsonStream.serialize(tourGuideService.getNearbyAttractions(userName));
     }
     
     @GetMapping("/getRewardsOld") 
