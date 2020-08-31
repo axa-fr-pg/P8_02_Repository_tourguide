@@ -13,22 +13,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tourguide.model.AttractionData;
 import tourguide.model.UserAttractionLists;
+import tourguide.user.UserService;
 import tourguide.model.User;
 import tourguide.model.UserAttraction;
-import tourguide.user.UserService;
 
 @Service
-public class RewardRequest {
+public class RewardRequestServiceImpl implements RewardRequestService {
 	
-	private Logger logger = LoggerFactory.getLogger(RewardRequest.class);
+	private Logger logger = LoggerFactory.getLogger(RewardRequestServiceImpl.class);
 	private final RewardClient rewardClient;
 	@Autowired private ObjectMapper objectMapper;
 	@Autowired private UserService userService;
 	
-	public RewardRequest(RewardClient rewardClient) {
+	public RewardRequestServiceImpl(RewardClient rewardClient) {
 		this.rewardClient = rewardClient;
 	}
 	
+	@Override
 	public List<User> addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions) {
 		logListContent("addAllNewRewardsAllUsers before external call", userList);
 		logListContent("addAllNewRewardsAllUsers before external call", attractions);
@@ -39,6 +40,7 @@ public class RewardRequest {
 		return updatedUserList;
 	}
 
+	@Override
 	public int sumOfAllRewardPoints(User user) {
 		logListContent("sumOfAllRewardPoints before external call", Collections.singletonList(user));
 		int result = rewardClient.sumOfAllRewardPoints(user);
@@ -46,6 +48,7 @@ public class RewardRequest {
 		return result;		
 	}
 
+	@Override
 	public int getRewardPoints(AttractionData attraction, User user) {
 		logListContent("getRewardPoints before external call", Collections.singletonList(attraction));
 		logListContent("getRewardPoints before external call", Collections.singletonList(user));

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import tourguide.api.RewardRequest;
+import tourguide.api.RewardRequestService;
 import tourguide.model.User;
 import tourguide.tracker.TrackerService;
 import tourguide.user.UserService;
@@ -19,7 +19,7 @@ import tourguide.user.UserService;
 @SpringBootTest
 public class TrackerServiceIT {
 
-	@Autowired private RewardRequest rewardRequest;
+	@Autowired private RewardRequestService rewardRequest;
 	@Autowired private TrackerService trackerService;
 	@Autowired private UserService userService;
 	

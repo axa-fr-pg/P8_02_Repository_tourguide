@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import tourguide.api.GpsRequest;
-import tourguide.api.RewardRequest;
+import tourguide.api.GpsRequestService;
+import tourguide.api.RewardRequestService;
 import tourguide.model.AttractionData;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
@@ -32,8 +32,8 @@ public class TourGuidePerformanceIT {
 
 	@Autowired private TrackerService trackerService;
 	@Autowired private UserService userService;
-	@Autowired private RewardRequest rewardRequest;
-	@Autowired private GpsRequest gpsRequest;
+	@Autowired private RewardRequestService rewardRequest;
+	@Autowired private GpsRequestService gpsRequest;
 	
 //	@Ignore
 	@Test // Performance before optimization

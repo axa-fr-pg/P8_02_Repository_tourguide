@@ -22,28 +22,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import tourguide.api.GpsRequest;
-import tourguide.api.RewardRequest;
-import tourguide.api.TourGuideService;
-import tourguide.api.TripRequest;
 import tourguide.model.AttractionNearby;
 import tourguide.model.LocationData;
 import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.model.VisitedLocationData;
-import tourguide.tracker.TrackerService;
-import tourguide.user.UserService;
+import tourguide.tracker.TrackerServiceImpl;
+import tourguide.user.UserServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TourGuideServiceTest {
 
-	@MockBean GpsRequest gpsRequest;
-	@MockBean RewardRequest rewardRequest;
-	@MockBean TripRequest tripRequest;
-	@MockBean TrackerService tracker;
-	@MockBean UserService userService;
+	@MockBean GpsRequestService gpsRequest;
+	@MockBean RewardRequestService rewardRequest;
+	@MockBean TripRequestService tripRequest;
+	@MockBean TrackerServiceImpl tracker;
+	@MockBean UserServiceImpl userService;
 
 	@Autowired TourGuideService tourGuideService;
 	@Autowired TestHelperService testHelperService;

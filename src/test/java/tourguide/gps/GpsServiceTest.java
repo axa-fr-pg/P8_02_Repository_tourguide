@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourguide.gps.GpsService;
 import tourguide.model.User;
 import tourguide.model.VisitedLocationData;
 

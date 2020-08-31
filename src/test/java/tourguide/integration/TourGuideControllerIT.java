@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import tourguide.api.GpsRequest;
+import tourguide.api.GpsRequestService;
 import tourguide.api.TourGuideService;
 import tourguide.model.AttractionData;
 import tourguide.model.AttractionNearby;
@@ -40,7 +40,7 @@ import tourguide.user.UserService;
 public class TourGuideControllerIT {
 
 	@Autowired private UserService userService;
-	@Autowired private GpsRequest gpsRequest;
+	@Autowired private GpsRequestService gpsRequest;
 	@Autowired private WebApplicationContext wac; 
 	@Autowired private ObjectMapper objectMapper;
 	private MockMvc mockMvc;

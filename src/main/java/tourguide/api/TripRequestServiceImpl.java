@@ -17,16 +17,17 @@ import tourguide.model.ProviderData;
 import tourguide.model.User;
 
 @Service
-public class TripRequest {
+public class TripRequestServiceImpl implements TripRequestService {
 
-	private Logger logger = LoggerFactory.getLogger(TripRequest.class);
+	private Logger logger = LoggerFactory.getLogger(TripRequestServiceImpl.class);
 	private final TripClient tripClient;
 	@Autowired private ObjectMapper objectMapper;
 
-	public TripRequest(TripClient tripClient) {
+	public TripRequestServiceImpl(TripClient tripClient) {
 		this.tripClient = tripClient;
 	}
 	
+	@Override
 	public List<ProviderData> calculateProposals(User user, List<AttractionNearby> attractions,	int cumulativeRewardPoints) {
 		logListContent("calculateProposals before external call", Collections.singletonList(user));
 		logListContent("calculateProposals before external call", attractions);

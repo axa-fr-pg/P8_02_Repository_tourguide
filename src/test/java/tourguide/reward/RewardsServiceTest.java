@@ -24,7 +24,6 @@ import tourguide.model.LocationData;
 import tourguide.model.User;
 import tourguide.model.UserReward;
 import tourguide.model.VisitedLocationData;
-import tourguide.reward.RewardService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

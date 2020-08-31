@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import tourguide.model.User;
 import tourguide.user.UserService;
+import tourguide.user.UserServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,7 +23,7 @@ public class UserServiceTest {
 	@Test
 	public void givenUser_whenAddUser_thenUserIsAdded() {
 		// GIVEN
-		UserService userService = new UserService(false);
+		UserService userService = new UserServiceImpl(false);
 		User givenUser = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		// WHEN
 		userService.addUser(givenUser);
@@ -35,7 +36,7 @@ public class UserServiceTest {
 	@Test
 	public void givenUserList_whenGetUser_thenReturnsRightUser() {
 		// GIVEN
-		UserService userService = new UserService(false);
+		UserService userService = new UserServiceImpl(false);
 		User givenUser1 = new User(UUID.randomUUID(), "jon1", "0001", "jon1@tourGuide.com");
 		User givenUser2 = new User(UUID.randomUUID(), "jon2", "0002", "jon2@tourGuide.com");
 		userService.addUser(givenUser1);
@@ -51,7 +52,7 @@ public class UserServiceTest {
 	@Test
 	public void givenUserList_whenGetAllUsers_thenReturnsFullList() {
 		// GIVEN
-		UserService userService = new UserService(false);
+		UserService userService = new UserServiceImpl(false);
 		User givenUser1 = new User(UUID.randomUUID(), "jon1", "0001", "jon1@tourGuide.com");
 		User givenUser2 = new User(UUID.randomUUID(), "jon2", "0002", "jon2@tourGuide.com");
 		userService.addUser(givenUser1);
@@ -69,7 +70,7 @@ public class UserServiceTest {
 	public void givenEmptyUserList_whenInitializeInternalUsers_thenGeneratesUserList() {
 		// GIVEN
 		int numberOfUsers = 10;
-		UserService userService = new UserService(false);
+		UserService userService = new UserServiceImpl(false);
 		List<User> initialUserList = userService.getAllUsers();
 		assertNotNull(initialUserList);
 		assertEquals(0, initialUserList.size());

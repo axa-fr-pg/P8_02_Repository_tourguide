@@ -15,17 +15,18 @@ import tourguide.model.VisitedLocationData;
 import tourguide.user.UserService;
 
 @Service
-public class GpsRequest {
+public class GpsRequestServiceImpl implements GpsRequestService {
 	
 	private final GpsClient gpsClient;
-	private Logger logger = LoggerFactory.getLogger(GpsRequest.class);
+	private Logger logger = LoggerFactory.getLogger(GpsRequestServiceImpl.class);
 	@Autowired private ObjectMapper objectMapper;
 	@Autowired private UserService userService;
 	
-	public GpsRequest(GpsClient gpsClient) {
+	public GpsRequestServiceImpl(GpsClient gpsClient) {
 		this.gpsClient = gpsClient;
 	}
 
+	@Override
 	public List<User> trackAllUserLocations(List<User> userList) {
 		logListContent("trackAllUserLocations  before external call", userList);
 		List<User> updatedUserList = gpsClient.trackAllUserLocations(userList);
@@ -34,6 +35,7 @@ public class GpsRequest {
 		return updatedUserList;
 	}
 
+	@Override
 	public List<AttractionData> getAllAttractions() {
 		logger.debug("getAllAttractions before external call");
 		List<AttractionData> attractions = gpsClient.getAllAttractions();
@@ -41,6 +43,7 @@ public class GpsRequest {
 		return attractions;
 	}
 
+	@Override
 	public VisitedLocationData getCurrentUserLocation(User user) {
 		logger.debug("getCurrentUserLocation before external call for User " + user.getUserName());
 		VisitedLocationData visitedLocation = gpsClient.getCurrentUserLocation(user.getUserId().toString());

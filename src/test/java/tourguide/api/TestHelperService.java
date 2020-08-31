@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tourguide.api.TourGuideService;
 import tourguide.model.AttractionData;
 import tourguide.model.LocationData;
 import tourguide.model.User;
@@ -29,7 +28,7 @@ public class TestHelperService {
 	public final static double CURRENT_LATITUDE = 0.111;
 	public final static double CURRENT_LONGITUDE = -0.222;
 
-	@Autowired GpsRequest gpsRequest;
+	@Autowired GpsRequestService gpsRequest;
 	@Autowired UserService userService;
 
 	public User generateUser(int index) {

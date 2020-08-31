@@ -25,7 +25,6 @@ import tourguide.model.ProviderData;
 import tourguide.model.User;
 import tourguide.model.UserPreferences;
 import tourguide.model.VisitedLocationData;
-import tourguide.trip.TripService;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
