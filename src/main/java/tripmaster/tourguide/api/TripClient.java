@@ -10,7 +10,7 @@ import tripmaster.common.trip.ProposalForm;
 import tripmaster.common.trip.ProviderData;
 
 
-@FeignClient(name="trip", url="http://localhost:8080")
+@FeignClient(name="trip", url="http://localhost:8083")
 public interface TripClient {
 
 	@GetMapping("/calculateProposals")
