@@ -47,7 +47,6 @@ dependencies {
 	compile group: 'tripmaster', name : 'common', version : '1.0' 
 
 	
-    compile(name:'RewardCentral', ext:'jar')
     compile(name:'TripPricer', ext:'jar')
     
     testCompile("junit:junit")

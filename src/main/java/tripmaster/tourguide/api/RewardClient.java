@@ -12,7 +12,7 @@ import tripmaster.common.user.UserAttraction;
 import tripmaster.common.user.UserAttractionLists;
 
 
-@FeignClient(name="reward", url="http://localhost:8080")
+@FeignClient(name="reward", url="http://localhost:8082")
 public interface RewardClient {
 
 	@PatchMapping("/addAllNewRewardsAllUsers")
