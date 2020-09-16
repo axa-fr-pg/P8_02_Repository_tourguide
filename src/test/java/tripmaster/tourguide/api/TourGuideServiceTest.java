@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -67,6 +68,8 @@ public class TourGuideServiceTest {
 		assertEquals(TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS, resultAttractions.size());
 		double resultCheckSum = 0;
 		for (AttractionNearby a : resultAttractions) {
+			assertNotEquals(0, a.id.getLeastSignificantBits());
+			assertNotEquals(0, a.id.getMostSignificantBits());
 			resultCheckSum += a.attractionLocation.longitude;
 		}
 		double expectedCheckSum = ( TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS + 1)

@@ -90,7 +90,7 @@ public class TestHelperService {
 		List<AttractionData> attractions = new ArrayList<AttractionData>();	
 		for (int i=0; i<numberOfTestAttractions; i++) {
 			int index = numberOfTestAttractions - i;
-			AttractionData attraction = new AttractionData("name"+index, "city"+index, "state"+index, 
+			AttractionData attraction = new AttractionData(new UUID(index,index+7000), "name"+index, "city"+index, "state"+index, 
 					LATITUDE_ATTRACTION_ONE*index, LONGITUDE_ATTRACTION_ONE*index);	
 			attractions.add(attraction);
 		}

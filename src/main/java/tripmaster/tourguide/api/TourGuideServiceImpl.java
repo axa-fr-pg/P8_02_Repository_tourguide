@@ -80,7 +80,7 @@ public class TourGuideServiceImpl implements TourGuideService {
 		// Prepare list of all attractions to be sorted
 		List<AttractionDistance> fullList = new ArrayList<>();
 		for(AttractionData toAttraction : gpsRequest.getAllAttractions()) {
-			AttractionDistance ad = new AttractionDistance(fromLocation, toAttraction);
+			AttractionDistance ad = new AttractionDistance(fromLocation,toAttraction);
 			fullList.add(ad);
 		}
 		// Sort list
