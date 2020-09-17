@@ -62,7 +62,7 @@ public class TourGuideServiceTest {
 		// MOCK getAttractions
 		testHelperService.mockGetAllAttractions();
 		// WHEN
-		List<AttractionNearby> resultAttractions = tourGuideService.getNearbyAttractions(user.getUserName());
+		List<AttractionNearby> resultAttractions = tourGuideService.getNearbyAttractions(user.userName);
 		// THEN
 		assertNotNull(resultAttractions);
 		assertEquals(TourGuideService.NUMBER_OF_PROPOSED_ATTRACTIONS, resultAttractions.size());
@@ -152,7 +152,7 @@ public class TourGuideServiceTest {
 		assertNotNull(allUserLocations);
 		assertEquals(givenUsers.size(), allUserLocations.size()); // CHECK LIST SIZE
 		givenUsers.forEach( user -> {
-			LocationData resultLocation = allUserLocations.get(user.getUserId().toString());
+			LocationData resultLocation = allUserLocations.get(user.userId.toString());
 			assertNotNull(resultLocation);
 			VisitedLocationData givenVisitedLocation = user.getLastVisitedLocation();
 			assertNotNull(givenVisitedLocation);
@@ -171,7 +171,7 @@ public class TourGuideServiceTest {
 		VisitedLocationData resultLocation = tourGuideService.getLastUserLocation(user);
 		// THEN
 		assertNotNull(resultLocation);
-		assertTrue(resultLocation.userId.equals(user.getUserId()));
+		assertTrue(resultLocation.userId.equals(user.userId));
 		assertEquals(TestHelperService.LATITUDE_USER_ONE, resultLocation.location.latitude, 0.0000000001);
 		assertEquals(TestHelperService.LONGITUDE_USER_ONE, resultLocation.location.longitude, 0.0000000001);
 	}
@@ -184,7 +184,7 @@ public class TourGuideServiceTest {
 		VisitedLocationData resultLocation = tourGuideService.getLastUserLocation(user);
 		// THEN
 		assertNotNull(resultLocation);
-		assertTrue(resultLocation.userId.equals(user.getUserId()));
+		assertTrue(resultLocation.userId.equals(user.userId));
 		assertEquals(TestHelperService.CURRENT_LATITUDE, resultLocation.location.latitude, 0.0000000001);
 		assertEquals(TestHelperService.CURRENT_LONGITUDE, resultLocation.location.longitude, 0.0000000001);
 	}

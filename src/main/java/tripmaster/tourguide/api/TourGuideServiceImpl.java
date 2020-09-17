@@ -33,13 +33,13 @@ public class TourGuideServiceImpl implements TourGuideService {
 	
 	@Override
 	public List<UserReward> getUserRewards(User user) {
-		logger.debug("getUserRewards userName = " + user.getUserName());
+		logger.debug("getUserRewards userName = " + user.userName);
 		return user.getUserRewards();
 	}
 	
 	@Override
 	public VisitedLocationData getLastUserLocation(User user) {
-		logger.debug("getLastUserLocation with userName = " + user.getUserName());
+		logger.debug("getLastUserLocation with userName = " + user.userName);
 		if (user.getVisitedLocations().size() > 0) {
 			return user.getLastVisitedLocation();
 		}
@@ -54,18 +54,18 @@ public class TourGuideServiceImpl implements TourGuideService {
 		Map<String,LocationData> allUserLocationsMap = new HashMap<String,LocationData>();
 		// Get visited locations for all of them
 		allUsers.forEach(user -> {
-			allUserLocationsMap.put(user.getUserId().toString(), getLastUserLocation(user).location);
+			allUserLocationsMap.put(user.userId.toString(), getLastUserLocation(user).location);
 		});
 		return allUserLocationsMap;
 	}
 	
 	@Override
 	public List<ProviderData> getTripDeals(User user) {
-		logger.debug("getTripDeals userName = " + user.getUserName());
+		logger.debug("getTripDeals userName = " + user.userName);
 		// Calculate the sum of all reward points for given user
 		int cumulativeRewardPoints = rewardRequest.sumOfAllRewardPoints(user);
 		// List attractions in the neighborhood of the user
-		List<AttractionNearby> attractions = getNearbyAttractions(user.getUserName());		
+		List<AttractionNearby> attractions = getNearbyAttractions(user.userName);		
 		// Calculate trip proposals matching attractions list, user preferences and reward points 
 		return tripRequest.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}

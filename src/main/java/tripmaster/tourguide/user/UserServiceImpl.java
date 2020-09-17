@@ -69,14 +69,14 @@ public class UserServiceImpl implements UserService {
 	public void setAllUsers(List<User> userList) {
 		logger.debug("setAllUsers with list of size = " + userList.size());
 		internalUserMap = new HashMap<>();	
-		userList.stream().forEach(user -> { internalUserMap.put(user.getUserName(), user); });
+		userList.stream().forEach(user -> { internalUserMap.put(user.userName, user); });
 	}
 	
 	@Override
 	public void addUser(User user) {
-		logger.debug("addUser with userName = " + user.getUserName());
-		if(!internalUserMap.containsKey(user.getUserName())) {
-			internalUserMap.put(user.getUserName(), user);
+		logger.debug("addUser with userName = " + user.userName);
+		if(!internalUserMap.containsKey(user.userName)) {
+			internalUserMap.put(user.userName, user);
 		}
 	}
 	
@@ -98,9 +98,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private void generateUserLocationHistory(User user) {
-		logger.debug("generateUserLocationHistory with userName = " + user.getUserName());
+		logger.debug("generateUserLocationHistory with userName = " + user.userName);
 		IntStream.range(0, 3).forEach(i-> {
-			user.addToVisitedLocations(new VisitedLocationData(user.getUserId(), 
+			user.addToVisitedLocations(new VisitedLocationData(user.userId, 
 					new LocationData(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
 		});
 	}

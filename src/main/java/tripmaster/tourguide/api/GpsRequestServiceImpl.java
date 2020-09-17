@@ -45,8 +45,8 @@ public class GpsRequestServiceImpl implements GpsRequestService {
 
 	@Override
 	public VisitedLocationData getCurrentUserLocation(User user) {
-		logger.debug("getCurrentUserLocation before external call for User " + user.getUserName());
-		VisitedLocationData visitedLocation = gpsClient.getCurrentUserLocation(user.getUserId().toString());
+		logger.debug("getCurrentUserLocation before external call for User " + user.userName);
+		VisitedLocationData visitedLocation = gpsClient.getCurrentUserLocation(user.userId.toString());
 		logListContent("getCurrentUserLocation after external call", Collections.singletonList(visitedLocation));
 		return visitedLocation;
 	}

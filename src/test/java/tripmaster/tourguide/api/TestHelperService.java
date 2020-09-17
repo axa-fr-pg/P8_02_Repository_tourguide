@@ -54,22 +54,22 @@ public class TestHelperService {
 	
 	public User mockGetUserAndGetCurrentUserLocation(int index, UserPreferences userPreferences) {
 		User user = mockGetUserCurrentAndVisitedLocation(index, userPreferences);
-		when(userService.getUser(user.getUserName())).thenReturn(user);
+		when(userService.getUser(user.userName)).thenReturn(user);
 		when(gpsRequest.getCurrentUserLocation(user)).thenReturn(user.getLastVisitedLocation());
 		return user;
 	}
 
 	public User mockGetCurrentUserLocation(int index) {
 		User user = generateUser(index);
-		VisitedLocationData visitedLocation = generateVisitedLocation(user.getUserId(), index);
+		VisitedLocationData visitedLocation = generateVisitedLocation(user.userId, index);
 		when(gpsRequest.getCurrentUserLocation(user)).thenReturn(visitedLocation);
 		return user;
 	}
 	
 	public User mockGetUserCurrentAndVisitedLocation(int index, UserPreferences userPreferences) {
 		User user = mockGetUserCurrentLocation(index);
-		user.setUserPreferences(userPreferences);
-		VisitedLocationData visitedLocation = generateVisitedLocation(user.getUserId(), index);
+		user.userPreferences = userPreferences;
+		VisitedLocationData visitedLocation = generateVisitedLocation(user.userId, index);
 		user.addToVisitedLocations(visitedLocation);
 		return user;
 	}
@@ -77,7 +77,7 @@ public class TestHelperService {
 	public User mockGetUserCurrentLocation(int index) {
 		User user = generateUser(index);
 		LocationData currentLocation = new LocationData(CURRENT_LATITUDE, CURRENT_LONGITUDE);
-		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), currentLocation, new Date());
+		VisitedLocationData visitedLocation = new VisitedLocationData(user.userId, currentLocation, new Date());
 		when(gpsRequest.getCurrentUserLocation(user)).thenReturn(visitedLocation);
 		return user;
 	}

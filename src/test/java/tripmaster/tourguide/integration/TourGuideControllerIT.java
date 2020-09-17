@@ -96,7 +96,7 @@ public class TourGuideControllerIT {
 		String userName = "internalUser1";
 		int rewardPoints = 12345;
 		User user = userService.getUser(userName);
-		VisitedLocationData visitedLocation = new VisitedLocationData(user.getUserId(), 
+		VisitedLocationData visitedLocation = new VisitedLocationData(user.userId, 
 				user.getLastVisitedLocation().location, new Date());
 		AttractionData attraction = gpsRequest.getAllAttractions().get(0);
 		user.addUserReward(new UserReward(visitedLocation, attraction, rewardPoints));
@@ -115,7 +115,7 @@ public class TourGuideControllerIT {
 			assertNotNull(r);
 			assertNotNull(r.visitedLocation);
 			assertNotNull(r.visitedLocation.userId);
-			if (r.visitedLocation.userId.equals(user.getUserId()) && r.rewardPoints == 12345) {
+			if (r.visitedLocation.userId.equals(user.userId) && r.rewardPoints == 12345) {
 				rewardFound = true;
 			}
 		}
@@ -140,7 +140,7 @@ public class TourGuideControllerIT {
 		assertNotNull(responseObject);
 		assertEquals(numberOfUsers, responseObject.size());
 		for (int i=0; i< numberOfUsers; i++) {
-			LocationData location = responseObject.get(userList.get(i).getUserId().toString());
+			LocationData location = responseObject.get(userList.get(i).userId.toString());
 			assertNotNull(location);
 		}
 	}

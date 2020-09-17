@@ -27,10 +27,10 @@ public class UserServiceTest {
 		User givenUser = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		// WHEN
 		userService.addUser(givenUser);
-		User resultUser = userService.getUser(givenUser.getUserName()); 
+		User resultUser = userService.getUser(givenUser.userName); 
 		// THEN
 		assertNotNull(resultUser);
-		assertEquals(givenUser.getUserId(), resultUser.getUserId());
+		assertEquals(givenUser.userId, resultUser.userId);
 	}
 	
 	@Test
@@ -42,11 +42,11 @@ public class UserServiceTest {
 		userService.addUser(givenUser1);
 		userService.addUser(givenUser2);
 		// WHEN
-		User user = userService.getUser(givenUser2.getUserName());
+		User user = userService.getUser(givenUser2.userName);
 		// THEN
-		assertEquals(givenUser2.getUserId(), user.getUserId());
-		assertEquals(givenUser2.getEmailAddress(), user.getEmailAddress());
-		assertEquals(givenUser2.getPhoneNumber(), user.getPhoneNumber());
+		assertEquals(givenUser2.userId, user.userId);
+		assertEquals(givenUser2.emailAddress, user.emailAddress);
+		assertEquals(givenUser2.phoneNumber, user.phoneNumber);
 	}	
 	
 	@Test

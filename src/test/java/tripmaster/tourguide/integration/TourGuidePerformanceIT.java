@@ -86,7 +86,7 @@ public class TourGuidePerformanceIT {
 		List<AttractionData> allAttractions = gpsRequest.getAllAttractions();	 
 		AttractionData anyExistingAttraction = allAttractions.get(0);
 		for(User user : givenUsers) {
-			user.addToVisitedLocations(new VisitedLocationData(user.getUserId(), anyExistingAttraction, new Date()));
+			user.addToVisitedLocations(new VisitedLocationData(user.userId, anyExistingAttraction, new Date()));
 		}
 	    // WHEN
 		StopWatch stopWatch = new StopWatch();
