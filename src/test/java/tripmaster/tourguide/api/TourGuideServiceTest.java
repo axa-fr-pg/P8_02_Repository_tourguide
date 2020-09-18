@@ -191,9 +191,9 @@ public class TourGuideServiceTest {
 	
 	private User generateUserWithPreferences(int index, int adults, int children, int duration) {
 		UserPreferences userPreferences = new UserPreferences();
-		userPreferences.setNumberOfAdults(adults);
-		userPreferences.setNumberOfChildren(children);
-		userPreferences.setTripDuration(duration);
+		userPreferences.numberOfAdults = adults;
+		userPreferences.numberOfChildren = children;
+		userPreferences.tripDuration = duration;
 		return testHelperService.mockGetUserAndGetCurrentUserLocation(index, userPreferences);
 	}
 }
