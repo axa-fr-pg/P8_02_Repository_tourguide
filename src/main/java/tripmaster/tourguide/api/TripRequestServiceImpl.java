@@ -16,6 +16,11 @@ import tripmaster.common.trip.ProviderData;
 import tripmaster.common.user.User;
 import tripmaster.common.attraction.AttractionNearby;
 
+/**
+ * Class to prepare a trip API request. Implements TripRequestService interface.
+ * @see tripmaster.tourguide.api.TripClient
+ * @see tripmaster.tourguide.api.TripRequestServiceImpl
+ */
 @Service
 public class TripRequestServiceImpl implements TripRequestService {
 
@@ -27,6 +32,13 @@ public class TripRequestServiceImpl implements TripRequestService {
 		this.tripClient = tripClient;
 	}
 	
+	/**
+	 * Gets the proposed trips for a given user and a given attraction list. Based on user preferences and cumulated reward points.
+	 * @param user for which the trip proposals shall be computed.
+	 * @param attractions list of AttractionNearby for which the trip proposals shall be computed.
+	 * @param cumulativeRewardPoints number of points to be taken into account for pricing discount.
+	 * @return List of ProviderData proposed for the user (name, price and id).
+	 */
 	@Override
 	public List<ProviderData> calculateProposals(User user, List<AttractionNearby> attractions,	int cumulativeRewardPoints) {
 		logListContent("calculateProposals before external call", Collections.singletonList(user));
@@ -38,6 +50,7 @@ public class TripRequestServiceImpl implements TripRequestService {
 		return proposals;
 	}
 	
+	// logging helper tool
 	private void logListContent(String methodName, List<?> list) {
 		logger.debug(methodName + " number of elements " + list.size() + " : " + list.toString());
 		try {

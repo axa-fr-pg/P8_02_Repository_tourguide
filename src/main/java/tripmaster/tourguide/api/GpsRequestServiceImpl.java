@@ -14,6 +14,11 @@ import tripmaster.common.location.VisitedLocationData;
 import tripmaster.common.user.User;
 import tripmaster.tourguide.user.UserService;
 
+/**
+ * Class to prepare a gps API request. Implements GpsRequestService interface.
+ * @see tripmaster.tourguide.api.GpsClient
+ * @see tripmaster.tourguide.api.GpsRequestService
+ */
 @Service
 public class GpsRequestServiceImpl implements GpsRequestService {
 	
@@ -26,6 +31,11 @@ public class GpsRequestServiceImpl implements GpsRequestService {
 		this.gpsClient = gpsClient;
 	}
 
+	/**
+	 * Gets the current location and stores it into the visited location history for each user of a given list.
+	 * @param userList for which the tracking shall be processed.
+	 * @return List of users updated with added visited locations.
+	 */
 	@Override
 	public List<User> trackAllUserLocations(List<User> userList) {
 		logListContent("trackAllUserLocations  before external call", userList);
@@ -35,6 +45,10 @@ public class GpsRequestServiceImpl implements GpsRequestService {
 		return updatedUserList;
 	}
 
+	/**
+	 * Gets the list of all known attractions in the ecosystem.
+	 * @return List of AttractionData containing one entry for each existing attraction.
+	 */
 	@Override
 	public List<AttractionData> getAllAttractions() {
 		logger.debug("getAllAttractions before external call");
@@ -43,6 +57,11 @@ public class GpsRequestServiceImpl implements GpsRequestService {
 		return attractions;
 	}
 
+	/**
+	 * Gets current user location.
+	 * @param user for whom the location shall be determined.
+	 * @return VisitedLocationData containing the current location of the user.
+	 */
 	@Override
 	public VisitedLocationData getCurrentUserLocation(User user) {
 		logger.debug("getCurrentUserLocation before external call for User " + user.userName);
@@ -51,6 +70,7 @@ public class GpsRequestServiceImpl implements GpsRequestService {
 		return visitedLocation;
 	}
 
+	// logging helper tool
 	private void logListContent(String methodName, List<?> list) {
 		logger.debug(methodName + " number of elements " + list.size() + " : " + list.toString());
 		try {

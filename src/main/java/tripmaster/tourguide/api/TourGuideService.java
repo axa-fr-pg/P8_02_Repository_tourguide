@@ -10,7 +10,10 @@ import tripmaster.common.trip.ProviderData;
 import tripmaster.common.user.User;
 import tripmaster.common.user.UserReward;
 
-
+/**
+ * Interface for tourguide services
+ * @see tripmaster.tourguide.api.TourGuideServiceImpl
+ */
 public interface TourGuideService {
 
 	final static int NUMBER_OF_PROPOSED_ATTRACTIONS = 5;

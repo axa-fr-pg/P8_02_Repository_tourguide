@@ -12,6 +12,11 @@ import tripmaster.common.attraction.AttractionData;
 import tripmaster.common.location.VisitedLocationData;
 import tripmaster.common.user.User;
 
+/**
+ * Interface to call the gps API.
+ * @see tripmaster.gps.GpsController
+ *
+ */
 @FeignClient(name="gps", url="http://localhost:8081")
 public interface GpsClient {
 

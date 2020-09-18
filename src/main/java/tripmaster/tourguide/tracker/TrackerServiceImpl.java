@@ -16,6 +16,10 @@ import tripmaster.tourguide.api.GpsRequestService;
 import tripmaster.tourguide.api.RewardRequestService;
 import tripmaster.tourguide.user.UserService;
 
+/**
+ * Class for tracker services. Implements TrackerService interface.
+ * @see tripmaster.tourguide.tracker.TrackerService
+ */
 @Service
 public class TrackerServiceImpl extends Thread implements TrackerService {
 
@@ -33,6 +37,10 @@ public class TrackerServiceImpl extends Thread implements TrackerService {
 		executorService.submit(this);
 	}
 	
+	/*
+	 * Launch a tracker daemon, which will track all users every 5 minutes.
+	 * @see tripmaster.tourguide.tracker.TrackerServiceImpl.trackAllUsers
+	 */
 	@Override
 	public void run() {
 		logger.debug("run() starting");
@@ -53,6 +61,10 @@ public class TrackerServiceImpl extends Thread implements TrackerService {
 		logger.debug("run() reached the end");
 	}
 	
+	/**
+	 * Computes a full update of the user information for each user in the ecosystem :
+	 * get the current location, store it into the user visited location history, add user rewards for newly visited attractions.
+	 */
 	@Override
 	public void trackAllUsers() {
 		logger.debug("trackAllUsers starts iteration over all users");

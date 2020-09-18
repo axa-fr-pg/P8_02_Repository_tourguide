@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,10 @@ import tripmaster.common.user.User;
 import tripmaster.common.user.UserReward;
 import tripmaster.tourguide.user.UserService;
 
+/**
+ * Class for tourguide services. Implements TourGuideService interface.
+ * @see tripmaster.tourguide.api.TourGuideService
+ */
 @Service
 public class TourGuideServiceImpl implements TourGuideService {
 	
@@ -31,12 +37,22 @@ public class TourGuideServiceImpl implements TourGuideService {
 	public TourGuideServiceImpl() {
 	}
 	
+	/**
+	 * Gets the reward list for a given user. 
+	 * @param user for whom the list shall be returned.
+	 * @return List of UserReward.
+	 */
 	@Override
 	public List<UserReward> getUserRewards(User user) {
 		logger.debug("getUserRewards userName = " + user.userName);
 		return user.getUserRewards();
 	}
 	
+	/**
+	 * Gets the last know visited location for a given user. Based on user visited location history.
+	 * @param user whose last location is requested.
+	 * @return VisitedLocationData which has been added lastly to the user visited locations list.
+	 */
 	@Override
 	public VisitedLocationData getLastUserLocation(User user) {
 		logger.debug("getLastUserLocation with userName = " + user.userName);
@@ -46,6 +62,11 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return gpsRequest.getCurrentUserLocation(user);
 	}
 	
+	/**
+	 * Gets the last know visited location for all users. Based on user visited location history.
+	 * @return Map with user name as String key and last location as LocationData value.
+	 * @see tripmaster.tourguide.api.TourGuideServiceImpl.getLastUserLocation
+	 */
 	@Override
 	public Map<String,LocationData> getLastLocationAllUsers() {
 		logger.debug("getLastLocationAllUsers");
@@ -59,6 +80,10 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return allUserLocationsMap;
 	}
 	
+	/**
+	 * Gets the proposed trips for a given user. Based on user preferences.
+	 * @return List of ProviderData (name, price and id).
+	 */
 	@Override
 	public List<ProviderData> getTripDeals(User user) {
 		logger.debug("getTripDeals userName = " + user.userName);
@@ -70,6 +95,11 @@ public class TourGuideServiceImpl implements TourGuideService {
 		return tripRequest.calculateProposals( user, attractions, cumulativeRewardPoints);
 	}
 	
+	/**
+	 * Gets the 5 attractions which are the closest to the user's location, regardless of their distance from him.
+	 * @param userName the name of the user to be considered for the research.
+	 * @return List of AttractionNearby (id, name, attraction location, user location, distance, reward points).
+	 */
 	@Override
 	public List<AttractionNearby> getNearbyAttractions(String userName) {		
 		logger.debug("getNearbyAttractions userName = " + userName);

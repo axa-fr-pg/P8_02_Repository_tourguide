@@ -17,6 +17,11 @@ import tripmaster.common.user.UserAttraction;
 import tripmaster.common.user.UserAttractionLists;
 import tripmaster.tourguide.user.UserService;
 
+/**
+ * Class to prepare a reward API request. Implements RewardRequestService interface.
+ * @see tripmaster.tourguide.api.RewardClient
+ * @see tripmaster.tourguide.api.RewardRequestService
+ */
 @Service
 public class RewardRequestServiceImpl implements RewardRequestService {
 	
@@ -29,6 +34,12 @@ public class RewardRequestServiceImpl implements RewardRequestService {
 		this.rewardClient = rewardClient;
 	}
 	
+	/**
+	 * Adds new rewards to all users reward lists for each given attraction (if not already rewarded for a given user). 
+	 * @param userList for which the rewards shall be added.
+	 * @param attractions list of AttractionData for which a reward shall be added (if not already done for a given user).
+	 * @return List of users updated with added rewards.
+	 */
 	@Override
 	public List<User> addAllNewRewardsAllUsers(List<User> userList, List<AttractionData> attractions) {
 		logListContent("addAllNewRewardsAllUsers before external call", userList);
@@ -40,6 +51,11 @@ public class RewardRequestServiceImpl implements RewardRequestService {
 		return updatedUserList;
 	}
 
+	/**
+	 * Calculates the number of reward points for a given user.
+	 * @param user for which the calculation shall be done.
+	 * @return int number of points.
+	 */
 	@Override
 	public int sumOfAllRewardPoints(User user) {
 		logListContent("sumOfAllRewardPoints before external call", Collections.singletonList(user));
@@ -48,6 +64,12 @@ public class RewardRequestServiceImpl implements RewardRequestService {
 		return result;		
 	}
 
+	/**
+	 * Gets the number of a reward points for a given attraction & user pair. 
+	 * @param user for which the points shall be calculated
+	 * @param attraction for which the points shall be calculated
+	 * @return int number of points.
+	 */
 	@Override
 	public int getRewardPoints(AttractionData attraction, User user) {
 		logListContent("getRewardPoints before external call", Collections.singletonList(attraction));
@@ -58,6 +80,7 @@ public class RewardRequestServiceImpl implements RewardRequestService {
 		return result;
 	}
 	
+	// logging helper tool
 	private void logListContent(String methodName, List<?> list) {
 		logger.debug(methodName + " number of elements " + list.size() + " : " + list.toString());
 		try {

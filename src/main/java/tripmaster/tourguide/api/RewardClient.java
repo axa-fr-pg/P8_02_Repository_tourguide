@@ -11,7 +11,11 @@ import tripmaster.common.user.User;
 import tripmaster.common.user.UserAttraction;
 import tripmaster.common.user.UserAttractionLists;
 
-
+/**
+ * Interface to call the reward API.
+ * @see tripmaster.reward.RewardController
+ *
+ */
 @FeignClient(name="reward", url="http://localhost:8082")
 public interface RewardClient {
 

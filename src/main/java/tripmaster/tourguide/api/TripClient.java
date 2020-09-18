@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import tripmaster.common.trip.ProposalForm;
 import tripmaster.common.trip.ProviderData;
 
-
+/**
+ * Interface to call the trip API.
+ * @see tripmaster.trip.TripController
+ *
+ */
 @FeignClient(name="trip", url="http://localhost:8083")
 public interface TripClient {
 
