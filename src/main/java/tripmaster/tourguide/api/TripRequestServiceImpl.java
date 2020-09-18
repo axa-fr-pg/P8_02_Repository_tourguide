@@ -33,10 +33,10 @@ public class TripRequestServiceImpl implements TripRequestService {
 	}
 	
 	/**
-	 * Gets the proposed trips for a given user and a given attraction list. Based on user preferences and cumulated reward points.
-	 * @param user for which the trip proposals shall be computed.
-	 * @param attractions list of AttractionNearby for which the trip proposals shall be computed.
-	 * @param cumulativeRewardPoints number of points to be taken into account for pricing discount.
+	 * Gets the proposed trips for a given user, attractions and reward points combination.
+	 * @param user for whom the proposals shall be computed (based on his preferences).
+	 * @param attractions the list of AttractionNearby to be parsed for the trip proposals.
+	 * @param cumulativeRewardPoints the number of reward points to be taken into account for pricing.
 	 * @return List of ProviderData proposed for the user (name, price and id).
 	 */
 	@Override
