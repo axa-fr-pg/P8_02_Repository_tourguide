@@ -14,7 +14,7 @@ import tripmaster.common.trip.ProviderData;
  * @see tripmaster.trip.TripController
  *
  */
-@FeignClient(name="trip", url="http://localhost:8083")
+@FeignClient(name="trip", url="http://trip:8083")
 public interface TripClient {
 
 	@GetMapping("/calculateProposals")

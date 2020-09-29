@@ -76,8 +76,83 @@ jacocoTestCoverageVerification {
   }
 }
 
+version='1.0.0'
+
 bootJar {
-    baseName = 'tourguide'
-    version =  '1.0.0'
-	mainClassName = 'tripmaster.tourguide.Application'
+    baseName = "${project.name}"
+    version =  "${project.version}"
+	mainClassName = "tripmaster.${project.name}.Application"
+}
+
+task dockerJar {
+	delete 'docker/${project.name}.jar'
+	doLast {
+		copy {
+	        from "build/libs/${project.name}-${project.version}.jar"
+		    rename "${project.name}-${project.version}.jar", "${project.name}.jar"
+	        into 'docker'
+    	}
+    }
+	dependsOn bootJar
+}
+
+task dockerBuildImage(type:Exec) {
+	workingDir "${projectDir}/docker"
+    commandLine "docker", "build", "-t", "${project.name}", "."
+	dependsOn dockerJar
+}
+task saveDockerImage(type:Exec) {
+	group = 'tripmaster'
+	doFirst {
+	    workingDir "${projectDir}/docker"
+	    standardOutput new FileOutputStream("${projectDir}/docker/${project.name}.tar")
+	}
+    commandLine "docker", "save", "${project.name}"
+    doLast {
+    	commandLine "docker", "image", "rm", "${project.name}", "-f"
+    }
+	dependsOn dockerBuildImage
+}
+
+task loadDockerImageGps(type:Exec) {
+	doFirst {
+	    standardInput new FileInputStream("${projectDir}/../gps/docker/gps.tar")
+	}
+    commandLine "docker", "load"
+}
+
+task loadDockerImageReward(type:Exec) {
+	doFirst {
+	    standardInput new FileInputStream("${projectDir}/../reward/docker/reward.tar")
+	}
+    commandLine "docker", "load"
+}
+
+task loadDockerImageTrip(type:Exec) {
+	doFirst {
+	    standardInput new FileInputStream("${projectDir}/../trip/docker/trip.tar")
+	}
+    commandLine "docker", "load"
+}
+
+task prepareDockerCompose(type:Exec) {
+	doFirst {
+	    standardInput new FileInputStream("${projectDir}/docker/${project.name}.tar")
+	}
+    commandLine "docker", "load"
+    dependsOn loadDockerImageGps
+    dependsOn loadDockerImageReward
+    dependsOn loadDockerImageTrip
+    dependsOn saveDockerImage
+    doLast {
+    	workingDir "${projectDir}/docker"
+	    commandLine "docker-compose", "down"
+    }
+}
+
+task runDockerCompose(type:Exec) {
+	group = 'tripmaster'
+    workingDir "${projectDir}/docker"
+    commandLine "docker-compose", "up", "-d"
+    dependsOn prepareDockerCompose
 }

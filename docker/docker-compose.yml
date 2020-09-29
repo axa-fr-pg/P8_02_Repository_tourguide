@@ -1,0 +1,17 @@
+version: "2"
+services :
+  tourguide:
+    image: tourguide
+    depends_on: 
+      - gps
+      - reward
+      - trip
+    ports:
+      - "8080:8080"
+  gps:
+    image: gps
+  reward:
+    image: reward
+  trip:
+    image: trip
+    

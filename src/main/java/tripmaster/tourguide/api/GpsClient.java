@@ -17,7 +17,7 @@ import tripmaster.common.user.User;
  * @see tripmaster.gps.GpsController
  *
  */
-@FeignClient(name="gps", url="http://localhost:8081")
+@FeignClient(name="gps", url="gps:8081")
 public interface GpsClient {
 
 	@PatchMapping("/trackAllUserLocations")

@@ -12,9 +12,8 @@ Get /getTripDeals
 Generate an executable jar file with the gradle build/bootJar task.
 
 ## Installation
-The server shall listen to port 8080
+Generate a docker image with the gradle tripmaster/saveDockerImage task.
 
-
-
-     
-    
+## Run
+Ensure that all project images have been generated (tourguide as well as gps, reward and trip).
+Start the application with the gradle tripmaster/runDockerCompose task.
