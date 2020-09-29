@@ -10,8 +10,14 @@ services :
       - "8080:8080"
   gps:
     image: gps
+    ports:
+      - "8081:8081"
   reward:
     image: reward
+    ports:
+      - "8082:8082"
   trip:
     image: trip
+    ports:
+      - "8083:8083"
     
