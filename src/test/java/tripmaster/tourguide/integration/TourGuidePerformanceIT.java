@@ -41,7 +41,7 @@ public class TourGuidePerformanceIT {
 		givenUsers_whenTrackAllUsers_thenTimeElapsedBelowLimit(100, 7);
 	}
 	
-	@Ignore
+//	@Ignore
 	@Test // Performance after optimization
 	public void given100000Users_whenTrackAllUsers_thenTimeElapsedBelow15Minutes() {
 		givenUsers_whenTrackAllUsers_thenTimeElapsedBelowLimit(100 * 1000, 15 * 60);
@@ -53,7 +53,7 @@ public class TourGuidePerformanceIT {
 		givenUsers_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelowLimit(100, 58);
 	}
 	
-	@Ignore
+//	@Ignore
 	@Test // Performance after optimization
 	public void given100000Users_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelow20Minutes() {
 		givenUsers_whenAddAllNewRewardsAllUsers_thenTimeElapsedBelowLimit(100 * 1000, 20 * 60);
