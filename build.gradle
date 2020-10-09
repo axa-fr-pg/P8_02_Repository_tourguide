@@ -101,49 +101,70 @@ task dockerBuildImage(type:Exec) {
     commandLine "docker", "build", "-t", "${project.name}", "."
 	dependsOn dockerJar
 }
+task unloadDockerImage(type:Exec) {
+   	commandLine "docker", "image", "rm", "${project.name}", "-f"
+}
+task zipDockerImage(type:Exec) {
+	workingDir "${projectDir}/docker"
+   	commandLine "7z", "a", "${project.name}.zip", "${project.name}.tar"
+}
 task saveDockerImage(type:Exec) {
 	group = 'tripmaster'
+	dependsOn dockerBuildImage
 	doFirst {
 	    workingDir "${projectDir}/docker"
 	    standardOutput new FileOutputStream("${projectDir}/docker/${project.name}.tar")
 	}
     commandLine "docker", "save", "${project.name}"
-    doLast {
-    	commandLine "docker", "image", "rm", "${project.name}", "-f"
-    }
-	dependsOn dockerBuildImage
+    finalizedBy zipDockerImage
+    finalizedBy unloadDockerImage
 }
 
+task unzipDockerImageGps(type:Exec) {
+	workingDir "${projectDir}/docker"
+   	commandLine "7z", "e", "-y", "${projectDir}/../gps/docker/gps.zip"
+}
 task loadDockerImageGps(type:Exec) {
-	doFirst {
-	    standardInput new FileInputStream("${projectDir}/../gps/docker/gps.tar")
-	}
-    commandLine "docker", "load"
+	dependsOn unzipDockerImageGps
+    doFirst {
+    	standardInput new FileInputStream("${projectDir}/docker/gps.tar")
+    }
+   	commandLine "docker", "load"
 }
 
+task unzipDockerImageReward(type:Exec) {
+	workingDir "${projectDir}/docker"
+   	commandLine "7z", "e", "-y", "${projectDir}/../reward/docker/reward.zip"
+}
 task loadDockerImageReward(type:Exec) {
-	doFirst {
-	    standardInput new FileInputStream("${projectDir}/../reward/docker/reward.tar")
-	}
-    commandLine "docker", "load"
+	dependsOn unzipDockerImageReward
+    doFirst {
+    	standardInput new FileInputStream("${projectDir}/docker/reward.tar")
+    }
+   	commandLine "docker", "load"
 }
 
+task unzipDockerImageTrip(type:Exec) {
+	workingDir "${projectDir}/docker"
+   	commandLine "7z", "e", "-y", "${projectDir}/../trip/docker/trip.zip"
+}
 task loadDockerImageTrip(type:Exec) {
-	doFirst {
-	    standardInput new FileInputStream("${projectDir}/../trip/docker/trip.tar")
-	}
-    commandLine "docker", "load"
+	dependsOn unzipDockerImageTrip
+    doFirst {
+    	standardInput new FileInputStream("${projectDir}/docker/trip.tar")
+    }
+   	commandLine "docker", "load"
 }
 
 task prepareDockerCompose(type:Exec) {
-	doFirst {
-	    standardInput new FileInputStream("${projectDir}/docker/${project.name}.tar")
-	}
-    commandLine "docker", "load"
     dependsOn loadDockerImageGps
     dependsOn loadDockerImageReward
     dependsOn loadDockerImageTrip
     dependsOn saveDockerImage
+	doFirst {
+	    standardInput new FileInputStream("${projectDir}/docker/${project.name}.tar")
+	}
+    commandLine "docker", "load"
     doLast {
     	workingDir "${projectDir}/docker"
 	    commandLine "docker-compose", "down"

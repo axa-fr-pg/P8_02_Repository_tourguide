@@ -15,5 +15,5 @@ Generate an executable jar file with the gradle build/bootJar task.
 Generate a docker image with the gradle tripmaster/saveDockerImage task.
 
 ## Run
-Ensure that all project images have been generated (tourguide as well as gps, reward and trip).
+Ensure that gps, reward and trip images have been installed (launch the gradle tripmaster/saveDockerImage task for each of them).
 Start the application with the gradle tripmaster/runDockerCompose task.
